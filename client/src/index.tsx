@@ -1,15 +1,19 @@
 import React from 'react';
 import ReactDOM from 'react-dom/client';
 import './index.css';
-import Loading from './LoadingPage';
 import reportWebVitals from './reportWebVitals';
+
+import Loading from './LoadingPage';
+import TopMenu from './TopMenu';
+import KakaoMap from './KakaoMap';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
 );
 root.render(
   <React.StrictMode>
-    <Loading />
+    <TopMenu />
+    <KakaoMap />
   </React.StrictMode>
 );
 
