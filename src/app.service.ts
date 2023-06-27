@@ -4,7 +4,5 @@ import fs from 'fs';
 
 @Injectable()
 export class AppService {
-  getPage(): void {
-    
-  }
+  getPage(): void {}
 }
