@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+  </head>
+  <body>
+    <div id="map" style="width: 70%; height: 800px"></div>
+    <script
+      type="text/javascript"
+      src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hwwivs3rlv&callback=initMap"
+    ></script>
+    <script type="text/javascript">
+      var map = null;
+
+      function initMap() {
+        map = new naver.maps.Map('map', {
+          center: new naver.maps.LatLng(36.3501713, 127.3848386),
+          zoom: 17,
+        });
+      }
+    </script>
+  </body>
+</html>
