@@ -1,9 +1,16 @@
-import React from 'react';
+import axios from 'axios';
 
-export default function NaverMapApi() {
-  return (
-    <div className="root">
-      <p>헬로</p>
-    </div>
-  );
+export async function getMapData(location: string): Promise<any> {
+  try {
+    const response = await axios.get('/maps/data', {
+      params: {
+        location,
+      },
+    });
+
+    return response.data;
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
 }

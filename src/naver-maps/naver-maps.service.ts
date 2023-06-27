@@ -1,9 +1,16 @@
 import { Injectable } from '@nestjs/common';
+import axios from 'axios';
 
 @Injectable()
 export class NaverMapsService {
-  getMapData(location: string): any {
-    // 네이버 맵 API 호출 및 데이터 가공 로직
-    // ...
+  async getMapData(location: string): Promise<any> {
+    // Call the Naver Map API and fetch data
+    const response = await axios.get('https://api.example.com/maps', {
+      params: {
+        location,
+      },
+    });
+
+    return response.data;
   }
 }
