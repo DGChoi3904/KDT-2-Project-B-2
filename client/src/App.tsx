@@ -1,12 +1,13 @@
-import React, { useEffect, useState } from 'react';
-import { Route, Routes, useLocation } from 'react-router-dom';
+import React from 'react';
 import NaverMapComponent from './component/naverMapCompnent';
 
 function App() {
   return (
-    <div className="App">
-      <NaverMapComponent />
-    </div>
+    <>
+      <div className="App">
+        <NaverMapComponent />
+      </div>
+    </>
   );
 }
 

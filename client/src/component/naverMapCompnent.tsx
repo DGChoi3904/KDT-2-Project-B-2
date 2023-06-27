@@ -1,26 +1,19 @@
-import React, { useEffect, useState } from 'react';
-import { getMapData } from '../util/naverMapApi';
+import React from 'react';
+import { Helmet } from 'react-helmet';
 
-const NaverMapComponent = () => {
-  const [mapData, setMapData] = useState(null);
-
-  useEffect(() => {
-    const fetchMapData = async () => {
-      try {
-        // const data = await getMapData('some_location');
-        const data = await getMapData('36.3501713, 127.3848386');
-        setMapData(data);
-      } catch (error) {
-        console.error(error);
-      }
-    };
-
-    fetchMapData();
-  }, []);
-
-  // Render the map component using mapData
-
-  return <div>{/* Render the map component */}</div>;
+const App = () => {
+  return (
+    <div>
+      <Helmet>
+        <script
+          src="https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=YOUR_CLIENT_ID"
+          type="text/javascript"
+        />
+      </Helmet>
+      {/* 다른 컴포넌트 */}
+      {/* ... */}
+    </div>
+  );
 };
 
-export default NaverMapComponent;
+export default App;
