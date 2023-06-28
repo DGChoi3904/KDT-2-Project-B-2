@@ -19,8 +19,9 @@ function SignUp() {
         setId(event.target.value);
     }
 
-    const mainWidth : CSSProperties = {
-        width:"430px"
+    const signUpComp : CSSProperties = {
+        width:"430px",
+        backgroundColor: "#FFA41B"
     }
     const flexColumnCenter : CSSProperties = {
         display: "flex",
@@ -61,6 +62,7 @@ function SignUp() {
         width: "80%",
         fontSize: "25px",
         border: "0",
+        backgroundColor: "inherit",
         borderBottom: "1px solid",
         borderColor: "#000",
         padding: "1px 2px",
@@ -72,14 +74,15 @@ function SignUp() {
     const signUpButton : CSSProperties = {
         fontSize: "25px",
         border: "0",
+        backgroundColor: "inherit",
         borderBottom: "1px solid",
         borderColor: "#000",
         padding: "1px 2px",
     }
     return(
-        <div id="signup" style={{...mainWidth,...flexColumnCenter}}>
+        <div id="signup" style={{...signUpComp,...flexColumnCenter}}>
             <form method="POST"style={flexColumnCenter}>
-                <h1 style={titleStyle}>회원가입</h1>
+                <h2 style={titleStyle}>회원가입</h2>
                 <label htmlFor='id' style={{...signUpLabelSize,...flexRowCenter}}>
                     <div style={{...flexRowCenter,...signUpInputName}}>ID</div>
                     <div style={{...flexColumnCenter,...signUpInputBox}}>
