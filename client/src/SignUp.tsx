@@ -28,11 +28,16 @@ function SignUp() {
         justifyContent: "center",
         alignItems: "center",
     }
-
+    const titleStyle : CSSProperties = {
+        display: "inline-flex",
+        padding: "38px 165px",
+        alignItems: "flex-start",
+        gap: "10px"
+    }
     return(
         <div id="signup" style={{...mainWidth,...flexColumnCenter}}>
             <form method="POST"style={flexColumnCenter}>
-                <h1>회원가입</h1>
+                <h1 style={titleStyle}>회원가입</h1>
                 <label htmlFor='id'>
                     <span>ID</span>
                     <input name='id' onChange={handleIdChange} value={id} />
