@@ -78,15 +78,6 @@ function SignUp() {
         borderBottom: "1px solid",
         borderColor: "#000",
         padding: "1px 2px",
-
-        // Hover 상태일 시 색 변경.
-        transition: "background-color 0.3s ease", // 추가: 배경색 변경에 대한 transition 효과
-        cursor: "pointer", // 추가: 마우스 커서 모양 변경
-
-        ":hover": {
-            backgroundColor: "#000",
-            color: "#FFF"
-        }
     }
     return(
         <div id="signup" style={{...signUpComp,...flexColumnCenter}}>
