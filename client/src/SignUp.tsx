@@ -27,6 +27,14 @@ function SignUp() {
         flexDirection: "column",
         justifyContent: "center",
         alignItems: "center",
+        boxSizing: "border-box",
+    }
+    const flexRowCenter : CSSProperties = {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center",
+        alignItems : "center",
+        boxSizing: "border-box",
     }
     const titleStyle : CSSProperties = {
         display: "inline-flex",
@@ -34,12 +42,7 @@ function SignUp() {
         alignItems: "flex-start",
         gap: "10px"
     }
-    const flexRowCenter : CSSProperties = {
-        display: "flex",
-        flexDirection: "row",
-        justifyContent: "center",
-        alignItems : "center"
-    }
+    
     const signUpInputName : CSSProperties = {
         width:"30%",
         color: "#000",
