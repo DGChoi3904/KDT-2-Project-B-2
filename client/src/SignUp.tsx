@@ -55,25 +55,25 @@ function SignUp() {
             <form method="POST"style={flexColumnCenter}>
                 <h1 style={titleStyle}>회원가입</h1>
                 <label htmlFor='id' style={{...signUpLabelHeight,...flexRowCenter}}>
-                    <div style={signUpInputName}>ID</div>
+                    <div style={{...flexRowCenter,...signUpInputName}}>ID</div>
                     <div>
                         <input name='id' onChange={handleIdChange} value={id} />
                     </div>
                 </label>
                 <label htmlFor='pwd' style={{...signUpLabelHeight,...flexRowCenter}}>
-                    <div style={signUpInputName}>PW</div>
+                    <div style={{...flexRowCenter,...signUpInputName}}>PW</div>
                     <div>
                         <input name='pwd' onChange={handlePwdChange} value={pwd} />
                     </div>
                 </label>
                 <label htmlFor='pwdCheck' style={{...signUpLabelHeight,...flexRowCenter}}>
-                    <div style={signUpInputName}>PW<br/>Check</div>
+                    <div style={{...flexRowCenter,...signUpInputName}}>PW<br/>Check</div>
                     <div>
                         <input name='pwdCheck' onChange={handlePwdCheckChange} value={pwdCheck} />
                     </div>
                 </label>
                 <label htmlFor='name' style={{...signUpLabelHeight,...flexRowCenter}}>
-                    <div style={signUpInputName}>Name</div>
+                    <div style={{...flexRowCenter,...signUpInputName}}>Name</div>
                     <div>
                         <input name='name' onChange={handleNameChange} value={name} />
                     </div>
