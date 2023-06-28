@@ -69,6 +69,13 @@ function SignUp() {
         width: "430px",   
         height: "266px",
     }
+    const signUpButton : CSSProperties = {
+        fontSize: "25px",
+        border: "0",
+        borderBottom: "1px solid",
+        borderColor: "#000",
+        padding: "1px 2px",
+    }
     return(
         <div id="signup" style={{...mainWidth,...flexColumnCenter}}>
             <form method="POST"style={flexColumnCenter}>
@@ -98,7 +105,7 @@ function SignUp() {
                     </div>
                 </label>
                 <div style={{...flexColumnCenter,...signUpButtonBox}}>
-                    <button type="submit">Sign Up</button>
+                    <button type="submit" style={signUpButton}>Sign Up</button>
                 </div>
             </form>
         </div>
