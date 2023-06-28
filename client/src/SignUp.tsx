@@ -74,6 +74,7 @@ function SignUp() {
         fontSize: "15px",
         border: "0",
         backgroundColor: "inherit",
+        color: "#000",
         borderBottom: "2px solid",
         borderColor: "#000",
         padding: "1px 2px",
