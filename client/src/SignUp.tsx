@@ -19,7 +19,7 @@ function SignUp() {
         setId(event.target.value);
     }
 
-    const mainSize : CSSProperties = {
+    const mainWidth : CSSProperties = {
         width:"430px"
     }
     const flexColumnCenter : CSSProperties = {
@@ -30,7 +30,7 @@ function SignUp() {
     }
 
     return(
-        <div id="signup" style={mainSize,flexColumnCenter}>
+        <div id="signup" style={{...mainWidth,...flexColumnCenter}}>
             <form method="POST"style={flexColumnCenter}>
                 <h1>회원가입</h1>
                 <label htmlFor='id'>
