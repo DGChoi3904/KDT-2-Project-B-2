@@ -58,7 +58,7 @@ function SignUp() {
           <div className="flex-column-center signup-input-box">
             <input
               name="pwd"
-              type="text"
+              type="password"
               onChange={handlePwdChange}
               value={pwd}
               className="signup-input"
@@ -75,7 +75,7 @@ function SignUp() {
           <div className="flex-column-center signup-input-box">
             <input
               name="pwdCheck"
-              type="text"
+              type="password"
               onChange={handlePwdCheckChange}
               value={pwdCheck}
               className="signup-input"
