@@ -46,6 +46,9 @@ function SignUp() {
         fontFamily: "Saira",
         fontWeight: "500",
     }
+    const signUpLabelHeight : CSSProperties = {
+        height:"115px"
+    }
     return(
         <div id="signup" style={{...mainWidth,...flexColumnCenter}}>
             <form method="POST"style={flexColumnCenter}>
