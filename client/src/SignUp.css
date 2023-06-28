@@ -56,6 +56,10 @@
     padding: 1px 2px;
 }
 
+.signup-input:focus {
+    outline:none;
+}
+
 .signup-button-box {
     width: 430px;
     height: 266px;
