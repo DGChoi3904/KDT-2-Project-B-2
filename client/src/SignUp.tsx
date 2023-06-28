@@ -9,18 +9,26 @@ function SignUp() {
     const [isHovered, setIsHovered] = useState<boolean>(false);
 
 
-    const handleIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleIdChange = (event: React.ChangeEvent<HTMLInputElement>) : void => {
         setId(event.target.value);
     }
-    const handlePwdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handlePwdChange = (event: React.ChangeEvent<HTMLInputElement>) : void => {
         setPwd(event.target.value);
     }
-    const handlePwdCheckChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handlePwdCheckChange = (event: React.ChangeEvent<HTMLInputElement>) : void => {
         setPwdCheck(event.target.value);
     }
-    const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) : void => {
         setName(event.target.value);
     }
+
+    const handleMouseEnter = () : void => {
+        setIsHovered(true);
+    };
+    
+    const handleMouseLeave = () : void => {
+        setIsHovered(false);
+    };
 
     const signUpComp : CSSProperties = {
         width:"430px",
@@ -111,7 +119,7 @@ function SignUp() {
                     </div>
                 </label>
                 <div style={{...flexColumnCenter,...signUpButtonBox}}>
-                    <button type="submit" style={signUpButton}>Sign Up</button>
+                    <button type="submit" onMouseEnter={handleMouseEnter} onMouseLeave={handleMouseLeave} style={signUpButton}>Sign Up</button>
                 </div>
             </form>
         </div>
