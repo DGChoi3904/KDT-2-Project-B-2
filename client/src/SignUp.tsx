@@ -24,15 +24,19 @@ function SignUp() {
             <form method="POST">
                 <h1>회원가입</h1>
                 <label htmlFor='id'>
+                    <span>ID</span>
                     <input name='id' onChange={handleIdChange} value={id} />
                 </label>
                 <label htmlFor='pwd'>
+                    <span>PW</span>
                     <input name='pwd' onChange={handlePwdChange} value={pwd} />
                 </label>
                 <label htmlFor='pwdCheck'>
+                    <span>PW Check</span>
                     <input name='pwdCheck' onChange={handlePwdCheckChange} value={pwdCheck} />
                 </label>
                 <label htmlFor='name'>
+                    <span>Name</span>
                     <input name='name' onChange={handleNameChange} value={name} />
                 </label>
                 <button type="submit">Sign Up</button>
