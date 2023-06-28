@@ -6,6 +6,7 @@ import reportWebVitals from './reportWebVitals';
 import Loading from './LoadingPage';
 import TopMenu from './TopMenu';
 import KakaoMap from './KakaoMap';
+import SignUp from './SignUp';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement
@@ -14,6 +15,7 @@ root.render(
   <React.StrictMode>
     <TopMenu />
     <KakaoMap />
+    <SignUp />
   </React.StrictMode>
 );
 
