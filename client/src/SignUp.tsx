@@ -71,10 +71,10 @@ function SignUp() {
     }
     const signUpInput : CSSProperties = {
         width: "80%",
-        fontSize: "25px",
+        fontSize: "15px",
         border: "0",
         backgroundColor: "inherit",
-        borderBottom: "1px solid",
+        borderBottom: "2px solid",
         borderColor: "#000",
         padding: "1px 2px",
     }
@@ -87,7 +87,7 @@ function SignUp() {
         border: "0",
         backgroundColor: 'inherit',
         color : isHovered ? '#fff' : 'inherit',
-        borderBottom: "1px solid",
+        borderBottom: "2px solid",
         borderColor: isHovered ? '#fff' : "#000",
         padding: "1px 2px",
     }
