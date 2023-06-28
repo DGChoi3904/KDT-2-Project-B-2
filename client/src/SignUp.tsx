@@ -98,25 +98,25 @@ function SignUp() {
                 <label htmlFor='id' style={{...signUpLabelSize,...flexRowCenter}}>
                     <div style={{...flexRowCenter,...signUpInputName}}>ID</div>
                     <div style={{...flexColumnCenter,...signUpInputBox}}>
-                        <input name='id' type="text" onChange={handleIdChange} value={id} style={signUpInput} />
+                        <input name='id' type="text" onChange={handleIdChange} value={id} style={signUpInput} placeholder='6자리 이상 입력해주세요.' />
                     </div>
                 </label>
                 <label htmlFor='pwd' style={{...signUpLabelSize,...flexRowCenter}}>
                     <div style={{...flexRowCenter,...signUpInputName}}>PW</div>
                     <div style={{...flexColumnCenter,...signUpInputBox}}>
-                        <input name='pwd' type="text" onChange={handlePwdChange} value={pwd} style={signUpInput} />
+                        <input name='pwd' type="text" onChange={handlePwdChange} value={pwd} style={signUpInput} placeholder='8자리 이상 입력해주세요.' />
                     </div>
                 </label>
                 <label htmlFor='pwdCheck' style={{...signUpLabelSize,...flexRowCenter}}>
                     <div style={{...flexRowCenter,...signUpInputName}}>PW<br/>Check</div>
                     <div style={{...flexColumnCenter,...signUpInputBox}}>
-                        <input name='pwdCheck' type="text" onChange={handlePwdCheckChange} value={pwdCheck} style={signUpInput} />
+                        <input name='pwdCheck' type="text" onChange={handlePwdCheckChange} value={pwdCheck} style={signUpInput} placeholder='비밀번호를 다시 입력하세요.' />
                     </div>
                 </label>
                 <label htmlFor='name' style={{...signUpLabelSize,...flexRowCenter}}>
                     <div style={{...flexRowCenter,...signUpInputName}}>Name</div>
                     <div style={{...flexColumnCenter,...signUpInputBox}}>
-                        <input name='name' type="text" onChange={handleNameChange} value={name} style={signUpInput} />
+                        <input name='name' type="text" onChange={handleNameChange} value={name} style={signUpInput} placeholder='20자 이하로 입력해주세요.' />
                     </div>
                 </label>
                 <div style={{...flexColumnCenter,...signUpButtonBox}}>
