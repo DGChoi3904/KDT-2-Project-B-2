@@ -72,25 +72,25 @@ function SignUp() {
                 <label htmlFor='id' style={{...signUpLabelSize,...flexRowCenter}}>
                     <div style={{...flexRowCenter,...signUpInputName}}>ID</div>
                     <div style={{...flexColumnCenter,...signUpInputBox}}>
-                        <input name='id' onChange={handleIdChange} value={id} style={signUpInput} />
+                        <input name='id' type="text" onChange={handleIdChange} value={id} style={signUpInput} />
                     </div>
                 </label>
                 <label htmlFor='pwd' style={{...signUpLabelSize,...flexRowCenter}}>
                     <div style={{...flexRowCenter,...signUpInputName}}>PW</div>
                     <div style={{...flexColumnCenter,...signUpInputBox}}>
-                        <input name='pwd' onChange={handlePwdChange} value={pwd} />
+                        <input name='pwd' type="text" onChange={handlePwdChange} value={pwd} style={signUpInput} />
                     </div>
                 </label>
                 <label htmlFor='pwdCheck' style={{...signUpLabelSize,...flexRowCenter}}>
                     <div style={{...flexRowCenter,...signUpInputName}}>PW<br/>Check</div>
                     <div style={{...flexColumnCenter,...signUpInputBox}}>
-                        <input name='pwdCheck' onChange={handlePwdCheckChange} value={pwdCheck} />
+                        <input name='pwdCheck' type="text" onChange={handlePwdCheckChange} value={pwdCheck} style={signUpInput} />
                     </div>
                 </label>
                 <label htmlFor='name' style={{...signUpLabelSize,...flexRowCenter}}>
                     <div style={{...flexRowCenter,...signUpInputName}}>Name</div>
                     <div style={{...flexColumnCenter,...signUpInputBox}}>
-                        <input name='name' onChange={handleNameChange} value={name} />
+                        <input name='name' type="text" onChange={handleNameChange} value={name} style={signUpInput} />
                     </div>
                 </label>
                 <button type="submit">Sign Up</button>
