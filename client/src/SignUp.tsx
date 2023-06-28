@@ -5,7 +5,10 @@ function SignUp() {
     const [pwd,setPwd] = useState<string>("");
     const [pwdCheck,setPwdCheck] = useState<string>("");
     const [name,setName] = useState<string>("");
-    
+    // 커서가 버튼위에 Hover되었는지 확인하는 구문.
+    const [isHovered, setIsHovered] = useState<boolean>(false);
+
+
     const handleIdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         setId(event.target.value);
     }
