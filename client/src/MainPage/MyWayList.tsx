@@ -1,7 +1,11 @@
 import React from 'react';
 import './Main.css';
 
+import MyWayComponent from './MyWayComponent';
+
 function MyWayList() {
+  const count = 3;
+
   return (
     <div>
       <div className='MyWayListTitle'>
@@ -13,7 +17,9 @@ function MyWayList() {
         </div>
       </div>
       <div style={{height: '195px', backgroundColor: 'beige'}}>
-        조건부 렌더링을 통해 목록을 표시 & 숨김
+      {Array.from({ length: count }).map((_, index) => (
+          <MyWayComponent key={index} index={index + 1} />
+        ))}
       </div>
     </div>
   )

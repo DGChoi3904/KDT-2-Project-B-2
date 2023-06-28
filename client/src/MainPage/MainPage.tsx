@@ -6,6 +6,7 @@ import MyWayList from './MyWayList';
 // 테스트를 위해 임시로 넣음
 import LoginModal from './LoginModal';
 import SearchBox from './SearchBox';
+import SaveWayModal from './SaveWayModal';
 
 import './Main.css';
 
@@ -17,6 +18,7 @@ function MainPage() {
       <MyWayList />
       <LoginModal />
       <SearchBox />
+      <SaveWayModal />
     </div>
   )
 }
