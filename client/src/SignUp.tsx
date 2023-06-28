@@ -47,32 +47,33 @@ function SignUp() {
         fontFamily: "Saira",
         fontWeight: "500",
     }
-    const signUpLabelHeight : CSSProperties = {
+    const signUpLabelSize : CSSProperties = {
+        width: "100%",
         height:"115px"
     }
     return(
         <div id="signup" style={{...mainWidth,...flexColumnCenter}}>
             <form method="POST"style={flexColumnCenter}>
                 <h1 style={titleStyle}>회원가입</h1>
-                <label htmlFor='id' style={{...signUpLabelHeight,...flexRowCenter}}>
+                <label htmlFor='id' style={{...signUpLabelSize,...flexRowCenter}}>
                     <div style={{...flexRowCenter,...signUpInputName}}>ID</div>
                     <div>
                         <input name='id' onChange={handleIdChange} value={id} />
                     </div>
                 </label>
-                <label htmlFor='pwd' style={{...signUpLabelHeight,...flexRowCenter}}>
+                <label htmlFor='pwd' style={{...signUpLabelSize,...flexRowCenter}}>
                     <div style={{...flexRowCenter,...signUpInputName}}>PW</div>
                     <div>
                         <input name='pwd' onChange={handlePwdChange} value={pwd} />
                     </div>
                 </label>
-                <label htmlFor='pwdCheck' style={{...signUpLabelHeight,...flexRowCenter}}>
+                <label htmlFor='pwdCheck' style={{...signUpLabelSize,...flexRowCenter}}>
                     <div style={{...flexRowCenter,...signUpInputName}}>PW<br/>Check</div>
                     <div>
                         <input name='pwdCheck' onChange={handlePwdCheckChange} value={pwdCheck} />
                     </div>
                 </label>
-                <label htmlFor='name' style={{...signUpLabelHeight,...flexRowCenter}}>
+                <label htmlFor='name' style={{...signUpLabelSize,...flexRowCenter}}>
                     <div style={{...flexRowCenter,...signUpInputName}}>Name</div>
                     <div>
                         <input name='name' onChange={handleNameChange} value={name} />
