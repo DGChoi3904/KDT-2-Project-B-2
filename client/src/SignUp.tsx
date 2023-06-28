@@ -93,7 +93,9 @@ function SignUp() {
                         <input name='name' type="text" onChange={handleNameChange} value={name} style={signUpInput} />
                     </div>
                 </label>
-                <button type="submit">Sign Up</button>
+                <div>
+                    <button type="submit">Sign Up</button>
+                </div>
             </form>
         </div>
     )
