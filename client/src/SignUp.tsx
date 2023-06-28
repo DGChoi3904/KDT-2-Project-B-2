@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useState, ChangeEvent, CSSProperties } from 'react';
 
 function SignUp() {
     const [id,setId] = useState<string>("");
@@ -19,8 +19,14 @@ function SignUp() {
         setId(event.target.value);
     }
 
+    const signupComp : CSSProperties = {
+        display: "flex",
+        flexDirection: "column",
+        justifyContent: "center",
+    }
+
     return(
-        <div id="signup">
+        <div id="signup" style={signupComp}>
             <form method="POST">
                 <h1>회원가입</h1>
                 <label htmlFor='id'>
