@@ -85,7 +85,7 @@ function SignUp() {
     const signUpButton : CSSProperties = {
         fontSize: "25px",
         border: "0",
-        backgroundColor: isHovered ? '#000' : 'inherit',
+        backgroundColor: 'inherit',
         color : isHovered ? '#fff' : 'inherit',
         borderBottom: "1px solid",
         borderColor: "#000",
