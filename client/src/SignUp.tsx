@@ -37,7 +37,8 @@ function SignUp() {
     const flexRowCenter : CSSProperties = {
         display: "flex",
         flexDirection: "row",
-        justifyContent: "center"
+        justifyContent: "center",
+        alignItems : "center"
     }
     const signUpInputName : CSSProperties = {
         width:"29.5vw",
