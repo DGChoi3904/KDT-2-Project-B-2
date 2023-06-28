@@ -59,6 +59,7 @@ function SignUp() {
     }
     const signUpInput : CSSProperties = {
         width: "80%",
+        fontSize: "25px",
         border: "0",
         borderBottom: "1px solid",
         borderColor: "#000",
