@@ -2,6 +2,29 @@
   --color_orange: #FFA41B;
   --color_lightOrange: #FFD18B;
   --color_skyBlue: #9AC5F4;
+  --color_yellow: #FEE500;
+  --color_green: #2DB400;
+}
+
+/* 카카오 지도 초기 사이즈 */
+.MapNormalSize {
+  width: 100%;
+  height: 600px;
+}
+
+/* UI 숨기기를 통해 MyWayList가 숨겨졌을 경우 지도 사이즈 */
+.MapLongSize {
+  width: 100%;
+  height: 792px;
+}
+
+.MyWayListTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 20px;
+  height: 60px;
+  background-color: var(--color_orange);
 }
 
 .Modal {
@@ -14,4 +37,49 @@
   justify-content: space-evenly;
   align-items: center;
   border: 1px solid black;
+}
+
+.SearchBoxWrap {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-around;
+  align-items: center;
+  width: 100%;
+  height: 200px;
+  padding: 30px 0px;
+  background-color: var(--color_lightOrange);
+}
+
+.WayPointHiddenButton {
+  width: 30px;
+  height: 30px;
+  border: 1px solid red;
+}
+
+.WayPointPlusButton {
+  width: 30px;
+  height: 30px;
+  font-size: 24px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  background-color: white;
+}
+
+.FlexRowBetween {
+  width: 100%;
+  padding: 0px 20px;
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
+.SearchBoxText {
+  font-size: 16px;
+}
+
+.SearchBar {
+  flex-grow: 1;
 }

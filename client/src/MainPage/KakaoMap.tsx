@@ -1,4 +1,5 @@
-import React, { useEffect } from 'react'; 
+import React, { useEffect } from 'react';
+import './Main.css';
 
 declare global {
   interface Window {
@@ -22,7 +23,7 @@ function KakaoMap() {
 
 
   return(
-    <div id='map' style={{width: '430px', height: '500px'}}></div>
+    <div id='map' className='MapNormalSize'></div>
   )
 }
 

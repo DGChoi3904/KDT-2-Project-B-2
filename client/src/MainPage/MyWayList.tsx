@@ -1,18 +1,10 @@
 import React from 'react';
-
-const MyWayListTitle = {
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  padding: '0px 20px',
-  height: '60px',
-}
-
+import './Main.css';
 
 function MyWayList() {
   return (
     <div>
-      <div style={MyWayListTitle}>
+      <div className='MyWayListTitle'>
         <p>
           MyWay 목록
         </p>
