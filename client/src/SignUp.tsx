@@ -57,6 +57,13 @@ function SignUp() {
     const signUpInputBox : CSSProperties = {
         width:"70%",
     }
+    const signUpInput : CSSProperties = {
+        width: "80%",
+        border: "0",
+        borderBottom: "1px solid",
+        borderColor: "#000",
+        padding: "1px 2px",
+    }
     return(
         <div id="signup" style={{...mainWidth,...flexColumnCenter}}>
             <form method="POST"style={flexColumnCenter}>
@@ -64,7 +71,7 @@ function SignUp() {
                 <label htmlFor='id' style={{...signUpLabelSize,...flexRowCenter}}>
                     <div style={{...flexRowCenter,...signUpInputName}}>ID</div>
                     <div style={{...flexColumnCenter,...signUpInputBox}}>
-                        <input name='id' onChange={handleIdChange} value={id} />
+                        <input name='id' onChange={handleIdChange} value={id} style={signUpInput} />
                     </div>
                 </label>
                 <label htmlFor='pwd' style={{...signUpLabelSize,...flexRowCenter}}>
