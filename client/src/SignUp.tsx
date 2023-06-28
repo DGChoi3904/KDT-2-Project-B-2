@@ -55,19 +55,27 @@ function SignUp() {
                 <h1 style={titleStyle}>회원가입</h1>
                 <label htmlFor='id' style={{...signUpLabelHeight,...flexRowCenter}}>
                     <div style={signUpInputName}>ID</div>
-                    <input name='id' onChange={handleIdChange} value={id} />
+                    <div>
+                        <input name='id' onChange={handleIdChange} value={id} />
+                    </div>
                 </label>
                 <label htmlFor='pwd' style={{...signUpLabelHeight,...flexRowCenter}}>
                     <div style={signUpInputName}>PW</div>
-                    <input name='pwd' onChange={handlePwdChange} value={pwd} />
+                    <div>
+                        <input name='pwd' onChange={handlePwdChange} value={pwd} />
+                    </div>
                 </label>
                 <label htmlFor='pwdCheck' style={{...signUpLabelHeight,...flexRowCenter}}>
                     <div style={signUpInputName}>PW<br/>Check</div>
-                    <input name='pwdCheck' onChange={handlePwdCheckChange} value={pwdCheck} />
+                    <div>
+                        <input name='pwdCheck' onChange={handlePwdCheckChange} value={pwdCheck} />
+                    </div>
                 </label>
                 <label htmlFor='name' style={{...signUpLabelHeight,...flexRowCenter}}>
-                    <span style={signUpInputName}>Name</span>
-                    <input name='name' onChange={handleNameChange} value={name} />
+                    <div style={signUpInputName}>Name</div>
+                    <div>
+                        <input name='name' onChange={handleNameChange} value={name} />
+                    </div>
                 </label>
                 <button type="submit">Sign Up</button>
             </form>
