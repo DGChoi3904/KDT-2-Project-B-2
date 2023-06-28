@@ -54,16 +54,16 @@ function SignUp() {
                     <span style={signUpInputName}>ID</span>
                     <input name='id' onChange={handleIdChange} value={id} />
                 </label>
-                <label htmlFor='pwd'>
-                    <span>PW</span>
+                <label htmlFor='pwd' style={flexRowCenter}>
+                    <span style={signUpInputName}>PW</span>
                     <input name='pwd' onChange={handlePwdChange} value={pwd} />
                 </label>
-                <label htmlFor='pwdCheck'>
-                    <span>PW Check</span>
+                <label htmlFor='pwdCheck' style={flexRowCenter}>
+                    <span style={signUpInputName}>PW Check</span>
                     <input name='pwdCheck' onChange={handlePwdCheckChange} value={pwdCheck} />
                 </label>
-                <label htmlFor='name'>
-                    <span>Name</span>
+                <label htmlFor='name' style={flexRowCenter}>
+                    <span style={signUpInputName}>Name</span>
                     <input name='name' onChange={handleNameChange} value={name} />
                 </label>
                 <button type="submit">Sign Up</button>
