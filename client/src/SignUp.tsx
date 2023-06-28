@@ -40,7 +40,7 @@ function SignUp() {
         justifyContent: "center"
     }
     const signUpInputName : CSSProperties = {
-        width:"127px",
+        width:"29.5vw",
         color: "#000",
         fontSize: "25px",
         fontFamily: "Saira",
@@ -54,15 +54,15 @@ function SignUp() {
             <form method="POST"style={flexColumnCenter}>
                 <h1 style={titleStyle}>회원가입</h1>
                 <label htmlFor='id' style={{...signUpLabelHeight,...flexRowCenter}}>
-                    <span style={signUpInputName}>ID</span>
+                    <div style={signUpInputName}>ID</div>
                     <input name='id' onChange={handleIdChange} value={id} />
                 </label>
                 <label htmlFor='pwd' style={{...signUpLabelHeight,...flexRowCenter}}>
-                    <span style={signUpInputName}>PW</span>
+                    <div style={signUpInputName}>PW</div>
                     <input name='pwd' onChange={handlePwdChange} value={pwd} />
                 </label>
                 <label htmlFor='pwdCheck' style={{...signUpLabelHeight,...flexRowCenter}}>
-                    <span style={signUpInputName}>PW Check</span>
+                    <div style={signUpInputName}>PW<br/>Check</div>
                     <input name='pwdCheck' onChange={handlePwdCheckChange} value={pwdCheck} />
                 </label>
                 <label htmlFor='name' style={{...signUpLabelHeight,...flexRowCenter}}>
