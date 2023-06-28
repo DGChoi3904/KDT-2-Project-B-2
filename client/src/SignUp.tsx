@@ -10,13 +10,13 @@ function SignUp() {
         setId(event.target.value);
     }
     const handlePwdChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setId(event.target.value);
+        setPwd(event.target.value);
     }
     const handlePwdCheckChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setId(event.target.value);
+        setPwdCheck(event.target.value);
     }
     const handleNameChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-        setId(event.target.value);
+        setName(event.target.value);
     }
 
     const signUpComp : CSSProperties = {
