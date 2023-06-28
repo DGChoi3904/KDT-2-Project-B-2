@@ -11,12 +11,13 @@ const NaverMapApi = () => {
 
   useEffect(() => {
     const script = document.createElement('script');
-    script.src =
-      'https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=hwwivs3rlv';
+    script.src = '/scripts/maps.js';
     script.async = true;
+
     script.onload = () => {
       setIsScriptLoaded(true);
     };
+
     document.head.appendChild(script);
 
     return () => {
@@ -36,7 +37,15 @@ const NaverMapApi = () => {
     }
   }, [isScriptLoaded]);
 
-  return <div id="maps" style={{ width: '100%', height: '400px' }}></div>;
+  return (
+    <div>
+      {isScriptLoaded ? (
+        <div id="maps" style={{ width: '100%', height: '400px' }}></div>
+      ) : (
+        <div>Loading...</div>
+      )}
+    </div>
+  );
 };
 
 export default NaverMapApi;

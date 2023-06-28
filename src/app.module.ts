@@ -4,7 +4,7 @@ import { AppService } from './app.service';
 import { NaverMapsModule } from './naver-maps/naver-maps.module';
 
 @Module({
-  imports: [NaverMapsModule],
+  imports: [],
   controllers: [AppController],
   providers: [AppService],
 })

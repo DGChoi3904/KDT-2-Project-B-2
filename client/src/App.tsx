@@ -1,11 +1,12 @@
 import React from 'react';
-import NaverMapComponent from './component/naverMapCompnent';
+// import NaverMapApi from './util/naverMapApi';
+import NaverMapCompnent from './component/naverMapCompnentOrigin';
 
 function App() {
   return (
     <>
       <div className="App">
-        <NaverMapComponent />
+        <NaverMapCompnent />
       </div>
     </>
   );
