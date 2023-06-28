@@ -34,11 +34,16 @@ function SignUp() {
         alignItems: "flex-start",
         gap: "10px"
     }
+    const flexRowCenter : CSSProperties = {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "center"
+    }
     return(
         <div id="signup" style={{...mainWidth,...flexColumnCenter}}>
             <form method="POST"style={flexColumnCenter}>
                 <h1 style={titleStyle}>회원가입</h1>
-                <label htmlFor='id'>
+                <label htmlFor='id' style={flexRowCenter}>
                     <span>ID</span>
                     <input name='id' onChange={handleIdChange} value={id} />
                 </label>
