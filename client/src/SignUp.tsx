@@ -32,7 +32,8 @@ function SignUp() {
 
     const signUpComp : CSSProperties = {
         width:"430px",
-        backgroundColor: "#FFA41B"
+        backgroundColor: "#FFA41B",
+        fontFamily: "Saira",
     }
     const flexColumnCenter : CSSProperties = {
         display: "flex",
@@ -59,7 +60,7 @@ function SignUp() {
         width:"30%",
         color: "#000",
         fontSize: "25px",
-        fontFamily: "Saira",
+        fontFamily: "inherit",
         fontWeight: "500",
     }
     const signUpLabelSize : CSSProperties = {
@@ -74,6 +75,7 @@ function SignUp() {
         fontSize: "15px",
         border: "0",
         backgroundColor: "inherit",
+        fontFamily: "inherit",
         color: "#000",
         borderBottom: "2px solid",
         borderColor: "#000",
@@ -85,6 +87,7 @@ function SignUp() {
     }
     const signUpButton : CSSProperties = {
         fontSize: "25px",
+        fontFamily: "inherit",
         border: "0",
         backgroundColor: 'inherit',
         color : isHovered ? '#fff' : 'inherit',
