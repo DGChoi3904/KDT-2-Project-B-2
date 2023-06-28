@@ -19,6 +19,9 @@ function SignUp() {
         setId(event.target.value);
     }
 
+    const mainSize : CSSProperties = {
+        width:"430px"
+    }
     const flexColumnCenter : CSSProperties = {
         display: "flex",
         flexDirection: "column",
@@ -27,7 +30,7 @@ function SignUp() {
     }
 
     return(
-        <div id="signup" style={flexColumnCenter}>
+        <div id="signup" style={mainSize,flexColumnCenter}>
             <form method="POST"style={flexColumnCenter}>
                 <h1>회원가입</h1>
                 <label htmlFor='id'>
