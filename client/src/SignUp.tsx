@@ -39,12 +39,19 @@ function SignUp() {
         flexDirection: "row",
         justifyContent: "center"
     }
+    const signUpInputName : CSSProperties = {
+        width:"127px",
+        color: "#000",
+        fontSize: "25px",
+        fontFamily: "Saira",
+        fontWeight: "500",
+    }
     return(
         <div id="signup" style={{...mainWidth,...flexColumnCenter}}>
             <form method="POST"style={flexColumnCenter}>
                 <h1 style={titleStyle}>회원가입</h1>
                 <label htmlFor='id' style={flexRowCenter}>
-                    <span>ID</span>
+                    <span style={signUpInputName}>ID</span>
                     <input name='id' onChange={handleIdChange} value={id} />
                 </label>
                 <label htmlFor='pwd'>
