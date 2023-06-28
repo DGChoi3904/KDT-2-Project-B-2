@@ -53,19 +53,19 @@ function SignUp() {
         <div id="signup" style={{...mainWidth,...flexColumnCenter}}>
             <form method="POST"style={flexColumnCenter}>
                 <h1 style={titleStyle}>회원가입</h1>
-                <label htmlFor='id' style={flexRowCenter}>
+                <label htmlFor='id' style={{...signUpLabelHeight,...flexRowCenter}}>
                     <span style={signUpInputName}>ID</span>
                     <input name='id' onChange={handleIdChange} value={id} />
                 </label>
-                <label htmlFor='pwd' style={flexRowCenter}>
+                <label htmlFor='pwd' style={{...signUpLabelHeight,...flexRowCenter}}>
                     <span style={signUpInputName}>PW</span>
                     <input name='pwd' onChange={handlePwdChange} value={pwd} />
                 </label>
-                <label htmlFor='pwdCheck' style={flexRowCenter}>
+                <label htmlFor='pwdCheck' style={{...signUpLabelHeight,...flexRowCenter}}>
                     <span style={signUpInputName}>PW Check</span>
                     <input name='pwdCheck' onChange={handlePwdCheckChange} value={pwdCheck} />
                 </label>
-                <label htmlFor='name' style={flexRowCenter}>
+                <label htmlFor='name' style={{...signUpLabelHeight,...flexRowCenter}}>
                     <span style={signUpInputName}>Name</span>
                     <input name='name' onChange={handleNameChange} value={name} />
                 </label>
