@@ -41,7 +41,7 @@ function SignUp() {
         alignItems : "center"
     }
     const signUpInputName : CSSProperties = {
-        width:"29.5vw",
+        width:"30%",
         color: "#000",
         fontSize: "25px",
         fontFamily: "Saira",
@@ -51,31 +51,34 @@ function SignUp() {
         width: "100%",
         height:"115px"
     }
+    const signUpInputBox : CSSProperties = {
+        width:"70%",
+    }
     return(
         <div id="signup" style={{...mainWidth,...flexColumnCenter}}>
             <form method="POST"style={flexColumnCenter}>
                 <h1 style={titleStyle}>회원가입</h1>
                 <label htmlFor='id' style={{...signUpLabelSize,...flexRowCenter}}>
                     <div style={{...flexRowCenter,...signUpInputName}}>ID</div>
-                    <div>
+                    <div style={{...flexColumnCenter,...signUpInputBox}}>
                         <input name='id' onChange={handleIdChange} value={id} />
                     </div>
                 </label>
                 <label htmlFor='pwd' style={{...signUpLabelSize,...flexRowCenter}}>
                     <div style={{...flexRowCenter,...signUpInputName}}>PW</div>
-                    <div>
+                    <div style={{...flexColumnCenter,...signUpInputBox}}>
                         <input name='pwd' onChange={handlePwdChange} value={pwd} />
                     </div>
                 </label>
                 <label htmlFor='pwdCheck' style={{...signUpLabelSize,...flexRowCenter}}>
                     <div style={{...flexRowCenter,...signUpInputName}}>PW<br/>Check</div>
-                    <div>
+                    <div style={{...flexColumnCenter,...signUpInputBox}}>
                         <input name='pwdCheck' onChange={handlePwdCheckChange} value={pwdCheck} />
                     </div>
                 </label>
                 <label htmlFor='name' style={{...signUpLabelSize,...flexRowCenter}}>
                     <div style={{...flexRowCenter,...signUpInputName}}>Name</div>
-                    <div>
+                    <div style={{...flexColumnCenter,...signUpInputBox}}>
                         <input name='name' onChange={handleNameChange} value={name} />
                     </div>
                 </label>
