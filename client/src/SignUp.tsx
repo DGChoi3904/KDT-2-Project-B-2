@@ -88,7 +88,7 @@ function SignUp() {
         backgroundColor: 'inherit',
         color : isHovered ? '#fff' : 'inherit',
         borderBottom: "1px solid",
-        borderColor: "#000",
+        borderColor: isHovered ? '#fff' : "#000",
         padding: "1px 2px",
     }
     return(
