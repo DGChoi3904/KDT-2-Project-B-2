@@ -4,19 +4,24 @@ import './Main.css';
 const SearchBox: React.FC = () => {
   const [wayPointCount, setWayPointCount] = useState(1);
   const [startPoint, setStartPoint] = useState([]);
+  const [isSearchingStart, setIsSearchingStart] = useState(false);
   const [endPoint, setEndPoint] = useState([]);
   const handleClick = () => {
     setWayPointCount((prevCount) => prevCount + 1);
   };
 
-  const startPointClick = () => {};
+  
+  function searchingStartOn(){
+    setIsSearchingStart(true);
+    alert("출발지점을 클릭해주세요.")
+  }
 
   return (
     <div className="SearchBoxWrap">
       <div className="FlexRowBetween">
         <p>출발지</p>
-        <input type="text" className="SearchBar" onClick={startPointClick} />
-        <div className="WayPointHiddenButton"></div>
+        <input type="text" className="SearchBar" />
+        <button type="button" onClick={searchingStartOn}>맵에서 출발지 클릭하기</button>
       </div>
       {/* 경유지 설정 -> 초기 1개, + 버튼을 누를 때 마다 1개씩 추가 됨 */}
       {Array.from({ length: wayPointCount }).map((_, index) => (
