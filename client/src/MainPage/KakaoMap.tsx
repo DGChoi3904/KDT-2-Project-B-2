@@ -39,11 +39,11 @@ function KakaoMap() {
 
     // 경로  표현
     const path = new kakao.maps.Polyline({
-      path: [startLatLng, endLatLng],
-      strokeWeight: 5,
+      path: [startLatLng, endLatLng], //선을 구성하는 좌표 배열
+      strokeWeight: 5, //선의 두께
       strokeColor: '#2E64FE', // 파란색
-      strokeOpacity: 0.7,
-      strokeStyle: 'solid',
+      strokeOpacity: 0.7, // 선 불투명도
+      strokeStyle: 'solid', //선의 스타일 (점선도 있음)
     });
     path.setMap(map);
   }, []);
