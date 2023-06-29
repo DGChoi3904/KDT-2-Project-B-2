@@ -87,9 +87,12 @@ function KakaoMap() {
       });
     }
     // removeListener() 를 통해 addListener()를 제거해야 함
+    // removeListener()를 사용하려면 const aaa = window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) { ... } 이런 형식으로 사용해야함
+    // 지금처럼 바로 addListener()를 사용하면 참조값을 찾을 수 없어 해제가 불가능
   }
 
   const handleNaviEnd = () => {
+    window.kakao.maps.event.removeListener(mapRef.current, 'click', handleNaviStart);
     if (mapRef.current) {
       window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) {
         const latlng = mouseEvent.latLng;
@@ -110,7 +113,7 @@ function KakaoMap() {
     const headers = {
       Authorization: 'KakaoAK 0f6a05d1d1d9ce7b4b2d324b0e39f02d',
     };
-
+    // fetch를 통해 카카오 네비 API에 요청을 보냄
     fetch(url, {
       method: 'GET',
       headers: headers,
