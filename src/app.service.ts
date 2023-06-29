@@ -3,8 +3,4 @@ import path from 'path';
 import fs from 'fs';
 
 @Injectable()
-export class AppService {
-  getPage(): void {
-    
-  }
-}
+export class AppService {}
