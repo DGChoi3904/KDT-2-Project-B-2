@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import './Main.css';
 
 declare global {
@@ -10,6 +10,7 @@ declare global {
 const { kakao } = window;
 
 function KakaoMap() {
+  const [startpath, setStartPath] = useState(['']);
   useEffect(() => {
     const Container = document.getElementById('map'); // 지도를 표시할 div
     const Options = {
