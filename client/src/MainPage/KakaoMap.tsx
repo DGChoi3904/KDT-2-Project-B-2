@@ -2,13 +2,13 @@ import React, { useEffect, useState, useRef } from 'react';
 import './Main.css';
 
 function KakaoMap() {
-  const [startCheck, setStartCheck] = useState<boolean>(false);
-  const [endCheck, setEndCheck] = useState<boolean>(false);
   const [startPath, setStartPath] = useState<string[]>([]);
   const [endPath, setEndPath] = useState<string[]>([]);
   const [roadPath, setRoadPath] = useState<number[]>([]);
   const [dataCheck, setDataCheck] = useState<boolean>(false);
   const mapRef = useRef<any>(null);
+  const startSetRef = useRef<boolean>(false);
+  const endSetRef = useRef<boolean>(false);
 
   // 지도 생성
   useEffect(() => {
@@ -47,7 +47,9 @@ function KakaoMap() {
     // 확인용 console
     useEffect(() => {
       console.log('startPath: ', startPath)
+      console.log('startPathCheck: ', startSetRef.current)
       console.log('endPath: ', endPath)
+      console.log('endPath: ', endSetRef.current)
     }, [startPath, endPath])
 
   // polyline 그리기
@@ -79,9 +81,9 @@ function KakaoMap() {
   }, [dataCheck, roadPath]);
 
   const handleNaviStart = () => {
-    setStartCheck(true)
-    setEndCheck(false)
-    if (mapRef.current && startCheck) {
+    startSetRef.current = true;
+    endSetRef.current = false;
+    if (mapRef.current && startSetRef.current === true && endSetRef.current === false) {
       window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) {
         const latlng = mouseEvent.latLng;
         setStartPath([latlng.getLat(), latlng.getLng()])
@@ -90,12 +92,13 @@ function KakaoMap() {
         resultDiv.innerHTML = message;
       });
     }
+    // removeListener() 를 통해 addListener()를 제거해야 함
   }
 
   const handleNaviEnd = () => {
-    setEndCheck(false)
-    setEndCheck(true)
-    if (mapRef.current && endCheck) {
+    startSetRef.current = false;
+    endSetRef.current = true;
+    if (mapRef.current && endSetRef.current === true && startSetRef.current === false) {
       window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) {
         const latlng = mouseEvent.latLng;
         setEndPath([latlng.getLat(), latlng.getLng()])
@@ -104,6 +107,7 @@ function KakaoMap() {
         resultDiv.innerHTML = message;
       });
     }
+    // removeListener() 를 통해 addListener()를 제거해야 함
   }
 
   // 경로안내 버튼 클릭 시 지정된 출발지/도착지 정보를 가지고 최단거리 산출
