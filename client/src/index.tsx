@@ -3,19 +3,18 @@ import ReactDOM from 'react-dom/client';
 import './index.css';
 import reportWebVitals from './reportWebVitals';
 
-import Loading from './LoadingPage';
-import TopMenu from './TopMenu';
-import KakaoMap from './KakaoMap';
-import SignUp from './SignUp';
+// import Loading from './LoadingPage';
+import MainPage from './MainPage/MainPage';
+// import TopMenu from './TopMenu';
+// import KakaoMap from './KakaoMap';
 
 const root = ReactDOM.createRoot(
   document.getElementById('root') as HTMLElement,
 );
 root.render(
   <React.StrictMode>
-    <TopMenu />
-    <KakaoMap />
-  </React.StrictMode>
+    <MainPage />
+  </React.StrictMode>,
 );
 
 // If you want to start measuring performance in your app, pass a function
