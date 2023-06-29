@@ -7,8 +7,6 @@ function KakaoMap() {
   const [roadPath, setRoadPath] = useState<number[]>([]);
   const [dataCheck, setDataCheck] = useState<boolean>(false);
   const mapRef = useRef<any>(null);
-  const startSetRef = useRef<boolean>(false);
-  const endSetRef = useRef<boolean>(false);
 
   // 지도 생성
   useEffect(() => {
@@ -47,9 +45,7 @@ function KakaoMap() {
     // 확인용 console
     useEffect(() => {
       console.log('startPath: ', startPath)
-      console.log('startPathCheck: ', startSetRef.current)
       console.log('endPath: ', endPath)
-      console.log('endPath: ', endSetRef.current)
     }, [startPath, endPath])
 
   // polyline 그리기
@@ -81,9 +77,7 @@ function KakaoMap() {
   }, [dataCheck, roadPath]);
 
   const handleNaviStart = () => {
-    startSetRef.current = true;
-    endSetRef.current = false;
-    if (mapRef.current && startSetRef.current === true && endSetRef.current === false) {
+    if (mapRef.current) {
       window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) {
         const latlng = mouseEvent.latLng;
         setStartPath([latlng.getLat(), latlng.getLng()])
@@ -96,9 +90,7 @@ function KakaoMap() {
   }
 
   const handleNaviEnd = () => {
-    startSetRef.current = false;
-    endSetRef.current = true;
-    if (mapRef.current && endSetRef.current === true && startSetRef.current === false) {
+    if (mapRef.current) {
       window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) {
         const latlng = mouseEvent.latLng;
         setEndPath([latlng.getLat(), latlng.getLng()])
