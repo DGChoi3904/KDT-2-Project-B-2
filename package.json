@@ -1,7 +1,7 @@
 {
   "name": "kdt-2-project-b-2",
   "version": "0.0.1",
-  "description": "",
+  "description": "root/ 네스트 폴더  \r ├─┬client/ 리액트 폴더  \r │ ├─ build/  \r │ ├─ node_modeles/  \r │ ├─ public/  \r │ └─ src/  \r ├──dist/  \r ├──node_modules/  \r ├──src/  \r └──test/",
   "author": "",
   "private": true,
   "license": "UNLICENSED",
@@ -23,6 +23,8 @@
     "@nestjs/common": "^10.0.0",
     "@nestjs/core": "^10.0.0",
     "@nestjs/platform-express": "^10.0.0",
+    "react": "^18.2.0",
+    "react-dom": "^18.2.0",
     "reflect-metadata": "^0.1.13",
     "rxjs": "^7.8.1"
   },
@@ -65,5 +67,9 @@
     ],
     "coverageDirectory": "../coverage",
     "testEnvironment": "node"
+  },
+  "main": ".eslintrc.js",
+  "directories": {
+    "test": "test"
   }
 }

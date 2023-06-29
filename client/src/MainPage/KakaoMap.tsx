@@ -10,9 +10,10 @@ declare global {
 const { kakao } = window;
 
 function KakaoMap() {
-  const [startpath, setStartPath] = useState(['']);
+  const [startPath, setStartPath] = useState(['']);
+
   useEffect(() => {
-    const Container = document.getElementById('map'); // 지도를 표시할 div
+    const Container = document.getElementById('map');
     const Options = {
       center: new kakao.maps.LatLng(36.35, 127.385), // 지도의 중심좌표
       level: 3, // 지도의 확대 레벨
@@ -20,25 +21,37 @@ function KakaoMap() {
 
     const map = new kakao.maps.Map(Container, Options);
 
-    kakao.maps.event.addListener(
-      map,
-      'click',
-      function (mouseEvent: { latLng: any }) {
-        // 클릭한 위도, 경도 정보를 가져옵니다
-        var latlng = mouseEvent.latLng;
-
-        var message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, ';
-        message += '경도는 ' + latlng.getLng() + ' 입니다';
-
-        var resultDiv = document.getElementById('result')!;
-        resultDiv.innerHTML = message;
-      },
+    // 출발지와 목적지 좌표 설정
+    const startLatLng = new kakao.maps.LatLng(
+      36.349267414162014,
+      127.37761406703146,
     );
+    const endLatLng = new kakao.maps.LatLng(
+      36.35620266001714,
+      127.38198227349935,
+    );
+
+    // 출발지와 목적지 마커 생성
+    const startMarker = new kakao.maps.Marker({ position: startLatLng });
+    const endMarker = new kakao.maps.Marker({ position: endLatLng });
+    startMarker.setMap(map);
+    endMarker.setMap(map);
+
+    // 경로  표현
+    const path = new kakao.maps.Polyline({
+      path: [startLatLng, endLatLng],
+      strokeWeight: 5,
+      strokeColor: '#2E64FE', // 파란색
+      strokeOpacity: 0.7,
+      strokeStyle: 'solid',
+    });
+    path.setMap(map);
   }, []);
 
   return (
     <div>
-      <div id="map" className="MapNormalSize"></div>;<div id="result"></div>
+      <div id="map" className="MapNormalSize"></div>
+      <div id="result"></div>
     </div>
   );
 }
