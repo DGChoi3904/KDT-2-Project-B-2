@@ -15,7 +15,6 @@ root.render(
   <React.StrictMode>
     <TopMenu />
     <KakaoMap />
-    <SignUp />
   </React.StrictMode>
 );
 
