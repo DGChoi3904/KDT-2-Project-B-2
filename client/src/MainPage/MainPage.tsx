@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 import TopMenu from './TopMenu';
 import KakaoMap from './KakaoMap';
@@ -11,13 +11,14 @@ import SaveWayModal from './SaveWayModal';
 import './Main.css';
 
 function MainPage() {
+  const [isSearchingStart, setIsSearchingStart] = useState<boolean>(false);
   return (
     <div className='MainWrap'>
       <TopMenu />
-      <KakaoMap />
+      <KakaoMap isSearchingStart={isSearchingStart} setIsSearchingStart={setIsSearchingStart} />
       <MyWayList />
       <LoginModal />
-      <SearchBox />
+      <SearchBox setIsSearchingStart={setIsSearchingStart} />
       <SaveWayModal />
     </div>
   )
