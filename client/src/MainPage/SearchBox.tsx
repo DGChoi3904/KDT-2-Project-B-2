@@ -1,10 +1,13 @@
 import React, { useState } from 'react';
 import './Main.css';
 
-const SearchBox: React.FC = () => {
+interface SearchBoxProps {
+  setIsSearchingStart: (value: boolean) => void;
+}
+
+const SearchBox: React.FC<SearchBoxProps> = ({ setIsSearchingStart }) => {
   const [wayPointCount, setWayPointCount] = useState(1);
   const [startPoint, setStartPoint] = useState([]);
-  const [isSearchingStart, setIsSearchingStart] = useState(false);
   const [endPoint, setEndPoint] = useState([]);
   const handleClick = () => {
     setWayPointCount((prevCount) => prevCount + 1);
