@@ -2,6 +2,8 @@ import React, { useEffect, useState, useRef } from 'react';
 import './Main.css';
 
 function KakaoMap() {
+  const [startCheck, setStartCheck] = useState<boolean>(false);
+  const [endCheck, setEndCheck] = useState<boolean>(false);
   const [startPath, setStartPath] = useState<string[]>([]);
   const [endPath, setEndPath] = useState<string[]>([]);
   const [roadPath, setRoadPath] = useState<number[]>([]);
@@ -21,23 +23,26 @@ function KakaoMap() {
     mapRef.current = map;
   }, []);
 
-  useEffect(() => {
-    if (mapRef.current) {
-      window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) {
-        const latlng = mouseEvent.latLng;
+  // useEffect(() => {
+  //   if (mapRef.current) {
+  //     window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) {
+  //       const latlng = mouseEvent.latLng;
 
-        if (startPath.length === 0) {
-          setStartPath([latlng.getLat(), latlng.getLng()]);
-        } else {
-          setEndPath([latlng.getLat(), latlng.getLng()]);
-        }
+  //       if (startPath.length === 0) {
+  //         console.log("1")
+  //         console.log(startPath.length)
+  //         setStartPath([latlng.getLat(), latlng.getLng()]);
+  //       } else {
+  //         console.log("2")
+  //         setEndPath([latlng.getLat(), latlng.getLng()]);
+  //       }
 
-        const message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, 경도는 ' + latlng.getLng() + ' 입니다';
-        const resultDiv = document.getElementById('result')!;
-        resultDiv.innerHTML = message;
-      });
-    }
-  }, []);
+  //       const message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, 경도는 ' + latlng.getLng() + ' 입니다';
+  //       const resultDiv = document.getElementById('result')!;
+  //       resultDiv.innerHTML = message;
+  //     });
+  //   }
+  // }, [startPath]);
 
     // 확인용 console
     useEffect(() => {
@@ -72,6 +77,34 @@ function KakaoMap() {
       polyline.setMap(mapRef.current);
     }
   }, [dataCheck, roadPath]);
+
+  const handleNaviStart = () => {
+    setStartCheck(true)
+    setEndCheck(false)
+    if (mapRef.current && startCheck) {
+      window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) {
+        const latlng = mouseEvent.latLng;
+        setStartPath([latlng.getLat(), latlng.getLng()])
+        const message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, 경도는 ' + latlng.getLng() + ' 입니다';
+        const resultDiv = document.getElementById('result')!;
+        resultDiv.innerHTML = message;
+      });
+    }
+  }
+
+  const handleNaviEnd = () => {
+    setEndCheck(false)
+    setEndCheck(true)
+    if (mapRef.current && endCheck) {
+      window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) {
+        const latlng = mouseEvent.latLng;
+        setEndPath([latlng.getLat(), latlng.getLng()])
+        const message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, 경도는 ' + latlng.getLng() + ' 입니다';
+        const resultDiv = document.getElementById('result')!;
+        resultDiv.innerHTML = message;
+      });
+    }
+  }
 
   // 경로안내 버튼 클릭 시 지정된 출발지/도착지 정보를 가지고 최단거리 산출
   const handleNavi = () => {
@@ -117,6 +150,8 @@ function KakaoMap() {
     <div>
       <div id="map" className="MapNormalSize"></div>
       <div id="result"></div>
+      <button onClick={handleNaviStart}>출발지 설정</button>
+      <button onClick={handleNaviEnd}>목적지 설정</button>
       <button onClick={handleNavi}>경로 안내</button>
     </div>
   );
