@@ -14,6 +14,8 @@ export class CatsService {
   }
 
   async findAll(): Promise<Cat[]> {
+    console.log('/cats Get응답');
+
     return this.catModel.find().exec();
   }
 
