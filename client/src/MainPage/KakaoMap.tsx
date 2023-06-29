@@ -17,12 +17,13 @@ function KakaoMap() {
   const [keyword, setKeyword] = useState('');
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
+  const [map, setMap] = useState<any>(null);
 
   useEffect(() => {
-    //링크 삽입 api키 넣으세요
+    //키값 넣기
     const script = document.createElement('script');
     script.async = true;
-    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=키값넣으세요&libraries=services`;
+    script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=키값입력&libraries=services`;
     document.head.appendChild(script);
 
     script.onload = () => {
@@ -33,7 +34,8 @@ function KakaoMap() {
           level: 3,
         };
 
-        const map = new window.kakao.maps.Map(mapContainer, mapOptions);
+        const newMap = new window.kakao.maps.Map(mapContainer, mapOptions);
+        setMap(newMap);
 
         const placesService = new window.kakao.maps.services.Places();
 
@@ -68,38 +70,24 @@ function KakaoMap() {
               image: markerImage,
             });
 
-            marker.setMap(map);
+            marker.setMap(newMap);
 
             window.kakao.maps.event.addListener(marker, 'click', () => {
               setSelectedPlace(place);
+              newMap.setCenter(markerPosition);
             });
           });
+
+          if (places.length > 0) {
+            const firstPlace = places[0];
+            const firstPlacePosition = new window.kakao.maps.LatLng(
+              firstPlace.y,
+              firstPlace.x,
+            );
+            newMap.setCenter(firstPlacePosition); // 검색에 해당하는 첫 번째 장소로 지도 이동
+          }
         };
 
-        if (selectedPlace) {
-          const destination = new window.kakao.maps.LatLng(
-            selectedPlace.y,
-            selectedPlace.x,
-          );
-          const path = new window.kakao.maps.Polyline({
-            path: [map.getCenter(), destination],
-            strokeWeight: 5,
-            strokeColor: '#2E64FE',
-            strokeOpacity: 0.7,
-            strokeStyle: 'solid',
-          });
-
-          path.setMap(map);
-
-          const distance =
-            window.kakao.maps.geometry.spherical.computeDistanceBetween(
-              map.getCenter(),
-              destination,
-            );
-          console.log('Distance:', distance);
-        }
-
-        searchPlaces(keyword);
         addMarkersToMap();
       });
     };
@@ -107,11 +95,31 @@ function KakaoMap() {
     return () => {
       document.head.removeChild(script);
     };
-  }, [keyword, selectedPlace]);
+  }, []);
 
   const handleSearch = () => {
-    // 검색 버튼 클릭 시 장소 검색
-    // searchPlaces(keyword); //fix
+    const placesService = new window.kakao.maps.services.Places();
+    placesService.keywordSearch(keyword, (result: any, status: any) => {
+      if (status === window.kakao.maps.services.Status.OK) {
+        setPlaces(
+          result.map((place: any) => ({
+            id: place.id,
+            name: place.place_name,
+            x: place.x,
+            y: place.y,
+          })),
+        );
+
+        if (map && result.length > 0) {
+          const firstPlace = result[0];
+          const firstPlacePosition = new window.kakao.maps.LatLng(
+            firstPlace.y,
+            firstPlace.x,
+          );
+          map.setCenter(firstPlacePosition);
+        }
+      }
+    });
   };
 
   return (
@@ -125,11 +133,11 @@ function KakaoMap() {
         <button onClick={handleSearch}>Search</button>
       </div>
       <div id="map" style={{ width: '100%', height: '400px' }}></div>
-      <div>
+      {/* <div>
         {places.map((place) => (
           <div key={place.id}>{place.name}</div>
         ))}
-      </div>
+      </div> */}
     </div>
   );
 }
