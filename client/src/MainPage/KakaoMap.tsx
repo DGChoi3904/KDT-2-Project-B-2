@@ -14,6 +14,7 @@ function KakaoMap() {
   const [startPath, setStartPath] = useState<string[]>([]);
   const [endPath, setEndPath] = useState<string[]>([]);
   const [roadPath, setRoadPath] = useState<number[]>([]);
+  const [dataCheck, setDataCheck] = useState<boolean>(false);
 
   useEffect(() => {
     const Container = document.getElementById('map'); // 지도를 표시할 div
@@ -47,50 +48,30 @@ function KakaoMap() {
     );
 
     // roadPath에 데이터가 들어오면 카카오의 polyline 생성자 함수를 이용해 지도에 경로를 표시
-    if(roadPath.length !== 0) {
+    if(dataCheck === true) {
       const linePath = [];
       console.log('라인 그리기')
       
       for(let i = 0; i < roadPath.length; i = i+2) {
-        const lat = roadPath[i];
-        const lng = roadPath[i + 1];
+        const lng = roadPath[i];
+        const lat = roadPath[i + 1];
         const latlng = new kakao.maps.LatLng(lat, lng);
         linePath.push(latlng)
       }
-    //   const linePath = [
-    //     new kakao.maps.LatLng(36.35014210021866, 127.38641982129714),
-    //     new kakao.maps.LatLng(36.350143758638744, 127.38674290415194),
-    //     new kakao.maps.LatLng(36.350143758638744, 127.38674290415194),
-    //     new kakao.maps.LatLng(36.349503668816084, 127.38670335926503),
-    //     new kakao.maps.LatLng(36.34901707100094, 127.38671831649715),
-    //     new kakao.maps.LatLng(36.3488549670047, 127.38674186986493),
-    //     new kakao.maps.LatLng(36.34787253040439, 127.38672729206087),
-    //     new kakao.maps.LatLng(36.34752100009308, 127.3867189078198),
-    //     new kakao.maps.LatLng(36.34671874877207, 127.38669177658343),
-    //     new kakao.maps.LatLng(36.34671367903336, 127.38746052798045),
-    //     new kakao.maps.LatLng(36.34670866137648, 127.38824041965199),
-    //     new kakao.maps.LatLng(36.34670483445332, 127.38925425767235),
-    //     new kakao.maps.LatLng(36.34670065787768, 127.3902012538858),
-    //     new kakao.maps.LatLng(36.34669908349945, 127.39166070424528),
-    //     new kakao.maps.LatLng(36.34669908349945, 127.39166070424528),
-    //     new kakao.maps.LatLng(36.34616731041055, 127.39165369987306),
-    //     new kakao.maps.LatLng(36.345788857123544, 127.39166778421094),
-    //     new kakao.maps.LatLng(36.345626581839625, 127.3916579057983),
-    // ];
       console.log('linePath: ', linePath)
 
       const polyline = new kakao.maps.Polyline({
         path: linePath, // 선을 구성하는 좌표배열 입니다
         strokeWeight: 7, // 선의 두께 입니다
-        strokeColor: '#FFAE00', // 선의 색깔입니다
+        strokeColor: '#F86F03', // 선의 색깔입니다
         strokeOpacity: 1, // 선의 불투명도 입니다 1에서 0 사이의 값이며 0에 가까울수록 투명합니다
         strokeStyle: 'solid' // 선의 스타일입니다
       });
-  
+      console.log('setMap')
       polyline.setMap(map);
     }
 
-  }, [startPath, endPath, roadPath]);
+  }, [startPath, endPath, dataCheck, roadPath]);
 
   // 확인용 console
   useEffect(() => {
@@ -131,6 +112,7 @@ function KakaoMap() {
       console.log(NodeData)
       // Node 좌표를 RoadPath에 저장
       setRoadPath(NodeData);
+      setDataCheck(true);
     })
     .catch((error) => {
       // 오류 처리
