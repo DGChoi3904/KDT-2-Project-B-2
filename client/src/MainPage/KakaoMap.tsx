@@ -11,40 +11,44 @@ declare global {
 const { kakao } = window;
 
 function KakaoMap() {
-  const [startPoint, setStartPoint] = useState([]);
-  const [endPoint, setEndPoint] = useState([]);
   useEffect(() => {
-    console.log("여기는 useEffect Start부분, isSearchingStart는 현재 " + globalVar.isSearchingStart + "이다.")
     const Container = document.getElementById('map'); // 지도를 표시할 div
     const Options = {
       center: new kakao.maps.LatLng(36.35, 127.385), // 지도의 중심좌표
       level: 3, // 지도의 확대 레벨
     };
 
-    // 주소-좌표 변환 객체를 생성합니다
+    // 주소-좌표 변환 객체를 생성
     var geocoder = new kakao.maps.services.Geocoder();
 
-    var startMarker = new kakao.maps.Marker(), // 클릭한 위치를 표시할 마커입니다
-      infowindow = new kakao.maps.InfoWindow({ zindex: 1 }); // 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
+    var startMarker = new kakao.maps.Marker(), // 클릭한 위치를 표시할 마커.
+      infowindow = new kakao.maps.InfoWindow({ zindex: 1 }); // 클릭한 위치에 대한 주소를 표시할 인포윈도우
 
     const map = new kakao.maps.Map(Container, Options);
+    // 맵위의 클릭이벤트 리스너 파트.
+    kakao.maps.event.addListener(
+      map,
+      'click',
+      (mouseEvent: { latLng: any }) => {
+        // latLng를 사용하는  클릭 이벤트를 쓸 경우, 이 아래에 기입할 것.
 
-    kakao.maps.event.addListener(map, 'click', (mouseEvent: { latLng: any }) => {
-      console.log("여기는 onClick이벤트 시작부분, 전역변수 isSearchingStart는 현재" + globalVar.isSearchingStart + " 이다.")
-      if(globalVar.isSearchingStart){
-        console.log(mouseEvent);
-        onClickSetStartPoint(mouseEvent);
-      }
-    });
-    
+        // 전역변수 isSearchingStart가 True일 경우 실행되는 구문
+        if (globalVar.isSearchingStart) {
 
+          // 맵에서 출발지 마커를 찍어주는 함수 실행.
+          onClickSetStartPoint(mouseEvent);
+        }
+      },
+    );
+    // 좌표로 상세 주소 정보를 요청하는 콜백함수
     function searchDetailAddrFromCoords(
       coords: { getLng: any; getLat: any },
       callback: Function,
     ) {
-      // 좌표로 법정동 상세 주소 정보를 요청합니다
+      // geocoder를 통해 좌표로 상세 주소 정보를 요청
       geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
     }
+    // 맵을 클릭시 해당 좌표에 출발지 마커를 찍고 위치정보를 인포윈도우에 저장하는 함수
     function onClickSetStartPoint(mouseEvent: { latLng: any }) {
       searchDetailAddrFromCoords(
         mouseEvent.latLng,
@@ -64,21 +68,22 @@ function KakaoMap() {
               detailAddr +
               '</div>';
 
-            // 마커를 클릭한 위치에 표시합니다
+            // 마커를 클릭한 위치에 표시
             startMarker.setPosition(mouseEvent.latLng);
             startMarker.setMap(map);
 
-            // 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
+            // 인포윈도우에 클릭한 위치에 대한 상세 주소정보를 표시
             infowindow.setContent(content);
             infowindow.open(map, startMarker);
-            
+            globalVar.startPoint = [mouseEvent.latLng.getLat(), mouseEvent.latLng.getLng()];
+            console.log(globalVar.startPoint);
+
+            // 출발지 지정 이후, 전역변수를 false로 설정.
             globalVar.isSearchingStart = false;
-            console.log("함수 절차 완료후 값 확인, 전역변수 isSearchingStart는 " + globalVar.isSearchingStart + "이다.");
           }
         },
       );
     }
-
     
   }, []);
 

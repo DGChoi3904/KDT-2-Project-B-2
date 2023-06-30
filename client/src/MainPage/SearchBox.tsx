@@ -15,9 +15,7 @@ const SearchBox: React.FC = () => {
   
   function searchingStartOn(){
     globalVar.isSearchingStart = true;
-    console.log("전역변수 isSearchingStart는 " + globalVar.isSearchingStart + " 이다.");
     alert("출발지점을 클릭해주세요.");
-    console.log("전역변수 isSearchingStart는 이제 " + globalVar.isSearchingStart + " 이다.");
   }
 
   return (
