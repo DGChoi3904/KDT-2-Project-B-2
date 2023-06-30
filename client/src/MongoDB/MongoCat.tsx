@@ -1,10 +1,21 @@
 import React, { useState, useEffect, FormEvent } from 'react';
+interface Cat {
+  name: string;
+  age: number;
+  breed: string;
+}
 
 export default function MongoCat() {
   const [catname, setCatname] = useState('');
   const [catage, setCatage] = useState('');
   const [catbreed, setCatbreed] = useState('');
   const [catList, setCatList] = useState([]);
+  const [catSearchName, setCatSearchName] = useState('');
+  const [catSearchData, setCatSearchData] = useState<Cat>({
+    name: '',
+    age: 0,
+    breed: '',
+  });
 
   const loadCats = async () => {
     // 전체 고양이 목록을 조회하는 메서드
@@ -15,8 +26,15 @@ export default function MongoCat() {
         },
         method: 'GET',
       })
-        .then((response) => response.json())
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error('응답이 비정상적입니다.');
+          }
+        })
         .then((data) => {
+          console.log(data + '전체data부분');
           setCatList(data);
         })
         .catch((error) => {
@@ -51,16 +69,30 @@ export default function MongoCat() {
     }
   };
 
-  const handleFindOne = async (id: string) => {
-    // 한마리만 조회하는 메소드. 아직 사용X
+  const handleFindOne = async () => {
+    // 한마리만 조회하는 메소드.현재 에러
     try {
-      const response = await fetch(`/cats/${id}`);
-      if (response.ok) {
-        const catData = await response.json();
-        console.log('조회 결과:', catData);
-      } else {
-        console.error('데이터 조회 실패');
-      }
+      fetch(`/cats/${catSearchName}`, {
+        headers: {
+          Accept: 'application / json',
+        },
+        method: 'GET',
+      })
+        .then((response) => {
+          if (response.ok) {
+            return response.json();
+          } else {
+            throw new Error('응답이 비정상적입니다.');
+          }
+        })
+        .then((data) => {
+          const a = JSON.stringify(data);
+          // setCatSearchData((prevData) => [...catSearchData, a]);
+          setCatSearchData(data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     } catch (error) {
       console.error('조회 중 에러 발생.', error);
     }
@@ -100,6 +132,21 @@ export default function MongoCat() {
             <br />
           </span>
         ))}
+      </p>
+      <h1>고양이 이름 조회</h1>
+      <input
+        type="text"
+        value={catSearchName}
+        onChange={(e) => setCatSearchName(e.target.value)}
+      />
+      <button onClick={handleFindOne}>조회</button>
+      <p>
+        <span>
+          {catSearchData.name}
+          {catSearchData.age}
+          {catSearchData.breed}
+          <br />
+        </span>
       </p>
     </>
   );
