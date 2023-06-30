@@ -18,7 +18,7 @@ function MainPage() {
       <KakaoMap isSearchingStart={isSearchingStart} setIsSearchingStart={setIsSearchingStart} />
       <MyWayList />
       <LoginModal />
-      <SearchBox setIsSearchingStart={setIsSearchingStart} />
+      <SearchBox isSearchingStart={isSearchingStart} setIsSearchingStart={setIsSearchingStart} />
       <SaveWayModal />
     </div>
   )

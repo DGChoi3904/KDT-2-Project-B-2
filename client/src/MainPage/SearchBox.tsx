@@ -2,10 +2,11 @@ import React, { useState } from 'react';
 import './Main.css';
 
 interface SearchBoxProps {
+  isSearchingStart : boolean;
   setIsSearchingStart: (value: boolean) => void;
 }
 
-const SearchBox: React.FC<SearchBoxProps> = ({ setIsSearchingStart }) => {
+const SearchBox: React.FC<SearchBoxProps> = ({ isSearchingStart, setIsSearchingStart }) => {
   const [wayPointCount, setWayPointCount] = useState(1);
   const [startPoint, setStartPoint] = useState([]);
   const [endPoint, setEndPoint] = useState([]);
@@ -16,6 +17,7 @@ const SearchBox: React.FC<SearchBoxProps> = ({ setIsSearchingStart }) => {
   
   function searchingStartOn(){
     setIsSearchingStart(true);
+    console.log(isSearchingStart);
     alert("출발지점을 클릭해주세요.")
   }
 

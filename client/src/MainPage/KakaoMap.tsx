@@ -17,6 +17,7 @@ function KakaoMap({ isSearchingStart, setIsSearchingStart }: KakaoMapProps) {
   const [startPoint, setStartPoint] = useState([]);
   const [endPoint, setEndPoint] = useState([]);
   useEffect(() => {
+    console.log("여기는 useEffect부분, isSearchingStart는 현재 " + isSearchingStart + "이다.")
     const Container = document.getElementById('map'); // 지도를 표시할 div
     const Options = {
       center: new kakao.maps.LatLng(36.35, 127.385), // 지도의 중심좌표
@@ -30,6 +31,15 @@ function KakaoMap({ isSearchingStart, setIsSearchingStart }: KakaoMapProps) {
       infowindow = new kakao.maps.InfoWindow({ zindex: 1 }); // 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
 
     const map = new kakao.maps.Map(Container, Options);
+
+    kakao.maps.event.addListener(map, 'click', (mouseEvent: { latLng: any }) => {
+      console.log("여기는 onClick이벤트 부분, isSearchingStart는 현재 " + isSearchingStart + "이다.")
+      if(isSearchingStart){
+        console.log(mouseEvent);
+        onClickSetStartPoint(mouseEvent);
+      }
+    });
+    
 
     function searchDetailAddrFromCoords(
       coords: { getLng: any; getLat: any },
@@ -65,17 +75,13 @@ function KakaoMap({ isSearchingStart, setIsSearchingStart }: KakaoMapProps) {
             infowindow.setContent(content);
             infowindow.open(map, marker);
             setIsSearchingStart(false);
+            console.log(isSearchingStart);
           }
         },
       );
     }
 
-    if (isSearchingStart) {
-      kakao.maps.event.addListener(map, 'click', onClickSetStartPoint);
-    }
-    return () => {
-      kakao.maps.event.removeListener(map, 'click', onClickSetStartPoint);
-    };
+    
   }, []);
 
   return (
