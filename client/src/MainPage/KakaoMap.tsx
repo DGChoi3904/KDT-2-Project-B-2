@@ -16,6 +16,7 @@ function KakaoMap() {
   const [startPath, setStartPath] = useState<string[]>([]);
   const [endPath, setEndPath] = useState<string[]>([]);
   const [wayPath, setWayPath] = useState<string[]>([]);
+  const [wayCount, setWayCount] = useState<number>(0); //? 경유지 추가 할 때 사용해야 할 지도?
 
   const [roadPath, setRoadPath] = useState<number[]>([]);
   const [dataCheck, setDataCheck] = useState<boolean>(false);
@@ -23,6 +24,7 @@ function KakaoMap() {
   const mapRef = useRef<any>(null);
   const startRef = useRef<string[]>([]);
   const endRef = useRef<string[]>([]);
+  const wayRef = useRef<string[]>([]);
 
   // 지도 생성
   useEffect(() => {
@@ -98,8 +100,8 @@ function KakaoMap() {
         setStartPath([latlng.getLat(), latlng.getLng()]);
       } else if(startRef.current.length !== 0 && endRef.current.length === 0) {
         setEndPath([latlng.getLat(), latlng.getLng()]);
-      } else if(startRef.current.length !== 0 && endRef.current.length !== 0) {
-        setWayPath([latlng.getLat(), latlng.getLng()]);
+      } else if(startRef.current.length !== 0 && endRef.current.length !== 0 && wayRef.current.length < 10) {
+        setWayPath(wayPath => [...wayPath, latlng.getLat(), latlng.getLng()]);
       } else {
         console.log('그 외')
       }
@@ -115,6 +117,7 @@ function KakaoMap() {
     useEffect(() => {
       startRef.current = startPath;
       endRef.current = endPath;
+      wayRef.current = wayPath;
       console.log('startPath: ', startPath)
       console.log('endPath: ', endPath)
       console.log('wayPath: ', wayPath)
@@ -157,7 +160,20 @@ function KakaoMap() {
       url = `https://apis-navi.kakaomobility.com/v1/directions?priority=RECOMMEND&car_type=1&car_fuel=GASOLINE&origin=${startPath[1]}%2C${startPath[0]}&destination=${endPath[1]}%2C${endPath[0]}`;
       console.log('url1: ', url);
     } else {
-      url = `https://apis-navi.kakaomobility.com/v1/directions?priority=RECOMMEND&car_type=1&car_fuel=GASOLINE&origin=${startPath[1]}%2C${startPath[0]}&destination=${endPath[1]}%2C${endPath[0]}&waypoints=${wayPath[1]}%2C${wayPath[0]}`;
+      const waypointsString = wayPath
+  .map((point, index) => {
+    if (index % 2 === 0) {
+      const nextIndex = index + 1;
+      if (nextIndex < wayPath.length) {
+        return `${wayPath[nextIndex]}%2C${point}`;
+      }
+    }
+    return null;
+  })
+  .filter(point => point !== null)
+  .join("%7C");
+      
+      url = `https://apis-navi.kakaomobility.com/v1/directions?priority=RECOMMEND&car_type=1&car_fuel=GASOLINE&origin=${startPath[1]}%2C${startPath[0]}&destination=${endPath[1]}%2C${endPath[0]}&waypoints=${waypointsString}`;
       console.log('url2: ', url);
     }
 
