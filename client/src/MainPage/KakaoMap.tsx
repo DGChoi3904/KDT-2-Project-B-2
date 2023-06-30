@@ -32,19 +32,19 @@ function KakaoMap() {
     mapRef.current = map;
 
     // 임시로 직접 클릭으로 좌표 지정 기능 살려 둠 //
-    window.kakao.maps.event.addListener(map, 'click', function (mouseEvent: { latLng: any }) {
-      const latlng = mouseEvent.latLng;
+    // window.kakao.maps.event.addListener(map, 'click', function (mouseEvent: { latLng: any }) {
+    //   const latlng = mouseEvent.latLng;
 
-      if (startPath.length === 0) {
-        setStartPath([latlng.getLat(), latlng.getLng()]);
-      } else {
-        setEndPath([latlng.getLat(), latlng.getLng()]);
-      }
+    //   if (startPath.length === 0) {
+    //     setStartPath([latlng.getLat(), latlng.getLng()]);
+    //   } else {
+    //     setEndPath([latlng.getLat(), latlng.getLng()]);
+    //   }
 
-      const message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, 경도는 ' + latlng.getLng() + ' 입니다';
-      const resultDiv = document.getElementById('result')!;
-      resultDiv.innerHTML = message;
-    });
+    //   const message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, 경도는 ' + latlng.getLng() + ' 입니다';
+    //   const resultDiv = document.getElementById('result')!;
+    //   resultDiv.innerHTML = message;
+    // });
     // 임시로 직접 클릭으로 좌표 지정 기능 살려 둠 //
 
     const placesService = new window.kakao.maps.services.Places();
@@ -100,6 +100,22 @@ function KakaoMap() {
     addMarkersToMap();
 
   }, [startPath]);
+
+  useEffect(() => {
+    window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) {
+      const latlng = mouseEvent.latLng;
+
+      if (startPath.length === 0) {
+        setStartPath([latlng.getLat(), latlng.getLng()]);
+      } else {
+        setEndPath([latlng.getLat(), latlng.getLng()]);
+      }
+
+      const message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, 경도는 ' + latlng.getLng() + ' 입니다';
+      const resultDiv = document.getElementById('result')!;
+      resultDiv.innerHTML = message;
+    });
+  }, [startPath, endPath])
 
     // 확인용 console
     useEffect(() => {
