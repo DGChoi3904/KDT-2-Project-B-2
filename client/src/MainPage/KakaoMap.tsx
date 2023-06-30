@@ -19,6 +19,12 @@ function KakaoMap() {
 
   const mapRef = useRef<any>(null);
 
+  let geocoder = new window.kakao.maps.services.Geocoder();
+
+  let startMarker = new window.kakao.maps.Marker(), // 출발지 위치를 표시할 마커.
+    startInfowindow = new window.kakao.maps.InfoWindow({ zindex: 1 }); // 출발지에 대한 주소를 표시할 인포윈도우
+  let endMarker = new window.kakao.maps.Marker(), // 목적지 위치를 표시할 마커.
+    endInfowindow = new window.kakao.maps.InfoWindow({ zindex: 6 }); // 목적지에 대한 주소를 표시할 인포윈도우
 
   // 지도 생성
   useEffect(() => {
@@ -52,50 +58,10 @@ function KakaoMap() {
       'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png',
       new window.kakao.maps.Size(64, 69),
     );
-
-    const addMarkersToMap = () => {
-      places.forEach((place) => {
-        const markerPosition = new window.kakao.maps.LatLng(
-          place.y,
-          place.x,
-        );
-        const marker = new window.kakao.maps.Marker({
-          position: markerPosition,
-          image: markerImage,
-        });
-
-        marker.setMap(map);
-
-        window.kakao.maps.event.addListener(marker, 'click', () => {
-          setSelectedPlace(place);
-          map.setCenter(markerPosition);
-        });
-      });
-
-      if (places.length > 0) {
-        const firstPlace = places[0];
-        const firstPlacePosition = new window.kakao.maps.LatLng(
-          firstPlace.y,
-          firstPlace.x,
-        );
-        map.setCenter(firstPlacePosition); // 검색에 해당하는 첫 번째 장소로 지도 이동
-      }
-    };
-
-    addMarkersToMap();
   }, []);
 
-  // 클릭 이벤트 분리
-  useEffect(() => {
-    window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) {
-      let geocoder = new window.kakao.maps.services.Geocoder();
-  
-      let startMarker = new window.kakao.maps.Marker(), // 출발지 위치를 표시할 마커.
-        startInfowindow = new window.kakao.maps.InfoWindow({ zindex: 1 }); // 출발지에 대한 주소를 표시할 인포윈도우
-      let endMarker = new window.kakao.maps.Marker(), // 목적지 위치를 표시할 마커.
-        endInfowindow = new window.kakao.maps.InfoWindow({ zindex: 6 }); // 목적지에 대한 주소를 표시할 인포윈도우
-
-      // 맵을 클릭시 해당 좌표에 출발지 마커를 찍고 위치정보를 인포윈도우에 저장하는 함수
+  function setClickEvents(mouseEvent: { latLng: any }) {
+    // 맵을 클릭시 해당 좌표에 출발지 마커를 찍고 위치정보를 인포윈도우에 저장하는 함수
     function onClickSetStartPoint(mouseEvent: { latLng: any }) {
       searchDetailAddrFromCoords(
         mouseEvent.latLng,
@@ -120,20 +86,34 @@ function KakaoMap() {
             startMarker.setMap(mapRef.current);
 
             // 인포윈도우에 클릭한 위치에 대한 상세 주소정보를 표시
-            startInfowindow.setContent(content);
-            startInfowindow.open(mapRef.current, startMarker);
+            window.kakao.maps.event.addListener(
+              startMarker,
+              'click',
+              function () {
+                // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+
+                startInfowindow.setContent(content);
+                if (startInfowindow.getMap() === null) {
+                  startInfowindow.open(mapRef.current, startMarker);
+                } else {
+                  startInfowindow.close();
+                }
+              },
+            );
             globalVar.startPoint = [
               mouseEvent.latLng.getLat(),
               mouseEvent.latLng.getLng(),
             ];
-            console.log(`출발지 좌표 : ${globalVar.startPoint}, 목적지 좌표 ${globalVar.endPoint}`);
+            console.log(
+              `출발지 좌표 : ${globalVar.startPoint}, 목적지 좌표 ${globalVar.endPoint}`,
+            );
 
             // 출발지 지정 이후, 전역변수를 false로 설정.
             globalVar.isSearchingStart = false;
           }
         },
       );
-    };
+    }
 
     // 맵을 클릭시 해당 좌표에 목적지 마커를 찍고 위치정보를 인포윈도우에 저장하는 함수
     function onClickSetEndPoint(mouseEvent: { latLng: any }) {
@@ -160,13 +140,27 @@ function KakaoMap() {
             endMarker.setMap(mapRef.current);
 
             // 인포윈도우에 클릭한 위치에 대한 상세 주소정보를 표시
-            endInfowindow.setContent(content);
-            endInfowindow.open(mapRef.current, endMarker);
+            window.kakao.maps.event.addListener(
+              endMarker,
+              'click',
+              function () {
+                // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
+                endInfowindow.setContent(content);
+                if (endInfowindow.getMap() === null) {
+                  endInfowindow.open(mapRef.current, endMarker);
+                } else {
+                  endInfowindow.close();
+                }
+              },
+            );
+
             globalVar.endPoint = [
               mouseEvent.latLng.getLat(),
               mouseEvent.latLng.getLng(),
             ];
-            console.log(`출발지 좌표 : ${globalVar.startPoint}, 목적지 좌표 ${globalVar.endPoint}`);
+            console.log(
+              `출발지 좌표 : ${globalVar.startPoint}, 목적지 좌표 ${globalVar.endPoint}`,
+            );
 
             // 목적지 지정 이후, 전역변수를 false로 설정.
             globalVar.isSearchingEnd = false;
@@ -184,31 +178,38 @@ function KakaoMap() {
       geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
     }
 
-      if (globalVar.isSearchingStart) {
-        // 맵에서 출발지 마커를 찍어주는 함수 실행.
-        onClickSetStartPoint(mouseEvent);
-      } else if (globalVar.isSearchingEnd) {
-        onClickSetEndPoint(mouseEvent);
-      }
-    });
-  }, [])
+    if (globalVar.isSearchingStart) {
+      // 맵에서 출발지 마커를 찍어주는 함수 실행.
+      onClickSetStartPoint(mouseEvent);
+    } else if (globalVar.isSearchingEnd) {
+      onClickSetEndPoint(mouseEvent);
+    }
+  }
+  // 클릭 이벤트 분리
+  useEffect(() => {
+    window.kakao.maps.event.addListener(
+      mapRef.current,
+      'click',
+      setClickEvents,
+    );
+  }, []);
 
   // polyline 그리기
   useEffect(() => {
-    console.log('polyline 그리기')
+    console.log('polyline 그리기');
     if (dataCheck === true && mapRef.current) {
       // path 데이터 저장용 빈 배열
       const linePath = [];
 
       // roadPath의 데이터를 kakao.maps.LatLng() 메서드에 입력
-      for(let i = 0; i < roadPath.length; i = i+2) {
+      for (let i = 0; i < roadPath.length; i = i + 2) {
         const lng = roadPath[i];
         const lat = roadPath[i + 1];
         const latlng = new window.kakao.maps.LatLng(lat, lng);
-        linePath.push(latlng)
+        linePath.push(latlng);
       }
 
-      console.log('linePath', linePath)
+      console.log('linePath', linePath);
       const polyline = new window.kakao.maps.Polyline({
         path: linePath,
         strokeWeight: 7,
@@ -234,31 +235,31 @@ function KakaoMap() {
       method: 'GET',
       headers: headers,
     })
-    .then((response) => response.json())
-    .then((jsonData) => {
-      // 요청에 대한 처리
-      console.log('응답 : ', jsonData)
-      
-      // 응답 데이터에서 roads 데이터만 추출
-      const roadData = jsonData['routes'][0]['sections'][0]['roads']
-      console.log('roadData : ', roadData);
+      .then((response) => response.json())
+      .then((jsonData) => {
+        // 요청에 대한 처리
+        console.log('응답 : ', jsonData);
 
-      // roads 데이터에서 반복문을 통해 Node 좌표 추출
-      const NodeData: number[] = []
-      for(let i = 0; i < roadData.length; i++) {
-        for(let j = 0; j < roadData[i]['vertexes'].length; j++) {
-          NodeData.push(roadData[i]['vertexes'][j])
+        // 응답 데이터에서 roads 데이터만 추출
+        const roadData = jsonData['routes'][0]['sections'][0]['roads'];
+        console.log('roadData : ', roadData);
+
+        // roads 데이터에서 반복문을 통해 Node 좌표 추출
+        const NodeData: number[] = [];
+        for (let i = 0; i < roadData.length; i++) {
+          for (let j = 0; j < roadData[i]['vertexes'].length; j++) {
+            NodeData.push(roadData[i]['vertexes'][j]);
+          }
         }
-      }
-      console.log(NodeData)
-      // Node 좌표를 RoadPath에 저장
-      setRoadPath(NodeData);
-      setDataCheck(true);
-    })
-    .catch((error) => {
-      // 오류 처리
-      console.error(error);
-    });
+        console.log(NodeData);
+        // Node 좌표를 RoadPath에 저장
+        setRoadPath(NodeData);
+        setDataCheck(true);
+      })
+      .catch((error) => {
+        // 오류 처리
+        console.error(error);
+      });
   };
 
   const handleSearch = () => {
