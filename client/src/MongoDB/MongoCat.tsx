@@ -95,7 +95,10 @@ export default function MongoCat() {
       <button onClick={loadCats}>조회</button>
       <p>
         {catList.map((cat: any) => (
-          <span key={cat._id}>{cat.name}</span>
+          <span key={cat._id}>
+            {cat.name}, {cat.age}살, 품종 : {cat.breed}
+            <br />
+          </span>
         ))}
       </p>
     </>

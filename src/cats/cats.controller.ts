@@ -14,7 +14,6 @@ export class CatsController {
 
   @Get() //Get방식의 /Cats 요청시 findAll 서비스 실행
   async findAll(): Promise<Cat[]> {
-    console.log('/cats get 요청 들어옴(const)');
     return this.catsService.findAll();
   }
 
