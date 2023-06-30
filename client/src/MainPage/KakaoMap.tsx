@@ -92,6 +92,8 @@ function KakaoMap() {
 
   }, []);
 
+
+
   useEffect(() => {
     window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) {
       const latlng = mouseEvent.latLng;
@@ -101,7 +103,7 @@ function KakaoMap() {
       } else if(startRef.current.length !== 0 && endRef.current.length === 0) {
         setEndPath([latlng.getLat(), latlng.getLng()]);
       } else if(startRef.current.length !== 0 && endRef.current.length !== 0 && wayRef.current.length < 10) {
-        setWayPath(wayPath => [...wayPath, latlng.getLat(), latlng.getLng()]);
+        setWayPath(() => [...(wayRef.current),latlng.getLat(), latlng.getLng()]);
       } else {
         console.log('그 외')
       }
@@ -155,9 +157,8 @@ function KakaoMap() {
   const handleNavi = () => {
 
     let url
-
     if(wayPath.length === 0) {
-      url = `https://apis-navi.kakaomobility.com/v1/directions?priority=RECOMMEND&car_type=1&car_fuel=GASOLINE&origin=${startPath[1]}%2C${startPath[0]}&destination=${endPath[1]}%2C${endPath[0]}`;
+      url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${startPath[1]}%2C${startPath[0]}&destination=${endPath[1]}%2C${endPath[0]}`;
       console.log('url1: ', url);
     } else {
       const waypointsString = wayPath
@@ -172,8 +173,7 @@ function KakaoMap() {
   })
   .filter(point => point !== null)
   .join("%7C");
-      
-      url = `https://apis-navi.kakaomobility.com/v1/directions?priority=RECOMMEND&car_type=1&car_fuel=GASOLINE&origin=${startPath[1]}%2C${startPath[0]}&destination=${endPath[1]}%2C${endPath[0]}&waypoints=${waypointsString}`;
+      url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${startPath[1]}%2C${startPath[0]}&destination=${endPath[1]}%2C${endPath[0]}&waypoints=${waypointsString}`;
       console.log('url2: ', url);
     }
 
