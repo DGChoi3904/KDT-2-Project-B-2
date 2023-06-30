@@ -246,9 +246,11 @@ function KakaoMap() {
 
         // roads 데이터에서 반복문을 통해 Node 좌표 추출
         const NodeData: number[] = [];
-        for (let i = 0; i < roadData.length; i++) {
-          for (let j = 0; j < roadData[i]['vertexes'].length; j++) {
-            NodeData.push(roadData[i]['vertexes'][j]);
+        for(let a = 0; a < jsonData['routes'][0]['sections'].length; a++) {
+          for(let i = 0; i < jsonData['routes'][0]['sections'][a]['roads'].length; i++) {
+            for(let j = 0; j < jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'].length; j++) {
+              NodeData.push(jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j])
+            }
           }
         }
         console.log(NodeData);
