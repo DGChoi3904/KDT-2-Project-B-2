@@ -30,12 +30,18 @@ function KakaoMap() {
     const map = new window.kakao.maps.Map(Container, Options);
     // map을 Ref값에 등록
     mapRef.current = map;
-    //fix 마커생성
-    var marker = new window.kakao.maps.Marker({
-      position: map.getCenter(),
+    const marker1 = new window.kakao.maps.Marker({
+      map: map,
     });
+
+    const marker2 = new window.kakao.maps.Marker({
+      map: map,
+    });
+
+    /*  //fix 마커생성
+    var marker = new window.kakao.maps.Marker({});
     // 지도에 마커를 표시합니다
-    marker.setMap(map);
+    marker.setMap(map); */
     // 임시로 직접 클릭으로 좌표 지정 기능 살려 둠 //
     window.kakao.maps.event.addListener(
       map,
@@ -45,10 +51,10 @@ function KakaoMap() {
 
         if (startPath.length === 0) {
           setStartPath([latlng.getLat(), latlng.getLng()]);
-          marker.setPosition(latlng);
+          marker1.setPosition(latlng);
         } else {
           setEndPath([latlng.getLat(), latlng.getLng()]);
-          marker.setPosition(latlng);
+          marker2.setPosition(latlng);
         }
 
         const message =
@@ -248,6 +254,20 @@ function KakaoMap() {
             firstPlace.x,
           );
           mapRef.current.setCenter(firstPlacePosition);
+
+          if (startPath.length === 0) {
+            setStartPath([firstPlace.y, firstPlace.x]);
+            const marker1 = new window.kakao.maps.Marker({
+              position: firstPlacePosition,
+              map: mapRef.current,
+            });
+          } else {
+            setEndPath([firstPlace.y, firstPlace.x]);
+            const marker2 = new window.kakao.maps.Marker({
+              position: firstPlacePosition,
+              map: mapRef.current,
+            });
+          }
         }
       }
     });
