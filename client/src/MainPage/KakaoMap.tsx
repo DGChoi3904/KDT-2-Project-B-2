@@ -30,7 +30,12 @@ function KakaoMap() {
     const map = new window.kakao.maps.Map(Container, Options);
     // map을 Ref값에 등록
     mapRef.current = map;
-
+    //fix 마커생성
+    var marker = new window.kakao.maps.Marker({
+      position: map.getCenter(),
+    });
+    // 지도에 마커를 표시합니다
+    marker.setMap(map);
     // 임시로 직접 클릭으로 좌표 지정 기능 살려 둠 //
     window.kakao.maps.event.addListener(
       map,
@@ -40,8 +45,10 @@ function KakaoMap() {
 
         if (startPath.length === 0) {
           setStartPath([latlng.getLat(), latlng.getLng()]);
+          marker.setPosition(latlng);
         } else {
           setEndPath([latlng.getLat(), latlng.getLng()]);
+          marker.setPosition(latlng);
         }
 
         const message =
@@ -209,6 +216,7 @@ function KakaoMap() {
             NodeData.push(roadData[i]['vertexes'][j]);
           }
         }
+
         console.log(NodeData);
         // Node 좌표를 RoadPath에 저장
         setRoadPath(NodeData);
