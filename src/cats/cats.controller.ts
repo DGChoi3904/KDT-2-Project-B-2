@@ -17,9 +17,9 @@ export class CatsController {
     return this.catsService.findAll();
   }
 
-  @Get(':id') //Get방식의 /Cats:id 요청시 findOne 서비스 실행
+  @Get('/:id') //Get방식의 /Cats:id 요청시 findOne 서비스 실행
   async findOne(@Param('id') id: string): Promise<Cat | null> {
-    return this.catsService.findOne(id);
+    return await this.catsService.findOne(id);
   }
 
   @Delete(':id') //Delete /Cats:id 요청시 delete 서비스 실행
