@@ -20,13 +20,14 @@ function KakaoMap() {
   const [map, setMap] = useState<any>(null);
 
   useEffect(() => {
-    //키값 넣기
-    const script = document.createElement('script');
+    //키값입력
+    const script = document.createElement('script'); //지도 표시
     script.async = true;
     script.src = `//dapi.kakao.com/v2/maps/sdk.js?appkey=56e0838eacaf61521c3d4fed329a1b00&libraries=services`;
     document.head.appendChild(script);
 
     script.onload = () => {
+      //지도생성
       window.kakao.maps.load(() => {
         const mapContainer = document.getElementById('map');
         const mapOptions = {
@@ -36,9 +37,9 @@ function KakaoMap() {
 
         const newMap = new window.kakao.maps.Map(mapContainer, mapOptions);
         setMap(newMap);
-
+        //장소 검색시 이동
         const placesService = new window.kakao.maps.services.Places();
-
+        //키워드 검색, 입력한 곳의 위도, 경도 파악
         const searchPlaces = (keyword: string) => {
           placesService.keywordSearch(keyword, (result: any, status: any) => {
             if (status === window.kakao.maps.services.Status.OK) {
@@ -53,7 +54,7 @@ function KakaoMap() {
             }
           });
         };
-
+        //마커설정을 했으나, 마커X
         const markerImage = new window.kakao.maps.MarkerImage(
           'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png',
           new window.kakao.maps.Size(64, 69),
@@ -77,7 +78,7 @@ function KakaoMap() {
               newMap.setCenter(markerPosition);
             });
           });
-
+          // 검색 리스트중에 가장 근접한 장소(첫번째)의 위도, 경도값을 파악해서 지도에 보이게 설정.
           if (places.length > 0) {
             const firstPlace = places[0];
             const firstPlacePosition = new window.kakao.maps.LatLng(
@@ -133,7 +134,7 @@ function KakaoMap() {
         <button onClick={handleSearch}>Search</button>
       </div>
       <div id="map" style={{ width: '100%', height: '400px' }}></div>
-      {/* <div>
+      {/* <div> //검색 시 목록이 보임(위 코드 참고하면 첫번째장소가 지도에 띄우는 걸 확인 할 수 있음.)
         {places.map((place) => (
           <div key={place.id}>{place.name}</div>
         ))}
