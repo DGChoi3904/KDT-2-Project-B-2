@@ -1,5 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import './Main.css';
+import globalVar from './Global';
 
 const SearchBox: React.FC = () => {
   const [wayPointCount, setWayPointCount] = useState(1);
@@ -8,15 +9,23 @@ const SearchBox: React.FC = () => {
   const handleClick = () => {
     setWayPointCount((prevCount) => prevCount + 1);
   };
-
-  const startPointClick = () => {};
+  // 출발지 클릭 지정 시작
+  function searchingStartOn(){
+    globalVar.isSearchingStart = true;
+    alert("출발지점을 클릭해주세요.");
+  }
+  // 목적지 클릭 지정 시작
+  function searchingEndOn(){
+    globalVar.isSearchingEnd = true;
+    alert("도착지점을 클릭해주세요.");
+  }
 
   return (
     <div className="SearchBoxWrap">
       <div className="FlexRowBetween">
         <p>출발지</p>
-        <input type="text" className="SearchBar" onClick={startPointClick} />
-        <div className="WayPointHiddenButton"></div>
+        <input type="text" className="SearchBar" />
+        <button type="button" onClick={searchingStartOn}>맵에서 출발지 클릭하기</button>
       </div>
       {/* 경유지 설정 -> 초기 1개, + 버튼을 누를 때 마다 1개씩 추가 됨 */}
       {Array.from({ length: wayPointCount }).map((_, index) => (
@@ -35,7 +44,7 @@ const SearchBox: React.FC = () => {
       <div className="FlexRowBetween">
         <p>목적지</p>
         <input type="text" className="SearchBar" />
-        <div className="WayPointHiddenButton"></div>
+        <button type="button" onClick={searchingEndOn}>맵에서 목적지 클릭하기</button>
       </div>
       <button>확인</button>
     </div>
