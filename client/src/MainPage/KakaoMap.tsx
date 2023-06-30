@@ -82,7 +82,7 @@ function KakaoMap() {
               mouseEvent.latLng.getLat(),
               mouseEvent.latLng.getLng(),
             ];
-            console.log(globalVar.startPoint);
+            console.log(`출발지 좌표 : ${globalVar.startPoint}, 목적지 좌표 ${globalVar.endPoint}`);
 
             // 출발지 지정 이후, 전역변수를 false로 설정.
             globalVar.isSearchingStart = false;
@@ -121,7 +121,7 @@ function KakaoMap() {
               mouseEvent.latLng.getLat(),
               mouseEvent.latLng.getLng(),
             ];
-            console.log(globalVar.endPoint);
+            console.log(`출발지 좌표 : ${globalVar.startPoint}, 목적지 좌표 ${globalVar.endPoint}`);
 
             // 목적지 지정 이후, 전역변수를 false로 설정.
             globalVar.isSearchingEnd = false;
