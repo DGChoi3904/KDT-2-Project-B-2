@@ -17,6 +17,10 @@ const SearchBox: React.FC = () => {
     globalVar.isSearchingStart = true;
     alert("출발지점을 클릭해주세요.");
   }
+  function searchingEndOn(){
+    globalVar.isSearchingEnd = true;
+    alert("도착지점을 클릭해주세요.");
+  }
 
   return (
     <div className="SearchBoxWrap">
@@ -42,7 +46,7 @@ const SearchBox: React.FC = () => {
       <div className="FlexRowBetween">
         <p>목적지</p>
         <input type="text" className="SearchBar" />
-        <div className="WayPointHiddenButton"></div>
+        <button type="button" onClick={searchingEndOn}>맵에서 목적지 클릭하기</button>
       </div>
       <button>확인</button>
     </div>
