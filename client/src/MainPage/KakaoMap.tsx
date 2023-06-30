@@ -15,12 +15,14 @@ function KakaoMap() {
 
   const [startPath, setStartPath] = useState<string[]>([]);
   const [endPath, setEndPath] = useState<string[]>([]);
+  const [wayPath, setWayPath] = useState<string[]>([]);
+
   const [roadPath, setRoadPath] = useState<number[]>([]);
   const [dataCheck, setDataCheck] = useState<boolean>(false);
 
   const mapRef = useRef<any>(null);
   const startRef = useRef<string[]>([]);
-  const endRef = useRef<string[]>(endPath);
+  const endRef = useRef<string[]>([]);
 
   // 지도 생성
   useEffect(() => {
@@ -33,22 +35,6 @@ function KakaoMap() {
     const map = new window.kakao.maps.Map(Container, Options);
     // map을 Ref값에 등록
     mapRef.current = map;
-
-    // 임시로 직접 클릭으로 좌표 지정 기능 살려 둠 //
-    // window.kakao.maps.event.addListener(map, 'click', function (mouseEvent: { latLng: any }) {
-    //   const latlng = mouseEvent.latLng;
-
-    //   if (startPath.length === 0) {
-    //     setStartPath([latlng.getLat(), latlng.getLng()]);
-    //   } else {
-    //     setEndPath([latlng.getLat(), latlng.getLng()]);
-    //   }
-
-    //   const message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, 경도는 ' + latlng.getLng() + ' 입니다';
-    //   const resultDiv = document.getElementById('result')!;
-    //   resultDiv.innerHTML = message;
-    // });
-    // 임시로 직접 클릭으로 좌표 지정 기능 살려 둠 //
 
     const placesService = new window.kakao.maps.services.Places();
     const searchPlaces = (keyword: string) => {
@@ -110,8 +96,10 @@ function KakaoMap() {
 
       if(startRef.current.length === 0) {
         setStartPath([latlng.getLat(), latlng.getLng()]);
-      } else if(startRef.current.length !== 0) {
+      } else if(startRef.current.length !== 0 && endRef.current.length === 0) {
         setEndPath([latlng.getLat(), latlng.getLng()]);
+      } else if(startRef.current.length !== 0 && endRef.current.length !== 0) {
+        setWayPath([latlng.getLat(), latlng.getLng()]);
       } else {
         console.log('그 외')
       }
@@ -120,7 +108,7 @@ function KakaoMap() {
       const resultDiv = document.getElementById('result')!;
       resultDiv.innerHTML = message;
     });
-  }, [startPath, endPath])
+  }, [startPath, endPath, wayPath])
 
 
     // 확인용 console
@@ -129,7 +117,8 @@ function KakaoMap() {
       endRef.current = endPath;
       console.log('startPath: ', startPath)
       console.log('endPath: ', endPath)
-    }, [startPath, endPath])
+      console.log('wayPath: ', wayPath)
+    }, [startPath, endPath, wayPath])
 
   // polyline 그리기
   useEffect(() => {
@@ -159,49 +148,18 @@ function KakaoMap() {
     }
   }, [dataCheck, roadPath]);
 
-  // ! removeListener 해결 전까지 임시로 예전 코드 복구해두고 기능 막아둠
-  // const startPoint = () => window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) {
-  //   const latlng = mouseEvent.latLng;
-  //   console.log('handleStart')
-  //   setStartPath([latlng.getLat(), latlng.getLng()])
-  //   const message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, 경도는 ' + latlng.getLng() + ' 입니다';
-  //   const resultDiv = document.getElementById('result')!;
-  //   resultDiv.innerHTML = message;
-  // });
-
-  // const endPoint = () => window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) {
-  //   const latlng = mouseEvent.latLng;
-  //   console.log('handleEnd')
-  //   setEndPath([latlng.getLat(), latlng.getLng()])
-  //   const message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, 경도는 ' + latlng.getLng() + ' 입니다';
-  //   const resultDiv = document.getElementById('result')!;
-  //   resultDiv.innerHTML = message;
-  // });
-
-  // const handleNaviStart = () => {
-  //   window.kakao.maps.event.removeListener(mapRef.current, 'click', endPoint());
-  //   if (mapRef.current) {
-  //     console.log('handleNaviStart')
-  //     startPoint();
-  //   }
-  //   // removeListener() 를 통해 addListener()를 제거해야 함
-  //   // removeListener()를 사용하려면 const aaa = window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) { ... } 이런 형식으로 사용해야함
-  //   // 지금처럼 바로 addListener()를 사용하면 참조값을 찾을 수 없어 해제가 불가능
-  // }
-
-  // const handleNaviEnd = () => {
-  //   window.kakao.maps.event.removeListener(mapRef.current, 'click', startPoint());
-  //   if (mapRef.current) {
-  //     console.log('handleNaviEnd')
-  //     endPoint();
-  //   }
-  //   // removeListener() 를 통해 addListener()를 제거해야 함
-  // }
-
   // 경로안내 버튼 클릭 시 지정된 출발지/도착지 정보를 가지고 최단거리 산출
   const handleNavi = () => {
-    const url = `https://apis-navi.kakaomobility.com/v1/directions?priority=RECOMMEND&car_type=1&car_fuel=GASOLINE&origin=${startPath[1]}%2C+${startPath[0]}&destination=${endPath[1]}%2C+${endPath[0]}`;
-    console.log('url: ', url);
+
+    let url
+
+    if(wayPath.length === 0) {
+      url = `https://apis-navi.kakaomobility.com/v1/directions?priority=RECOMMEND&car_type=1&car_fuel=GASOLINE&origin=${startPath[1]}%2C${startPath[0]}&destination=${endPath[1]}%2C${endPath[0]}`;
+      console.log('url1: ', url);
+    } else {
+      url = `https://apis-navi.kakaomobility.com/v1/directions?priority=RECOMMEND&car_type=1&car_fuel=GASOLINE&origin=${startPath[1]}%2C${startPath[0]}&destination=${endPath[1]}%2C${endPath[0]}&waypoints=${wayPath[1]}%2C${wayPath[0]}`;
+      console.log('url2: ', url);
+    }
 
     const headers = {
       Authorization: 'KakaoAK 0f6a05d1d1d9ce7b4b2d324b0e39f02d',
@@ -215,16 +173,18 @@ function KakaoMap() {
     .then((jsonData) => {
       // 요청에 대한 처리
       console.log('응답 : ', jsonData)
-      
-      // 응답 데이터에서 roads 데이터만 추출
-      const roadData = jsonData['routes'][0]['sections'][0]['roads']
-      console.log('roadData : ', roadData);
 
       // roads 데이터에서 반복문을 통해 Node 좌표 추출
       const NodeData: number[] = []
-      for(let i = 0; i < roadData.length; i++) {
-        for(let j = 0; j < roadData[i]['vertexes'].length; j++) {
-          NodeData.push(roadData[i]['vertexes'][j])
+      
+      // 응답 데이터에서 roads 데이터만 추출
+      const count = jsonData['routes'][0]['sections'].length;
+      console.log('count : ', count);
+      for(let a = 0; a < count; a++) {
+        for(let i = 0; i < jsonData['routes'][0]['sections'][a]['roads'].length; i++) {
+          for(let j = 0; j < jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'].length; j++) {
+            NodeData.push(jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j])
+          }
         }
       }
       console.log(NodeData)
