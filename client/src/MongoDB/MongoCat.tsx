@@ -7,30 +7,33 @@ export default function MongoCat() {
   const [catList, setCatList] = useState([]);
 
   const loadCats = async () => {
+    // 전체 고양이 목록을 조회하는 메서드
     try {
-      const response = await fetch('/cats', {
-        method: 'GET',
+      fetch('/cats', {
         headers: {
-          'Content-Type': 'application/json',
+          Accept: 'application / json',
         },
-      });
-      if (response.ok) {
-        const catData = await response.json();
-        console.log(catData + '/cats Get요청');
-        setCatList(catData);
-      } else {
-        console.error('데이터 조회 실패');
-      }
+        method: 'GET',
+      })
+        .then((response) => response.json())
+        .then((data) => {
+          setCatList(data);
+        })
+        .catch((error) => {
+          console.error(error);
+        });
     } catch (error) {
       console.error('조회 중 에러 발생.', error);
     }
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    //고양이를 DB에 등록하는 메서드.
     e.preventDefault();
 
     try {
       const response = await fetch('/cats', {
+        // Post방식으로 /cats 경로에 요청을 보냄
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -49,6 +52,7 @@ export default function MongoCat() {
   };
 
   const handleFindOne = async (id: string) => {
+    // 한마리만 조회하는 메소드. 아직 사용X
     try {
       const response = await fetch(`/cats/${id}`);
       if (response.ok) {
@@ -63,7 +67,7 @@ export default function MongoCat() {
   };
 
   useEffect(() => {
-    loadCats(); // 컴포넌트가 마운트될 때 초기 데이터 조회
+    // loadCats(); // 컴포넌트가 마운트될 때 초기 데이터 조회
   }, []);
 
   return (
