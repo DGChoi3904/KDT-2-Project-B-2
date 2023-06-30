@@ -1,23 +1,20 @@
 import React, { useEffect, useState } from 'react';
 import './Main.css';
+import globalVar from './Global';
 
 declare global {
   interface Window {
     kakao: any;
   }
 }
-interface KakaoMapProps {
-  isSearchingStart: boolean;
-  setIsSearchingStart: (value: boolean) => void;
-}
 
 const { kakao } = window;
 
-function KakaoMap({ isSearchingStart, setIsSearchingStart }: KakaoMapProps) {
+function KakaoMap() {
   const [startPoint, setStartPoint] = useState([]);
   const [endPoint, setEndPoint] = useState([]);
   useEffect(() => {
-    console.log("여기는 useEffect부분, isSearchingStart는 현재 " + isSearchingStart + "이다.")
+    console.log("여기는 useEffect Start부분, isSearchingStart는 현재 " + globalVar.isSearchingStart + "이다.")
     const Container = document.getElementById('map'); // 지도를 표시할 div
     const Options = {
       center: new kakao.maps.LatLng(36.35, 127.385), // 지도의 중심좌표
@@ -27,14 +24,14 @@ function KakaoMap({ isSearchingStart, setIsSearchingStart }: KakaoMapProps) {
     // 주소-좌표 변환 객체를 생성합니다
     var geocoder = new kakao.maps.services.Geocoder();
 
-    var marker = new kakao.maps.Marker(), // 클릭한 위치를 표시할 마커입니다
+    var startMarker = new kakao.maps.Marker(), // 클릭한 위치를 표시할 마커입니다
       infowindow = new kakao.maps.InfoWindow({ zindex: 1 }); // 클릭한 위치에 대한 주소를 표시할 인포윈도우입니다
 
     const map = new kakao.maps.Map(Container, Options);
 
     kakao.maps.event.addListener(map, 'click', (mouseEvent: { latLng: any }) => {
-      console.log("여기는 onClick이벤트 부분, isSearchingStart는 현재 " + isSearchingStart + "이다.")
-      if(isSearchingStart){
+      console.log("여기는 onClick이벤트 시작부분, 전역변수 isSearchingStart는 현재" + globalVar.isSearchingStart + " 이다.")
+      if(globalVar.isSearchingStart){
         console.log(mouseEvent);
         onClickSetStartPoint(mouseEvent);
       }
@@ -62,20 +59,21 @@ function KakaoMap({ isSearchingStart, setIsSearchingStart }: KakaoMapProps) {
               '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
 
             var content =
-              '<div class="StartAddr">' +
+              '<div style="padding:5px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;">' +
               '<span class="title">출발지 주소 정보</span>' +
               detailAddr +
               '</div>';
 
             // 마커를 클릭한 위치에 표시합니다
-            marker.setPosition(mouseEvent.latLng);
-            marker.setMap(map);
+            startMarker.setPosition(mouseEvent.latLng);
+            startMarker.setMap(map);
 
             // 인포윈도우에 클릭한 위치에 대한 법정동 상세 주소정보를 표시합니다
             infowindow.setContent(content);
-            infowindow.open(map, marker);
-            setIsSearchingStart(false);
-            console.log(isSearchingStart);
+            infowindow.open(map, startMarker);
+            
+            globalVar.isSearchingStart = false;
+            console.log("함수 절차 완료후 값 확인, 전역변수 isSearchingStart는 " + globalVar.isSearchingStart + "이다.");
           }
         },
       );

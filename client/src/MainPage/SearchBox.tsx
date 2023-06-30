@@ -1,12 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useRef } from 'react';
 import './Main.css';
+import globalVar from './Global';
 
-interface SearchBoxProps {
-  isSearchingStart : boolean;
-  setIsSearchingStart: (value: boolean) => void;
-}
 
-const SearchBox: React.FC<SearchBoxProps> = ({ isSearchingStart, setIsSearchingStart }) => {
+
+const SearchBox: React.FC = () => {
   const [wayPointCount, setWayPointCount] = useState(1);
   const [startPoint, setStartPoint] = useState([]);
   const [endPoint, setEndPoint] = useState([]);
@@ -16,9 +14,10 @@ const SearchBox: React.FC<SearchBoxProps> = ({ isSearchingStart, setIsSearchingS
 
   
   function searchingStartOn(){
-    setIsSearchingStart(true);
-    console.log(isSearchingStart);
-    alert("출발지점을 클릭해주세요.")
+    globalVar.isSearchingStart = true;
+    console.log("전역변수 isSearchingStart는 " + globalVar.isSearchingStart + " 이다.");
+    alert("출발지점을 클릭해주세요.");
+    console.log("전역변수 isSearchingStart는 이제 " + globalVar.isSearchingStart + " 이다.");
   }
 
   return (

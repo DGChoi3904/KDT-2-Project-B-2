@@ -11,14 +11,13 @@ import SaveWayModal from './SaveWayModal';
 import './Main.css';
 
 function MainPage() {
-  const [isSearchingStart, setIsSearchingStart] = useState<boolean>(false);
   return (
     <div className='MainWrap'>
       <TopMenu />
-      <KakaoMap isSearchingStart={isSearchingStart} setIsSearchingStart={setIsSearchingStart} />
+      <KakaoMap />
       <MyWayList />
       <LoginModal />
-      <SearchBox isSearchingStart={isSearchingStart} setIsSearchingStart={setIsSearchingStart} />
+      <SearchBox />
       <SaveWayModal />
     </div>
   )
