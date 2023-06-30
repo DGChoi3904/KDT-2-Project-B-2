@@ -97,7 +97,7 @@ function KakaoMap() {
       document.head.removeChild(script);
     };
   }, []);
-
+  //검색 버튼 클릭시 장소 검색
   const handleSearch = () => {
     const placesService = new window.kakao.maps.services.Places();
     placesService.keywordSearch(keyword, (result: any, status: any) => {
