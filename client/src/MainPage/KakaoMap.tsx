@@ -31,6 +31,22 @@ function KakaoMap() {
     // map을 Ref값에 등록
     mapRef.current = map;
 
+    // 임시로 직접 클릭으로 좌표 지정 기능 살려 둠 //
+    window.kakao.maps.event.addListener(map, 'click', function (mouseEvent: { latLng: any }) {
+      const latlng = mouseEvent.latLng;
+
+      if (startPath.length === 0) {
+        setStartPath([latlng.getLat(), latlng.getLng()]);
+      } else {
+        setEndPath([latlng.getLat(), latlng.getLng()]);
+      }
+
+      const message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, 경도는 ' + latlng.getLng() + ' 입니다';
+      const resultDiv = document.getElementById('result')!;
+      resultDiv.innerHTML = message;
+    });
+    // 임시로 직접 클릭으로 좌표 지정 기능 살려 둠 //
+
     const placesService = new window.kakao.maps.services.Places();
     const searchPlaces = (keyword: string) => {
       placesService.keywordSearch(keyword, (result: any, status: any) => {
@@ -83,7 +99,7 @@ function KakaoMap() {
 
     addMarkersToMap();
 
-  }, []);
+  }, [startPath]);
 
     // 확인용 console
     useEffect(() => {
@@ -119,34 +135,44 @@ function KakaoMap() {
     }
   }, [dataCheck, roadPath]);
 
-  const handleNaviStart = () => {
-    if (mapRef.current) {
-      window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) {
-        const latlng = mouseEvent.latLng;
-        setStartPath([latlng.getLat(), latlng.getLng()])
-        const message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, 경도는 ' + latlng.getLng() + ' 입니다';
-        const resultDiv = document.getElementById('result')!;
-        resultDiv.innerHTML = message;
-      });
-    }
-    // removeListener() 를 통해 addListener()를 제거해야 함
-    // removeListener()를 사용하려면 const aaa = window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) { ... } 이런 형식으로 사용해야함
-    // 지금처럼 바로 addListener()를 사용하면 참조값을 찾을 수 없어 해제가 불가능
-  }
+  // ! removeListener 해결 전까지 임시로 예전 코드 복구해두고 기능 막아둠
+  // const startPoint = () => window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) {
+  //   const latlng = mouseEvent.latLng;
+  //   console.log('handleStart')
+  //   setStartPath([latlng.getLat(), latlng.getLng()])
+  //   const message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, 경도는 ' + latlng.getLng() + ' 입니다';
+  //   const resultDiv = document.getElementById('result')!;
+  //   resultDiv.innerHTML = message;
+  // });
 
-  const handleNaviEnd = () => {
-    window.kakao.maps.event.removeListener(mapRef.current, 'click', handleNaviStart);
-    if (mapRef.current) {
-      window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) {
-        const latlng = mouseEvent.latLng;
-        setEndPath([latlng.getLat(), latlng.getLng()])
-        const message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, 경도는 ' + latlng.getLng() + ' 입니다';
-        const resultDiv = document.getElementById('result')!;
-        resultDiv.innerHTML = message;
-      });
-    }
-    // removeListener() 를 통해 addListener()를 제거해야 함
-  }
+  // const endPoint = () => window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) {
+  //   const latlng = mouseEvent.latLng;
+  //   console.log('handleEnd')
+  //   setEndPath([latlng.getLat(), latlng.getLng()])
+  //   const message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, 경도는 ' + latlng.getLng() + ' 입니다';
+  //   const resultDiv = document.getElementById('result')!;
+  //   resultDiv.innerHTML = message;
+  // });
+
+  // const handleNaviStart = () => {
+  //   window.kakao.maps.event.removeListener(mapRef.current, 'click', endPoint());
+  //   if (mapRef.current) {
+  //     console.log('handleNaviStart')
+  //     startPoint();
+  //   }
+  //   // removeListener() 를 통해 addListener()를 제거해야 함
+  //   // removeListener()를 사용하려면 const aaa = window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) { ... } 이런 형식으로 사용해야함
+  //   // 지금처럼 바로 addListener()를 사용하면 참조값을 찾을 수 없어 해제가 불가능
+  // }
+
+  // const handleNaviEnd = () => {
+  //   window.kakao.maps.event.removeListener(mapRef.current, 'click', startPoint());
+  //   if (mapRef.current) {
+  //     console.log('handleNaviEnd')
+  //     endPoint();
+  //   }
+  //   // removeListener() 를 통해 addListener()를 제거해야 함
+  // }
 
   // 경로안내 버튼 클릭 시 지정된 출발지/도착지 정보를 가지고 최단거리 산출
   const handleNavi = () => {
@@ -225,8 +251,8 @@ function KakaoMap() {
         />
         <button onClick={handleSearch}>Search</button>
       </div>
-      <button onClick={handleNaviStart}>출발지 설정</button>
-      <button onClick={handleNaviEnd}>목적지 설정</button>
+      {/* <button onClick={handleNaviStart}>출발지 설정</button> */}
+      {/* <button onClick={handleNaviEnd}>목적지 설정</button> */}
       <button onClick={handleNavi}>경로 안내</button>
     </div>
   );
