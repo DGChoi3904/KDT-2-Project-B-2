@@ -199,26 +199,82 @@ function KakaoMap() {
     console.log('polyline 그리기');
     if (dataCheck === true && mapRef.current) {
       // path 데이터 저장용 빈 배열
-      const linePath = [];
+      // 0: 정보 없음
+      // 1: 정체
+      // 2: 지체
+      // 3: 서행
+      // 4: 원활
+      // 6: 교통사고(통행 불가)
+      const linePath0 = [];
+      const linePath1 = [];
+      const linePath2 = [];
+      const linePath3 = [];
+      const linePath4 = [];
+      const linePath6 = [];
 
       // roadPath의 데이터를 kakao.maps.LatLng() 메서드에 입력
       for (let i = 0; i < roadPath.length; i = i + 2) {
         const lng = roadPath[i];
         const lat = roadPath[i + 1];
         const latlng = new window.kakao.maps.LatLng(lat, lng);
-        linePath.push(latlng);
+        linePath0.push(latlng);
       }
 
-      console.log('linePath', linePath);
-      const polyline = new window.kakao.maps.Polyline({
-        path: linePath,
+      // console.log('linePath', linePath);
+      const polyline0 = new window.kakao.maps.Polyline({
+        path: linePath0,
         strokeWeight: 7,
         strokeColor: '#F86F03',
         strokeOpacity: 1,
         strokeStyle: 'solid',
       });
 
-      polyline.setMap(mapRef.current);
+      const polyline1 = new window.kakao.maps.Polyline({
+        path: linePath0,
+        strokeWeight: 7,
+        strokeColor: '#F86F03',
+        strokeOpacity: 1,
+        strokeStyle: 'solid',
+      });
+
+      const polyline2 = new window.kakao.maps.Polyline({
+        path: linePath0,
+        strokeWeight: 7,
+        strokeColor: '#F86F03',
+        strokeOpacity: 1,
+        strokeStyle: 'solid',
+      });
+
+      const polyline3 = new window.kakao.maps.Polyline({
+        path: linePath0,
+        strokeWeight: 7,
+        strokeColor: '#F86F03',
+        strokeOpacity: 1,
+        strokeStyle: 'solid',
+      });
+
+      const polyline4 = new window.kakao.maps.Polyline({
+        path: linePath0,
+        strokeWeight: 7,
+        strokeColor: '#2DB400',
+        strokeOpacity: 1,
+        strokeStyle: 'solid',
+      });
+
+      const polyline6 = new window.kakao.maps.Polyline({
+        path: linePath0,
+        strokeWeight: 7,
+        strokeColor: '#F86F03',
+        strokeOpacity: 1,
+        strokeStyle: 'solid',
+      });
+
+      polyline0.setMap(mapRef.current);
+      polyline1.setMap(mapRef.current);
+      polyline2.setMap(mapRef.current);
+      polyline3.setMap(mapRef.current);
+      polyline4.setMap(mapRef.current);
+      polyline6.setMap(mapRef.current);
     }
   }, [dataCheck, roadPath]);
 
