@@ -7,20 +7,22 @@ import MyWayList from './MyWayList';
 import LoginModal from './LoginModal';
 import SearchBox from './SearchBox';
 import SaveWayModal from './SaveWayModal';
+import MongoCat from '../MongoDB/MongoCat';
 
 import './Main.css';
 
 function MainPage() {
   return (
-    <div className='MainWrap'>
+    <div className="MainWrap">
       <TopMenu />
       <KakaoMap />
       <MyWayList />
       <LoginModal />
       <SearchBox />
       <SaveWayModal />
+      <MongoCat />
     </div>
-  )
+  );
 }
 
 export default MainPage;

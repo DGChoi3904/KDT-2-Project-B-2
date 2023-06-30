@@ -7,16 +7,16 @@ import { join } from 'path';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('*')
-  serveFile(@Req() req: Request, @Res() res: Response) {
-    const filePath = join(
-      __dirname,
-      '..',
-      '..',
-      'client',
-      'build',
-      'index.html',
-    );
-    return res.sendFile(filePath);
-  }
+  // @Get('*')
+  // serveFile(@Req() req: Request, @Res() res: Response) {
+  //   const filePath = join(
+  //     __dirname,
+  //     '..',
+  //     '..',
+  //     'client',
+  //     'build',
+  //     'index.html',
+  //   );
+  //   return res.sendFile(filePath);
+  // }
 }
