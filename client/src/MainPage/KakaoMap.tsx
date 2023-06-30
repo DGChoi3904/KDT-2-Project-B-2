@@ -17,7 +17,10 @@ function KakaoMap() {
   const [endPath, setEndPath] = useState<string[]>([]);
   const [roadPath, setRoadPath] = useState<number[]>([]);
   const [dataCheck, setDataCheck] = useState<boolean>(false);
+
   const mapRef = useRef<any>(null);
+  const startRef = useRef<string[]>([]);
+  const endRef = useRef<string[]>(endPath);
 
   // 지도 생성
   useEffect(() => {
@@ -99,16 +102,18 @@ function KakaoMap() {
 
     addMarkersToMap();
 
-  }, [startPath]);
+  }, []);
 
   useEffect(() => {
     window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) {
       const latlng = mouseEvent.latLng;
 
-      if (startPath.length === 0) {
+      if(startRef.current.length === 0) {
         setStartPath([latlng.getLat(), latlng.getLng()]);
-      } else {
+      } else if(startRef.current.length !== 0) {
         setEndPath([latlng.getLat(), latlng.getLng()]);
+      } else {
+        console.log('그 외')
       }
 
       const message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, 경도는 ' + latlng.getLng() + ' 입니다';
@@ -117,8 +122,11 @@ function KakaoMap() {
     });
   }, [startPath, endPath])
 
+
     // 확인용 console
     useEffect(() => {
+      startRef.current = startPath;
+      endRef.current = endPath;
       console.log('startPath: ', startPath)
       console.log('endPath: ', endPath)
     }, [startPath, endPath])
