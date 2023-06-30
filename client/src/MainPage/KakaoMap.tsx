@@ -205,76 +205,105 @@ function KakaoMap() {
       // 3: 서행
       // 4: 원활
       // 6: 교통사고(통행 불가)
-      const linePath0 = [];
-      const linePath1 = [];
-      const linePath2 = [];
-      const linePath3 = [];
-      const linePath4 = [];
-      const linePath6 = [];
 
-      // roadPath의 데이터를 kakao.maps.LatLng() 메서드에 입력
-      for (let i = 0; i < roadPath.length; i = i + 2) {
+      const linePaths = {
+        0: { color: '#FFF6F4' },
+        1: { color: '#C80000' },
+        2: { color: '#F86F03' },
+        3: { color: '#FEE500' },
+        4: { color: '#2DB400' },
+        6: { color: '#6B6E70' },
+      }
+
+      const polylines: any = {};
+
+      for (const key in linePaths) {
+        polylines[key] = new window.kakao.maps.Polyline({
+          path: [],
+          strokeWeight: 7,
+          strokeColor: linePaths[key].color,
+          strokeOpacity: 1,
+          strokeStyle: 'solid',
+        });
+      }
+
+      for (let i = 0; i < roadPath.length; i += 2) {
         const lng = roadPath[i];
         const lat = roadPath[i + 1];
         const latlng = new window.kakao.maps.LatLng(lat, lng);
-        linePath0.push(latlng);
+      
+        for (const key in linePaths) {
+          polylines[key].getPath().push(latlng);
+        }
       }
 
+      for (const key in polylines) {
+        polylines[key].setMap(mapRef.current);
+      }
+
+      // roadPath의 데이터를 kakao.maps.LatLng() 메서드에 입력
+      // for (let i = 0; i < roadPath.length; i = i + 2) {
+      //   const lng = roadPath[i];
+      //   const lat = roadPath[i + 1];
+      //   const latlng = new window.kakao.maps.LatLng(lat, lng);
+      //   linePath0.push(latlng);
+      // }
+
       // console.log('linePath', linePath);
-      const polyline0 = new window.kakao.maps.Polyline({
-        path: linePath0,
-        strokeWeight: 7,
-        strokeColor: '#F86F03',
-        strokeOpacity: 1,
-        strokeStyle: 'solid',
-      });
+      // const polyline0 = new window.kakao.maps.Polyline({
+      //   path: linePath0,
+      //   strokeWeight: 7,
+      //   strokeColor: '#F86F03',
+      //   strokeOpacity: 1,
+      //   strokeStyle: 'solid',
+      // });
 
-      const polyline1 = new window.kakao.maps.Polyline({
-        path: linePath0,
-        strokeWeight: 7,
-        strokeColor: '#F86F03',
-        strokeOpacity: 1,
-        strokeStyle: 'solid',
-      });
+      // const polyline1 = new window.kakao.maps.Polyline({
+      //   path: linePath0,
+      //   strokeWeight: 7,
+      //   strokeColor: '#F86F03',
+      //   strokeOpacity: 1,
+      //   strokeStyle: 'solid',
+      // });
 
-      const polyline2 = new window.kakao.maps.Polyline({
-        path: linePath0,
-        strokeWeight: 7,
-        strokeColor: '#F86F03',
-        strokeOpacity: 1,
-        strokeStyle: 'solid',
-      });
+      // const polyline2 = new window.kakao.maps.Polyline({
+      //   path: linePath0,
+      //   strokeWeight: 7,
+      //   strokeColor: '#F86F03',
+      //   strokeOpacity: 1,
+      //   strokeStyle: 'solid',
+      // });
 
-      const polyline3 = new window.kakao.maps.Polyline({
-        path: linePath0,
-        strokeWeight: 7,
-        strokeColor: '#F86F03',
-        strokeOpacity: 1,
-        strokeStyle: 'solid',
-      });
+      // const polyline3 = new window.kakao.maps.Polyline({
+      //   path: linePath0,
+      //   strokeWeight: 7,
+      //   strokeColor: '#F86F03',
+      //   strokeOpacity: 1,
+      //   strokeStyle: 'solid',
+      // });
 
-      const polyline4 = new window.kakao.maps.Polyline({
-        path: linePath0,
-        strokeWeight: 7,
-        strokeColor: '#2DB400',
-        strokeOpacity: 1,
-        strokeStyle: 'solid',
-      });
+      // const polyline4 = new window.kakao.maps.Polyline({
+      //   path: linePath0,
+      //   strokeWeight: 7,
+      //   strokeColor: '#2DB400',
+      //   strokeOpacity: 1,
+      //   strokeStyle: 'solid',
+      // });
 
-      const polyline6 = new window.kakao.maps.Polyline({
-        path: linePath0,
-        strokeWeight: 7,
-        strokeColor: '#F86F03',
-        strokeOpacity: 1,
-        strokeStyle: 'solid',
-      });
+      // const polyline6 = new window.kakao.maps.Polyline({
+      //   path: linePath0,
+      //   strokeWeight: 7,
+      //   strokeColor: '#F86F03',
+      //   strokeOpacity: 1,
+      //   strokeStyle: 'solid',
+      // });
 
-      polyline0.setMap(mapRef.current);
-      polyline1.setMap(mapRef.current);
-      polyline2.setMap(mapRef.current);
-      polyline3.setMap(mapRef.current);
-      polyline4.setMap(mapRef.current);
-      polyline6.setMap(mapRef.current);
+      // polyline0.setMap(mapRef.current);
+      // polyline1.setMap(mapRef.current);
+      // polyline2.setMap(mapRef.current);
+      // polyline3.setMap(mapRef.current);
+      // polyline4.setMap(mapRef.current);
+      // polyline6.setMap(mapRef.current);
     }
   }, [dataCheck, roadPath]);
 
