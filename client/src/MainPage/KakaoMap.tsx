@@ -1,7 +1,18 @@
 import React, { useEffect, useState, useRef } from 'react';
 import './Main.css';
 
+interface Place {
+  id: string;
+  name: string;
+  x: number;
+  y: number;
+}
+
 function KakaoMap() {
+  const [keyword, setKeyword] = useState('');
+  const [places, setPlaces] = useState<Place[]>([]);
+  const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
+
   const [startPath, setStartPath] = useState<string[]>([]);
   const [endPath, setEndPath] = useState<string[]>([]);
   const [roadPath, setRoadPath] = useState<number[]>([]);
@@ -19,28 +30,60 @@ function KakaoMap() {
     const map = new window.kakao.maps.Map(Container, Options);
     // map을 Ref값에 등록
     mapRef.current = map;
+
+    const placesService = new window.kakao.maps.services.Places();
+    const searchPlaces = (keyword: string) => {
+      placesService.keywordSearch(keyword, (result: any, status: any) => {
+        if (status === window.kakao.maps.services.Status.OK) {
+          setPlaces(
+            result.map((place: any) => ({
+              id: place.id,
+              name: place.place_name,
+              x: place.x,
+              y: place.y,
+            })),
+          );
+        }
+      });
+    };
+
+    const markerImage = new window.kakao.maps.MarkerImage(
+      'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png',
+      new window.kakao.maps.Size(64, 69),
+    );
+
+    const addMarkersToMap = () => {
+      places.forEach((place) => {
+        const markerPosition = new window.kakao.maps.LatLng(
+          place.y,
+          place.x,
+        );
+        const marker = new window.kakao.maps.Marker({
+          position: markerPosition,
+          image: markerImage,
+        });
+
+        marker.setMap(map);
+
+        window.kakao.maps.event.addListener(marker, 'click', () => {
+          setSelectedPlace(place);
+          map.setCenter(markerPosition);
+        });
+      });
+
+      if (places.length > 0) {
+        const firstPlace = places[0];
+        const firstPlacePosition = new window.kakao.maps.LatLng(
+          firstPlace.y,
+          firstPlace.x,
+        );
+        map.setCenter(firstPlacePosition); // 검색에 해당하는 첫 번째 장소로 지도 이동
+      }
+    };
+
+    addMarkersToMap();
+
   }, []);
-
-  // useEffect(() => {
-  //   if (mapRef.current) {
-  //     window.kakao.maps.event.addListener(mapRef.current, 'click', function (mouseEvent: { latLng: any }) {
-  //       const latlng = mouseEvent.latLng;
-
-  //       if (startPath.length === 0) {
-  //         console.log("1")
-  //         console.log(startPath.length)
-  //         setStartPath([latlng.getLat(), latlng.getLng()]);
-  //       } else {
-  //         console.log("2")
-  //         setEndPath([latlng.getLat(), latlng.getLng()]);
-  //       }
-
-  //       const message = '클릭한 위치의 위도는 ' + latlng.getLat() + ' 이고, 경도는 ' + latlng.getLng() + ' 입니다';
-  //       const resultDiv = document.getElementById('result')!;
-  //       resultDiv.innerHTML = message;
-  //     });
-  //   }
-  // }, [startPath]);
 
     // 확인용 console
     useEffect(() => {
@@ -143,12 +186,45 @@ function KakaoMap() {
       // 오류 처리
       console.error(error);
     });
-  }
+  };
+
+  const handleSearch = () => {
+    const placesService = new window.kakao.maps.services.Places();
+    placesService.keywordSearch(keyword, (result: any, status: any) => {
+      if (status === window.kakao.maps.services.Status.OK) {
+        setPlaces(
+          result.map((place: any) => ({
+            id: place.id,
+            name: place.place_name,
+            x: place.x,
+            y: place.y,
+          })),
+        );
+
+        if (mapRef.current && result.length > 0) {
+          const firstPlace = result[0];
+          const firstPlacePosition = new window.kakao.maps.LatLng(
+            firstPlace.y,
+            firstPlace.x,
+          );
+          mapRef.current.setCenter(firstPlacePosition);
+        }
+      }
+    });
+  };
 
   return (
     <div>
       <div id="map" className="MapNormalSize"></div>
       <div id="result"></div>
+      <div>
+        <input
+          type="text"
+          value={keyword}
+          onChange={(e) => setKeyword(e.target.value)}
+        />
+        <button onClick={handleSearch}>Search</button>
+      </div>
       <button onClick={handleNaviStart}>출발지 설정</button>
       <button onClick={handleNaviEnd}>목적지 설정</button>
       <button onClick={handleNavi}>경로 안내</button>
