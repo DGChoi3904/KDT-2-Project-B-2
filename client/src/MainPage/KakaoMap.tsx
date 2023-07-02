@@ -14,7 +14,12 @@ function KakaoMap() {
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
-  const [roadPath, setRoadPath] = useState<number[]>([]);
+  const [roadPath0, setRoadPath0] = useState<number[]>([]);
+  const [roadPath1, setRoadPath1] = useState<number[]>([]);
+  const [roadPath2, setRoadPath2] = useState<number[]>([]);
+  const [roadPath3, setRoadPath3] = useState<number[]>([]);
+  const [roadPath4, setRoadPath4] = useState<number[]>([]);
+  const [roadPath6, setRoadPath6] = useState<number[]>([]);
   const [dataCheck, setDataCheck] = useState<boolean>(false);
 
   const mapRef = useRef<any>(null);
@@ -215,97 +220,117 @@ function KakaoMap() {
         6: { color: '#6B6E70' },
       }
 
-      const polylines: any = {};
-
-      for (const key in linePaths) {
-        polylines[key] = new window.kakao.maps.Polyline({
-          path: [],
-          strokeWeight: 7,
-          strokeColor: linePaths[key].color,
-          strokeOpacity: 1,
-          strokeStyle: 'solid',
-        });
-      }
-
-      for (let i = 0; i < roadPath.length; i += 2) {
-        const lng = roadPath[i];
-        const lat = roadPath[i + 1];
-        const latlng = new window.kakao.maps.LatLng(lat, lng);
-      
-        for (const key in linePaths) {
-          polylines[key].getPath().push(latlng);
-        }
-      }
-
-      for (const key in polylines) {
-        polylines[key].setMap(mapRef.current);
-      }
-
+      // linePath와 polyline을 객체로 만들어서 코드 줄일 필요가 있음
+      const linePath0 = [];
       // roadPath의 데이터를 kakao.maps.LatLng() 메서드에 입력
-      // for (let i = 0; i < roadPath.length; i = i + 2) {
-      //   const lng = roadPath[i];
-      //   const lat = roadPath[i + 1];
-      //   const latlng = new window.kakao.maps.LatLng(lat, lng);
-      //   linePath0.push(latlng);
-      // }
+      for (let i = 0; i < roadPath0.length; i = i + 2) {
+        const lng = roadPath0[i];
+        const lat = roadPath0[i + 1];
+        const latlng = new window.kakao.maps.LatLng(lat, lng);
+        linePath0.push(latlng);
+      }
 
-      // console.log('linePath', linePath);
-      // const polyline0 = new window.kakao.maps.Polyline({
-      //   path: linePath0,
-      //   strokeWeight: 7,
-      //   strokeColor: '#F86F03',
-      //   strokeOpacity: 1,
-      //   strokeStyle: 'solid',
-      // });
+      const polyline0 = new window.kakao.maps.Polyline({
+        path: linePath0,
+        strokeWeight: 7,
+        strokeColor: linePaths[0],
+        strokeOpacity: 1,
+        strokeStyle: 'solid',
+      });
 
-      // const polyline1 = new window.kakao.maps.Polyline({
-      //   path: linePath0,
-      //   strokeWeight: 7,
-      //   strokeColor: '#F86F03',
-      //   strokeOpacity: 1,
-      //   strokeStyle: 'solid',
-      // });
+      const linePath1 = [];
+      // roadPath의 데이터를 kakao.maps.LatLng() 메서드에 입력
+      for (let i = 0; i < roadPath1.length; i = i + 2) {
+        const lng = roadPath1[i];
+        const lat = roadPath1[i + 1];
+        const latlng = new window.kakao.maps.LatLng(lat, lng);
+        linePath1.push(latlng);
+      }
 
-      // const polyline2 = new window.kakao.maps.Polyline({
-      //   path: linePath0,
-      //   strokeWeight: 7,
-      //   strokeColor: '#F86F03',
-      //   strokeOpacity: 1,
-      //   strokeStyle: 'solid',
-      // });
+      const polyline1 = new window.kakao.maps.Polyline({
+        path: linePath1,
+        strokeWeight: 7,
+        strokeColor: linePaths[1],
+        strokeOpacity: 1,
+        strokeStyle: 'solid',
+      });
 
-      // const polyline3 = new window.kakao.maps.Polyline({
-      //   path: linePath0,
-      //   strokeWeight: 7,
-      //   strokeColor: '#F86F03',
-      //   strokeOpacity: 1,
-      //   strokeStyle: 'solid',
-      // });
+      const linePath2 = [];
+      // roadPath의 데이터를 kakao.maps.LatLng() 메서드에 입력
+      for (let i = 0; i < roadPath2.length; i = i + 2) {
+        const lng = roadPath2[i];
+        const lat = roadPath2[i + 1];
+        const latlng = new window.kakao.maps.LatLng(lat, lng);
+        linePath2.push(latlng);
+      }
 
-      // const polyline4 = new window.kakao.maps.Polyline({
-      //   path: linePath0,
-      //   strokeWeight: 7,
-      //   strokeColor: '#2DB400',
-      //   strokeOpacity: 1,
-      //   strokeStyle: 'solid',
-      // });
+      const polyline2 = new window.kakao.maps.Polyline({
+        path: linePath2,
+        strokeWeight: 7,
+        strokeColor: linePaths[0],
+        strokeOpacity: 1,
+        strokeStyle: 'solid',
+      });
 
-      // const polyline6 = new window.kakao.maps.Polyline({
-      //   path: linePath0,
-      //   strokeWeight: 7,
-      //   strokeColor: '#F86F03',
-      //   strokeOpacity: 1,
-      //   strokeStyle: 'solid',
-      // });
+      const linePath3 = [];
+      // roadPath의 데이터를 kakao.maps.LatLng() 메서드에 입력
+      for (let i = 0; i < roadPath3.length; i = i + 2) {
+        const lng = roadPath3[i];
+        const lat = roadPath3[i + 1];
+        const latlng = new window.kakao.maps.LatLng(lat, lng);
+        linePath3.push(latlng);
+      }
 
-      // polyline0.setMap(mapRef.current);
-      // polyline1.setMap(mapRef.current);
-      // polyline2.setMap(mapRef.current);
-      // polyline3.setMap(mapRef.current);
-      // polyline4.setMap(mapRef.current);
-      // polyline6.setMap(mapRef.current);
+      const polyline3 = new window.kakao.maps.Polyline({
+        path: linePath3,
+        strokeWeight: 7,
+        strokeColor: linePaths[3],
+        strokeOpacity: 1,
+        strokeStyle: 'solid',
+      });
+
+      const linePath4 = [];
+      // roadPath의 데이터를 kakao.maps.LatLng() 메서드에 입력
+      for (let i = 0; i < roadPath4.length; i = i + 2) {
+        const lng = roadPath4[i];
+        const lat = roadPath4[i + 1];
+        const latlng = new window.kakao.maps.LatLng(lat, lng);
+        linePath4.push(latlng);
+      }
+
+      const polyline4 = new window.kakao.maps.Polyline({
+        path: linePath4,
+        strokeWeight: 7,
+        strokeColor: linePaths[4],
+        strokeOpacity: 1,
+        strokeStyle: 'solid',
+      });
+
+      const linePath6 = [];
+      // roadPath의 데이터를 kakao.maps.LatLng() 메서드에 입력
+      for (let i = 0; i < roadPath6.length; i = i + 2) {
+        const lng = roadPath6[i];
+        const lat = roadPath6[i + 1];
+        const latlng = new window.kakao.maps.LatLng(lat, lng);
+        linePath6.push(latlng);
+      }
+
+      const polyline6 = new window.kakao.maps.Polyline({
+        path: linePath6,
+        strokeWeight: 7,
+        strokeColor: linePaths[6],
+        strokeOpacity: 1,
+        strokeStyle: 'solid',
+      });
+
+      polyline0.setMap(mapRef.current);
+      polyline1.setMap(mapRef.current);
+      polyline2.setMap(mapRef.current);
+      polyline3.setMap(mapRef.current);
+      polyline4.setMap(mapRef.current);
+      polyline6.setMap(mapRef.current);
     }
-  }, [dataCheck, roadPath]);
+  }, [dataCheck, roadPath0, roadPath1, roadPath2, roadPath3, roadPath4, roadPath6]);
 
   // 경로안내 버튼 클릭 시 지정된 출발지/도착지 정보를 가지고 최단거리 산출
   const handleNavi = () => {
@@ -330,17 +355,45 @@ function KakaoMap() {
         console.log('roadData : ', roadData);
 
         // roads 데이터에서 반복문을 통해 Node 좌표 추출
-        const NodeData: number[] = [];
+        const NodeData0: number[] = [];
+        const NodeData1: number[] = [];
+        const NodeData2: number[] = [];
+        const NodeData3: number[] = [];
+        const NodeData4: number[] = [];
+        const NodeData6: number[] = [];
         for(let a = 0; a < jsonData['routes'][0]['sections'].length; a++) {
           for(let i = 0; i < jsonData['routes'][0]['sections'][a]['roads'].length; i++) {
             for(let j = 0; j < jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'].length; j++) {
-              NodeData.push(jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j])
+              // Node 좌표를 도로 상황에 따라 각각의 RoadPath에 저장
+              switch(jsonData['routes'][0]['sections'][a]['roads'][i]['traffic_state']) {
+                case 0:
+                  NodeData0.push(jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j]);
+                  setRoadPath0(NodeData0);
+                  break;
+                case 1:
+                  NodeData1.push(jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j]);
+                  setRoadPath1(NodeData1);
+                  break;
+                case 2:
+                  NodeData2.push(jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j]);
+                  setRoadPath2(NodeData2);
+                  break;
+                case 3:
+                  NodeData3.push(jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j]);
+                  setRoadPath3(NodeData3);
+                  break;
+                case 4:
+                  NodeData4.push(jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j]);
+                  setRoadPath4(NodeData4);
+                  break;
+                case 6:
+                  NodeData6.push(jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j]);
+                  setRoadPath6(NodeData6);
+                  break;
+              }
             }
           }
         }
-        console.log(NodeData);
-        // Node 좌표를 RoadPath에 저장
-        setRoadPath(NodeData);
         setDataCheck(true);
       })
       .catch((error) => {
