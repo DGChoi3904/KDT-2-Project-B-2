@@ -19,6 +19,7 @@ function KakaoMap() {
   // const [wayPath, setWayPath] = useState<string[]>([]); //? 경유지
   // const [roadPath, setRoadPath] = useState<number[]>([]);
   const [wayCount, setWayCount] = useState<number>(0); //? 경유지 제한
+  const [showPlaces, setShowPlaces] = useState(true); //? 경로 안내버튼
 
   const [time, setTime] = useState<number[]>([]);
   const [hour, setHour] = useState<number>(0);
@@ -243,6 +244,7 @@ function KakaoMap() {
         .join('%7C');
       url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C${globalVar.endPoint[0]}&waypoints=${waypointsString}`;
       console.log('url2: ', url);
+      setShowPlaces(false); //수정
     }
 
     const headers = {
@@ -411,6 +413,7 @@ function KakaoMap() {
     }
   };
 
+  //검색창 오른쪽으로 고정, 검색 값은 가로 80%(버튼은 오른쪽으로 고정)
   return (
     <div>
       <div id="mapContainer" style={{ position: 'relative' }}>
@@ -419,37 +422,43 @@ function KakaoMap() {
           style={{
             position: 'absolute',
             top: '10px',
-            right: '10px',
+            left: '80%',
             zIndex: '1',
+            width: '80%',
           }}
         >
           <input
             type="text"
             value={keyword}
             onChange={(e) => setKeyword(e.target.value)}
+            style={{ width: '20%' }}
           />
           <button onClick={handleSearch}>🔍</button>
+        </div>
+        <div
+          style={{
+            position: 'relative',
+            top: '10px',
+            // left: '10%',
+            zIndex: '1',
+            width: '80%',
+          }}
+        >
           {places.map((place) => (
-            <div key={place.id}>
-              {place.name}
-              <button
-                onClick={() => handleSelectPlace(place)}
-                style={{ zIndex: '2' }}
-              >
-                출발지
-              </button>
-              <button
-                onClick={() => handleSelectPlaceEnd(place)}
-                style={{ zIndex: '2' }}
-              >
-                목적지
-              </button>
-              <button
-                onClick={() => handleSelectPlaceWay(place)}
-                style={{ zIndex: '2' }}
-              >
-                경유지
-              </button>
+            <div
+              key={place.id}
+              style={{ display: 'flex', alignItems: 'center' }}
+            >
+              <div style={{ flex: '1' }}>{place.name}</div>
+              <div>
+                <button onClick={() => handleSelectPlace(place)}>출발지</button>
+                <button onClick={() => handleSelectPlaceEnd(place)}>
+                  목적지
+                </button>
+                <button onClick={() => handleSelectPlaceWay(place)}>
+                  경유지
+                </button>
+              </div>
             </div>
           ))}
         </div>
