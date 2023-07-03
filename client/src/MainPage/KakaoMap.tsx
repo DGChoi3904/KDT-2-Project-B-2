@@ -167,7 +167,7 @@ function KakaoMap() {
       });
     }; */
   }, [startPath]);
-  useEffect(() => {
+  /*  useEffect(() => {
     window.kakao.maps.event.addListener(
       mapRef.current,
       'click',
@@ -243,7 +243,7 @@ function KakaoMap() {
 
       polyline.setMap(mapRef.current);
     }
-  }, [dataCheck, roadPath]);
+  }, [dataCheck, roadPath]); */
 
   // 확인용 console
   useEffect(() => {
@@ -344,7 +344,7 @@ function KakaoMap() {
             firstPlace.y,
             firstPlace.x,
           );
-          mapRef.current.setLevel(5);
+          mapRef.current.setLevel(2); //검색후 지도 level설정
           mapRef.current.setCenter(firstPlacePosition);
 
           /*  // 출발지와 목적지 모두 설정
