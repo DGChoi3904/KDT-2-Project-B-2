@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const TopMenuStyle = {
   display: 'flex',
@@ -14,8 +15,10 @@ const TopMenuStyle = {
 function TopMenu() {
   return (
     <div style={TopMenuStyle}>
-      <img src={process.env.PUBLIC_URL + '/resource/MyWay_Logo_S.png'} className="App-logo" alt="logo" />
-      <div>Sign Up</div>
+      <img src={process.env.PUBLIC_URL + '/resource/MyWay_Logo_S.png'} alt="logo" />
+      <div>
+        <Link to="/signup">Sign Up</Link>
+      </div>
     </div>
   )
 }
