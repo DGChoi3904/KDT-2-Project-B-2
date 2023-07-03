@@ -19,6 +19,7 @@ function KakaoMap() {
   // const [wayPath, setWayPath] = useState<string[]>([]); //? 경유지
   // const [roadPath, setRoadPath] = useState<number[]>([]);
   const [wayCount, setWayCount] = useState<number>(0); //? 경유지 제한
+  const [showPlaces, setShowPlaces] = useState(true); //? 경로 안내버튼
 
   const [time, setTime] = useState<number[]>([]);
   const [hour, setHour] = useState<number>(0);
@@ -62,51 +63,17 @@ function KakaoMap() {
         }
       });
     };
-
-    const markerImage = new window.kakao.maps.MarkerImage(
-      'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png',
-      new window.kakao.maps.Size(64, 69),
-    );
-
-    const addMarkersToMap = () => {
-      places.forEach((place) => {
-        const markerPosition = new window.kakao.maps.LatLng(
-          place.y,
-          place.x,
-        );
-        const marker = new window.kakao.maps.Marker({
-          position: markerPosition,
-          image: markerImage,
-        });
-
-        marker.setMap(map);
-
-        window.kakao.maps.event.addListener(marker, 'click', () => {
-          setSelectedPlace(place);
-          map.setCenter(markerPosition);
-        });
-      });
-
-      if (places.length > 0) {
-        const firstPlace = places[0];
-        const firstPlacePosition = new window.kakao.maps.LatLng(
-          firstPlace.y,
-          firstPlace.x,
-        );
-        map.setCenter(firstPlacePosition); // 검색에 해당하는 첫 번째 장소로 지도 이동
-      }
-    };
-
-    addMarkersToMap();
-
   }, []);
 
   // 시간·거리 표시
   useEffect(() => {
     // sections의 소요 시간 합계 계산
-    const timeSum: number = time.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    const timeSum: number = time.reduce(
+      (accumulator, currentValue) => accumulator + currentValue,
+      0,
+    );
     // 분 계산
-    if(Math.floor(timeSum / 60) > 60) {
+    if (Math.floor(timeSum / 60) > 60) {
       const hour: number = Math.floor(Math.floor(timeSum / 60) / 60);
       setHour(hour);
       const minutes: number = Math.floor(timeSum / 60) % 60;
@@ -118,7 +85,7 @@ function KakaoMap() {
     // 초 계산
     const seconds: number = timeSum % 60;
     setSecond(seconds);
-  }, [time, distance, minute, second])
+  }, [time, distance, minute, second]);
 
   function setClickEvents(mouseEvent: { latLng: any }) {
     // 맵을 클릭시 해당 좌표에 출발지 마커를 찍고 위치정보를 인포윈도우에 저장하는 함수
@@ -229,7 +196,6 @@ function KakaoMap() {
       );
     }
 
-    
     // 좌표로 상세 주소 정보를 요청하는 콜백함수
     function searchDetailAddrFromCoords(
       coords: { getLng: any; getLat: any },
@@ -246,7 +212,7 @@ function KakaoMap() {
       onClickSetEndPoint(mouseEvent);
     }
   }
-  
+
   // 클릭 이벤트 분리
   useEffect(() => {
     window.kakao.maps.event.addListener(
@@ -258,25 +224,27 @@ function KakaoMap() {
 
   // 경로안내 버튼 클릭 시 지정된 출발지/도착지 정보를 가지고 최단거리 산출
   const handleNavi = () => {
-    let url
-    if(globalVar.wayPoint.length === 0) {
+    let url;
+    mapRef.current.setLevel(5); //경로 안내 클릭시 지도 범위 변경
+    if (globalVar.wayPoint.length === 0) {
       url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C${globalVar.endPoint[0]}`;
       console.log('url1: ', url);
     } else {
       const waypointsString = globalVar.wayPoint
-  .map((point, index) => {
-    if (index % 2 === 0) {
-      const nextIndex = index + 1;
-      if (nextIndex < globalVar.wayPoint.length) {
-        return `${globalVar.wayPoint[nextIndex]}%2C${point}`;
-      }
-    }
-    return null;
-  })
-  .filter(point => point !== null)
-  .join("%7C");
+        .map((point, index) => {
+          if (index % 2 === 0) {
+            const nextIndex = index + 1;
+            if (nextIndex < globalVar.wayPoint.length) {
+              return `${globalVar.wayPoint[nextIndex]}%2C${point}`;
+            }
+          }
+          return null;
+        })
+        .filter((point) => point !== null)
+        .join('%7C');
       url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C${globalVar.endPoint[0]}&waypoints=${waypointsString}`;
       console.log('url2: ', url);
+      setShowPlaces(false); //수정
     }
 
     const headers = {
@@ -294,26 +262,44 @@ function KakaoMap() {
 
         // 응답 데이터에서 roads 데이터만 추출
         const roadData = jsonData['routes'][0]['sections'][0]['roads'];
-        const timeData: number[] = []
-        const distanceData: number[] = []
+        const timeData: number[] = [];
+        const distanceData: number[] = [];
         console.log('roadData : ', roadData);
 
         // roads 데이터에서 반복문을 통해 Node 좌표 추출
-        for(let a = 0; a < jsonData['routes'][0]['sections'].length; a++) {
+        for (let a = 0; a < jsonData['routes'][0]['sections'].length; a++) {
           timeData.push(jsonData['routes'][0]['sections'][a]['duration']);
           distanceData.push(jsonData['routes'][0]['sections'][a]['distance']);
-          for(let i = 0; i < jsonData['routes'][0]['sections'][a]['roads'].length; i++) {
+          for (
+            let i = 0;
+            i < jsonData['routes'][0]['sections'][a]['roads'].length;
+            i++
+          ) {
             // 좌표 저장용 배열
             const traffic = [];
-            for(let j = 0; j < jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'].length; j = j + 2) {
-              const lng = jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j];
-              const lat = jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j + 1];
+            for (
+              let j = 0;
+              j <
+              jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes']
+                .length;
+              j = j + 2
+            ) {
+              const lng =
+                jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j];
+              const lat =
+                jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][
+                  j + 1
+                ];
               const latlng = new window.kakao.maps.LatLng(lat, lng);
               traffic.push(latlng);
 
               // 도로의 트래픽에 따라 polyline 색상값 변경
               let strokeColors;
-              switch(jsonData['routes'][0]['sections'][a]['roads'][i]['traffic_state']) {
+              switch (
+                jsonData['routes'][0]['sections'][a]['roads'][i][
+                  'traffic_state'
+                ]
+              ) {
                 case 0:
                   strokeColors = '#2DB400';
                   break;
@@ -345,7 +331,12 @@ function KakaoMap() {
                 strokeStyle: 'solid',
               });
 
-              if (j === jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'].length - 2) {
+              if (
+                j ===
+                jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes']
+                  .length -
+                  2
+              ) {
                 polyline.setMap(mapRef.current);
               }
             }
@@ -391,10 +382,7 @@ function KakaoMap() {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
     mapRef.current.setCenter(markerPosition);
     setSelectedPlace(place);
-    globalVar.startPoint = [
-      Number(place.y),
-      Number(place.x),
-    ];
+    globalVar.startPoint = [Number(place.y), Number(place.x)];
     globalVar.isSearchingStart = false;
     console.log(
       `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
@@ -404,10 +392,7 @@ function KakaoMap() {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
     mapRef.current.setCenter(markerPosition);
     setSelectedPlace(place);
-    globalVar.endPoint = [
-      Number(place.y),
-      Number(place.x),
-    ];
+    globalVar.endPoint = [Number(place.y), Number(place.x)];
     globalVar.isSearchingEnd = false;
     console.log(
       `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
@@ -419,8 +404,8 @@ function KakaoMap() {
       const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
       mapRef.current.setCenter(markerPosition);
       setSelectedPlace(place);
-      globalVar.wayPoint.push(Number(place.y))
-      globalVar.wayPoint.push(Number(place.x))
+      globalVar.wayPoint.push(Number(place.y));
+      globalVar.wayPoint.push(Number(place.x));
       console.log(
         `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
       );
@@ -428,32 +413,74 @@ function KakaoMap() {
     }
   };
 
+  //검색창 오른쪽으로 고정, 검색 값은 가로 80%(버튼은 오른쪽으로 고정)
   return (
     <div>
-      <div id="map" className="MapNormalSize"></div>
-      {(minute !== 0 && second !== 0) ? <div className='timer'><img src={process.env.PUBLIC_URL + '/resource/timer.png'} className="timerImg" alt="timerImg" /> {(hour !== 0) ? hour + '시간' : ''}{minute}분 {second}초</div> : <div style={{display: 'none'}}></div>}
-      <div id="result"></div>
-      <div>
-        <input
-          type="text"
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-        />
-        <button onClick={handleSearch}>Search</button>
+      <div id="mapContainer" style={{ position: 'relative' }}>
+        <div id="map" className="MapNormalSize"></div>
+        <div
+          style={{
+            position: 'absolute',
+            top: '10px',
+            left: '80%',
+            zIndex: '1',
+            width: '80%',
+          }}
+        >
+          <input
+            type="text"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+            style={{ width: '20%' }}
+          />
+          <button onClick={handleSearch}>🔍</button>
+        </div>
+        <div
+          style={{
+            position: 'relative',
+            top: '10px',
+            // left: '10%',
+            zIndex: '1',
+            width: '80%',
+          }}
+        >
+          {places.map((place) => (
+            <div
+              key={place.id}
+              style={{ display: 'flex', alignItems: 'center' }}
+            >
+              <div style={{ flex: '1' }}>{place.name}</div>
+              <div>
+                <button onClick={() => handleSelectPlace(place)}>출발지</button>
+                <button onClick={() => handleSelectPlaceEnd(place)}>
+                  목적지
+                </button>
+                <button onClick={() => handleSelectPlaceWay(place)}>
+                  경유지
+                </button>
+              </div>
+            </div>
+          ))}
+        </div>
       </div>
 
-      <button onClick={handleNavi}>경로 안내</button>
-      <div>
-        {/* 검색확인 */}
-        {places.map((place) => (
-          <div key={place.id}>
-            {place.name}
-            <button onClick={() => handleSelectPlace(place)}>출발지</button>
-            <button onClick={() => handleSelectPlaceEnd(place)}>목적지</button>
-            <button onClick={() => handleSelectPlaceWay(place)}>경유지</button>
-          </div>
-        ))}
-      </div>
+      {minute !== 0 && second !== 0 ? (
+        <div className="timer" style={{ zIndex: '2' }}>
+          <img
+            src={process.env.PUBLIC_URL + '/resource/timer.png'}
+            className="timerImg"
+            alt="timerImg"
+          />{' '}
+          {hour !== 0 ? hour + '시간' : ''}
+          {minute}분 {second}초
+        </div>
+      ) : (
+        <div style={{ display: 'none' }}></div>
+      )}
+      <div id="result"></div>
+      <button onClick={handleNavi} style={{ zIndex: '2' }}>
+        경로 안내
+      </button>
     </div>
   );
 }
