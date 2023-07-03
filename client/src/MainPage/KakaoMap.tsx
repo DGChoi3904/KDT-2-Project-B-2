@@ -15,6 +15,7 @@ function KakaoMap() {
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
   const [time, setTime] = useState<number[]>([]);
+  const [hour, setHour] = useState<number>(0);
   const [minute, setMinute] = useState<number>(0);
   const [second, setSecond] = useState<number>(0);
   const [distance, setDistance] = useState<number[]>([]);
@@ -64,15 +65,21 @@ function KakaoMap() {
 
   // 시간·거리 표시
   useEffect(() => {
-    console.log('time(초) : ', time);
+    // sections의 소요 시간 합계 계산
     const timeSum: number = time.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
-    const minutes: number = Math.floor(timeSum / 60);
+    // 분 계산
+    if(Math.floor(timeSum / 60) > 60) {
+      const hour: number = Math.floor(Math.floor(timeSum / 60) / 60);
+      setHour(hour);
+      const minutes: number = Math.floor(timeSum / 60) % 60;
+      setMinute(minutes);
+    } else {
+      const minutes: number = Math.floor(timeSum / 60);
+      setMinute(minutes);
+    }
+    // 초 계산
     const seconds: number = timeSum % 60;
-    setMinute(minutes);
     setSecond(seconds);
-    console.log('time(초) : ', timeSum)
-    console.log('time(분) : ', minutes + '분 ' + seconds + '초');
-    console.log('distance(m) : ', distance);
   }, [time, distance, minute, second])
 
   function setClickEvents(mouseEvent: { latLng: any }) {
@@ -200,6 +207,7 @@ function KakaoMap() {
       onClickSetEndPoint(mouseEvent);
     }
   }
+  
   // 클릭 이벤트 분리
   useEffect(() => {
     window.kakao.maps.event.addListener(
@@ -323,7 +331,7 @@ function KakaoMap() {
   return (
     <div>
       <div id="map" className="MapNormalSize"></div>
-      {(minute !== 0 && second !== 0) ? <div className='timer'><img src={process.env.PUBLIC_URL + '/resource/timer.png'} className="timerImg" alt="timerImg" /> {minute}분 {second}초</div> : <div style={{display: 'none'}}></div>}
+      {(minute !== 0 && second !== 0) ? <div className='timer'><img src={process.env.PUBLIC_URL + '/resource/timer.png'} className="timerImg" alt="timerImg" /> {(hour !== 0) ? hour + '시간' : ''}{minute}분 {second}초</div> : <div style={{display: 'none'}}></div>}
       <div id="result"></div>
       <div>
         <input
