@@ -46,7 +46,6 @@ export default function MongoCat() {
           }
         })
         .then((data) => {
-          console.log(data + '전체data부분');
           setCatList(data);
         })
         .catch((error) => {
@@ -92,7 +91,7 @@ export default function MongoCat() {
 
   const handleFindOne = async () => {
     // 한마리만 조회하는 메소드.
-    //이름 기준으로 검색이 가능하나 중복된 값은 맨 처음 하나만 출력됨.
+    // 이름 기준으로 검색이 가능하나 중복된 값은 맨 처음 하나만 출력됨.
     try {
       fetch(`/cats/${catSearchName}`, {
         headers: {
@@ -108,7 +107,6 @@ export default function MongoCat() {
           }
         })
         .then((data) => {
-          console.log(data);
           setCatSearchData(data);
           setUpdateCatId(data._id);
           setUpdateCatName(data.name);
@@ -116,7 +114,7 @@ export default function MongoCat() {
           setUpdateCatBreed(data.breed);
         })
         .catch((error) => {
-          console.error(error);
+          console.error(error.message);
         });
     } catch (error) {
       console.error('조회 중 에러 발생.', error);
@@ -160,7 +158,7 @@ export default function MongoCat() {
         headers: { 'Content-Type': 'application/json' },
       }).then((response) => {
         if (response.ok) {
-          console.log('삭제성공');
+          console.log('삭제 성공');
           loadCats();
         } else {
           console.error(
