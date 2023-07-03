@@ -1,4 +1,5 @@
 import React, { useState, useEffect, FormEvent } from 'react';
+import Modal from 'react-modal';
 interface Cat {
   name: string;
   age: number;
@@ -112,6 +113,7 @@ export default function MongoCat() {
           onChange={(e) => setCatname(e.target.value)}
         />
         <input
+          type="number"
           placeholder="나이를 입력해주세요"
           value={catage}
           onChange={(e) => setCatage(e.target.value)}
