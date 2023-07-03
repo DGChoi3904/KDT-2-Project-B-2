@@ -9,28 +9,33 @@ export class CatsService {
   constructor(@InjectModel(Cat.name) private readonly catModel: Model<Cat>) {}
 
   async create(createCatDto: CreateCatDto): Promise<Cat> {
-    //생성
     const createdCat = await this.catModel.create(createCatDto);
     return createdCat;
   }
 
   async findAll(): Promise<Cat[]> {
-    //전체 조회
-    console.log(this.catModel.find(), '파인드올');
     return this.catModel.find().exec();
   }
 
   async findOne(str: string): Promise<Cat | null> {
-    //지정 조회
-    //기본 검색 조건은 _id로 설정이 되어있으나 자동생성되는 부분이므로 클라이언트는 알 수없음.
-    //_id를 :name으로 변경시 한 객체만 조회가되나, 중복되는 다른 객체들은 무시됨.
+    //findOne의 key자리는 실제 DB의 검색할 key를 입력.
+    //현재 _id와 name으로 테스트 가능.
     return this.catModel.findOne({ name: str }).exec();
   }
-  async delete(id: string) {
-    //삭제
-    const deletedCat = await this.catModel
-      .findByIdAndRemove({ _id: id })
+
+  async updateOne(id: string, updateCatDto: CreateCatDto): Promise<Cat | null> {
+    //findOne 메소드 이후 사용 가능.
+    //조회된 데이터의 id를 기준으로 db에서 수정을 함.
+
+    const { name, age, breed } = updateCatDto;
+    const updatedCat = await this.catModel
+      .findOneAndUpdate({ _id: id }, { name, age, breed }, { new: true })
       .exec();
+    return updatedCat;
+  }
+
+  async delete(id: string): Promise<Cat | null> {
+    const deletedCat = await this.catModel.findByIdAndRemove(id).exec();
     return deletedCat;
   }
 }

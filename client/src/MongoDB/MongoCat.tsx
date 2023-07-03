@@ -1,11 +1,17 @@
+import { ok } from 'assert';
+import { error } from 'console';
+import { response } from 'express';
 import React, { useState, useEffect, FormEvent } from 'react';
 import Modal from 'react-modal';
 interface Cat {
+  _id: string;
   name: string;
   age: number;
   breed: string;
 }
-
+let displayNone = {
+  display: 'none',
+};
 export default function MongoCat() {
   const [catname, setCatname] = useState('');
   const [catage, setCatage] = useState('');
@@ -13,10 +19,15 @@ export default function MongoCat() {
   const [catList, setCatList] = useState([]);
   const [catSearchName, setCatSearchName] = useState('');
   const [catSearchData, setCatSearchData] = useState<Cat>({
+    _id: '',
     name: '',
     age: 0,
     breed: '',
   });
+  const [updateCatId, setUpdateCatId] = useState('');
+  const [updateCatName, setUpdateCatName] = useState('');
+  const [updateCatAge, setUpdateCatAge] = useState(0);
+  const [updateCatBreed, setUpdateCatBreed] = useState('');
 
   const loadCats = async () => {
     // 전체 고양이 목록을 조회하는 메서드
@@ -35,7 +46,6 @@ export default function MongoCat() {
           }
         })
         .then((data) => {
-          console.log(data + '전체data부분');
           setCatList(data);
         })
         .catch((error) => {
@@ -47,6 +57,7 @@ export default function MongoCat() {
   };
 
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
+    //고양이 정보 입력
     //고양이를 DB에 등록하는 메서드.
     e.preventDefault();
 
@@ -70,8 +81,17 @@ export default function MongoCat() {
     }
   };
 
+  const handleChangeCatAge = (e: React.ChangeEvent<HTMLInputElement>) => {
+    //고양이 age가 숫자가 아니면 입력 불가능
+    const value = e.target.value;
+    if (!isNaN(Number(value))) {
+      setCatage(value);
+    }
+  };
+
   const handleFindOne = async () => {
-    // 한마리만 조회하는 메소드.현재 에러
+    // 한마리만 조회하는 메소드.
+    // 이름 기준으로 검색이 가능하나 중복된 값은 맨 처음 하나만 출력됨.
     try {
       fetch(`/cats/${catSearchName}`, {
         headers: {
@@ -87,12 +107,14 @@ export default function MongoCat() {
           }
         })
         .then((data) => {
-          const a = JSON.stringify(data);
-          // setCatSearchData((prevData) => [...catSearchData, a]);
           setCatSearchData(data);
+          setUpdateCatId(data._id);
+          setUpdateCatName(data.name);
+          setUpdateCatAge(data.age);
+          setUpdateCatBreed(data.breed);
         })
         .catch((error) => {
-          console.error(error);
+          console.error(error.message);
         });
     } catch (error) {
       console.error('조회 중 에러 발생.', error);
@@ -100,9 +122,55 @@ export default function MongoCat() {
   };
 
   useEffect(() => {
-    // loadCats(); // 컴포넌트가 마운트될 때 초기 데이터 조회
+    // 컴포넌트가 마운트될 때 초기 데이터 조회
+    loadCats();
   }, []);
 
+  const handleUpdateCat = async () => {
+    try {
+      const response = await fetch(`/cats/${updateCatId}`, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          _id: updateCatId,
+          name: updateCatName,
+          age: updateCatAge,
+          breed: updateCatBreed,
+        }),
+      });
+      if (response.ok) {
+        console.log('수정 성공');
+        setCatSearchName(updateCatName);
+        loadCats(); // 수정 후 고양이 정보 다시 조회
+      } else {
+        console.error('수정 실패');
+      }
+    } catch (error) {
+      console.error('수정 중 에러 발생.', error);
+    }
+  };
+  const handleDeleteCat = async () => {
+    try {
+      fetch(`/cats/${updateCatId}`, {
+        method: 'delete',
+        headers: { 'Content-Type': 'application/json' },
+      }).then((response) => {
+        if (response.ok) {
+          console.log('삭제 성공');
+          loadCats();
+        } else {
+          console.error(
+            '삭제 실패',
+            response.status + '+' + response.statusText,
+          );
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <h1>고양이 생성</h1>
@@ -116,7 +184,7 @@ export default function MongoCat() {
           type="number"
           placeholder="나이를 입력해주세요"
           value={catage}
-          onChange={(e) => setCatage(e.target.value)}
+          onChange={handleChangeCatAge}
         />
         <input
           placeholder="품종을 입력해주세요"
@@ -143,13 +211,36 @@ export default function MongoCat() {
       />
       <button onClick={handleFindOne}>조회</button>
       <p>
+        <span style={displayNone}>{catSearchData._id}</span>
         <span>
-          {catSearchData.name}
-          {catSearchData.age}
-          {catSearchData.breed}
+          {catSearchData.name},{catSearchData.age},{catSearchData.breed}
           <br />
         </span>
       </p>
+      <h1>고양이 정보 수정</h1>
+      <input
+        type="text"
+        value={updateCatId}
+        onChange={(e) => setUpdateCatId(e.target.value)}
+        style={displayNone}
+      />
+      <input
+        type="text"
+        value={updateCatName}
+        onChange={(e) => setUpdateCatName(e.target.value)}
+      />
+      <input
+        type="number"
+        value={updateCatAge}
+        onChange={(e) => setUpdateCatAge(Number(e.target.value))}
+      />
+      <input
+        type="text"
+        value={updateCatBreed}
+        onChange={(e) => setUpdateCatBreed(e.target.value)}
+      />
+      <button onClick={handleUpdateCat}>수정</button>
+      <button onClick={handleDeleteCat}>삭제</button>
     </>
   );
 }
