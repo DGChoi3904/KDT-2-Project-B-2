@@ -260,7 +260,7 @@ function KakaoMap() {
           mapRef.current.setLevel(5);
           mapRef.current.setCenter(firstPlacePosition);
 
-          // 출발지와 목적지 모두 설정
+          /*  // 출발지와 목적지 모두 설정
           if (startPath.length === 0) {
             setStartPath([firstPlace.y, firstPlace.x]);
             startMarker2.setPosition(firstPlacePosition);
@@ -269,10 +269,22 @@ function KakaoMap() {
             setEndPath([firstPlace.y, firstPlace.x]);
             endMarker2.setPosition(firstPlacePosition);
             endMarker2.setMap(mapRef.current);
-          }
+          } */
         }
       }
     });
+  };
+  const handleSelectPlace = (place: Place) => {
+    const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
+    mapRef.current.setCenter(markerPosition);
+    setSelectedPlace(place);
+    setStartPath([String(place.y), String(place.x)]);
+  };
+  const handleSelectPlaceTwo = (place: Place) => {
+    const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
+    mapRef.current.setCenter(markerPosition);
+    setSelectedPlace(place);
+    setEndPath([String(place.y), String(place.x)]);
   };
 
   return (
@@ -290,10 +302,15 @@ function KakaoMap() {
       {/* <button onClick={handleNaviStart}>출발지 설정</button> */}
       {/* <button onClick={handleNaviEnd}>목적지 설정</button> */}
       <button onClick={handleNavi}>경로 안내</button>
+
       <div>
         {/* 검색확인 */}
         {places.map((place) => (
-          <div key={place.id}>{place.name}</div>
+          <div key={place.id}>
+            {place.name}
+            <button onClick={() => handleSelectPlace(place)}>출발지</button>
+            <button onClick={() => handleSelectPlaceTwo(place)}>목적지</button>
+          </div>
         ))}
       </div>
     </div>
