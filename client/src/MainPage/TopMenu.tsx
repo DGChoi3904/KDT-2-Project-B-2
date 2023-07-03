@@ -14,7 +14,7 @@ const TopMenuStyle = {
 function TopMenu() {
   return (
     <div style={TopMenuStyle}>
-      <img src={process.env.PUBLIC_URL + '/resource/MyWay_Logo_S.png'} className="App-logo" alt="logo" />
+      <img src={process.env.PUBLIC_URL + '/resource/MyWay_Logo_S.png'} alt="logo" />
       <div>Sign Up</div>
     </div>
   )
