@@ -11,6 +11,7 @@ import MongoCat from '../MongoDB/MongoCat';
 
 import './Main.css';
 import MyWayDetail from './MyWayDetail';
+import SignUp from '../SignupPage/SignUp';
 
 function MainPage() {
   return (
@@ -23,6 +24,7 @@ function MainPage() {
       <SaveWayModal />
       <MongoCat />
       <MyWayDetail />
+      <SignUp />
     </div>
   );
 }
