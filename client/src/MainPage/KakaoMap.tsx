@@ -14,10 +14,10 @@ function KakaoMap() {
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
-  const [startPath, setStartPath] = useState<string[]>([]);
-  const [endPath, setEndPath] = useState<string[]>([]);
-  const [wayPath, setWayPath] = useState<string[]>([]); //? 경유지
-  const [roadPath, setRoadPath] = useState<number[]>([]);
+  // const [startPath, setStartPath] = useState<string[]>([]);
+  // const [endPath, setEndPath] = useState<string[]>([]);
+  // const [wayPath, setWayPath] = useState<string[]>([]); //? 경유지
+  // const [roadPath, setRoadPath] = useState<number[]>([]);
   const [wayCount, setWayCount] = useState<number>(0); //? 경유지 제한
 
   const [time, setTime] = useState<number[]>([]);
@@ -383,17 +383,6 @@ function KakaoMap() {
           );
           mapRef.current.setLevel(2); //검색후 지도 level설정
           mapRef.current.setCenter(firstPlacePosition);
-
-          /*  // 출발지와 목적지 모두 설정
-          if (startPath.length === 0) {
-            setStartPath([firstPlace.y, firstPlace.x]);
-            startMarker2.setPosition(firstPlacePosition);
-            startMarker2.setMap(mapRef.current);
-          } else {
-            setEndPath([firstPlace.y, firstPlace.x]);
-            endMarker2.setPosition(firstPlacePosition);
-            endMarker2.setMap(mapRef.current);
-          } */
         }
       }
     });
@@ -408,7 +397,7 @@ function KakaoMap() {
     ];
     globalVar.isSearchingStart = false;
     console.log(
-      `출발지 좌표 : ${globalVar.startPoint}, 목적지 좌표 ${globalVar.endPoint}`,
+      `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
     );
   };
   const handleSelectPlaceEnd = (place: Place) => {
@@ -421,7 +410,7 @@ function KakaoMap() {
     ];
     globalVar.isSearchingEnd = false;
     console.log(
-      `출발지 좌표 : ${globalVar.startPoint}, 목적지 좌표 ${globalVar.endPoint}`,
+      `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
     );
   };
   const handleSelectPlaceWay = (place: Place) => {
@@ -430,8 +419,11 @@ function KakaoMap() {
       const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
       mapRef.current.setCenter(markerPosition);
       setSelectedPlace(place);
-      // setWayPath([String(place.y), String(place.x)]);
-      setWayPath([...wayPath, String(place.y), String(place.x)]); //경유지 추가
+      globalVar.wayPoint.push(Number(place.y))
+      globalVar.wayPoint.push(Number(place.x))
+      console.log(
+        `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
+      );
       setWayCount(wayCount + 1);
     }
   };
