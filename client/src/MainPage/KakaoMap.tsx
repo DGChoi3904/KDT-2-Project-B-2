@@ -62,8 +62,11 @@ function KakaoMap() {
 
   // 시간·거리 표시
   useEffect(() => {
-    console.log('time : ', time);
-    console.log('distance : ', distance);
+    console.log('time(초) : ', time);
+    const timeSum: number = time.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    console.log('time(초) : ', timeSum)
+    console.log('time(분) : ', timeSum / 60)
+    console.log('distance(m) : ', distance);
   }, [time, distance])
 
   function setClickEvents(mouseEvent: { latLng: any }) {
