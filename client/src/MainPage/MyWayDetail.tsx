@@ -344,7 +344,7 @@ const MyWayDetail: React.FC = () => {
           </div>
         ))}
       </div>
-      <button type="button" onClick={changeMyWayDetailTitleType}></button>
+      <button type="button" onClick={changeMyWayDetailTitleType}>뷰 변경 스위치</button>
     </div>
   );
 };
