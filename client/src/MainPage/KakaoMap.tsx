@@ -248,7 +248,7 @@ function KakaoMap() {
     }
 
     const headers = {
-      Authorization: 'KakaoAK 0f6a05d1d1d9ce7b4b2d324b0e39f02d',
+      Authorization: 'KakaoAK 0ce7da7c92dd2a150bc0111177dfc283',
     };
     // fetch를 통해 카카오 네비 API에 요청을 보냄
     fetch(url, {
@@ -422,48 +422,54 @@ function KakaoMap() {
           style={{
             position: 'absolute',
             top: '10px',
-            left: '80%',
+            right: '10px',
             zIndex: '1',
-            width: '80%',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-end',
           }}
         >
-          <input
-            type="text"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            style={{ width: '20%' }}
-          />
-          <button onClick={handleSearch}>🔍</button>
-        </div>
-        <div
-          style={{
-            position: 'relative',
-            top: '10px',
-            // left: '10%',
-            zIndex: '1',
-            width: '80%',
-          }}
-        >
-          {places.map((place) => (
-            <div
-              key={place.id}
-              style={{ display: 'flex', alignItems: 'center' }}
-            >
-              <div style={{ flex: '1' }}>{place.name}</div>
-              <div>
-                <button onClick={() => handleSelectPlace(place)}>출발지</button>
-                <button onClick={() => handleSelectPlaceEnd(place)}>
-                  목적지
-                </button>
-                <button onClick={() => handleSelectPlaceWay(place)}>
-                  경유지
-                </button>
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'flex-end',
+              margin: '0 auto',
+            }}
+          >
+            <input
+              type="text"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              style={{ width: '20%' }}
+            />
+            <button onClick={handleSearch}>🔍</button>
+          </div>
+          <div
+            style={{
+              width: '75%',//리스트 값 조절
+              display: 'flex',
+              flexDirection: 'column',
+              alignItems: 'stretch',
+            }}
+          >
+            {places.map((place) => (
+              <div key={place.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                <div style={{ flex: '1' }}>
+                  <div style={{ textAlign: 'left' }}>{place.name}</div>
+                </div>
+                <div style={{ display: 'flex' }}>
+                  <button onClick={() => handleSelectPlace(place)}>출발지</button>
+                  <button onClick={() => handleSelectPlaceEnd(place)}>목적지</button>
+                  <button onClick={() => handleSelectPlaceWay(place)}>경유지</button>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+          </div>
         </div>
       </div>
-
+  
       {minute !== 0 && second !== 0 ? (
         <div className="timer" style={{ zIndex: '2' }}>
           <img
@@ -483,6 +489,7 @@ function KakaoMap() {
       </button>
     </div>
   );
+  
 }
 
 export default KakaoMap;
