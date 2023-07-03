@@ -119,3 +119,17 @@
   width: 30px;
   height: 30px;
 }
+
+.MyWayDetail-SaveButton {
+  border-radius: 5px;
+  padding: 10px;
+  font-weight: bolder;
+  border: 1px solid #000;
+  background: #F9A825;
+  box-shadow: -2px -2px 4px 0px rgba(0, 0, 0, 0.25) inset;
+}
+
+.MyWayDetail-SaveButton:active {
+  background: #DF8A00;
+  box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.25) inset;
+}
