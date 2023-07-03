@@ -14,6 +14,9 @@ function KakaoMap() {
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
+  const [time, setTime] = useState<number[]>([]);
+  const [distance, setDistance] = useState<number[]>([]);
+
   const mapRef = useRef<any>(null);
 
   let geocoder = new window.kakao.maps.services.Geocoder();
@@ -56,6 +59,12 @@ function KakaoMap() {
       new window.kakao.maps.Size(64, 69),
     );
   }, []);
+
+  // 시간·거리 표시
+  useEffect(() => {
+    console.log('time : ', time);
+    console.log('distance : ', distance);
+  }, [time, distance])
 
   function setClickEvents(mouseEvent: { latLng: any }) {
     // 맵을 클릭시 해당 좌표에 출발지 마커를 찍고 위치정보를 인포윈도우에 저장하는 함수
@@ -211,12 +220,15 @@ function KakaoMap() {
 
         // 응답 데이터에서 roads 데이터만 추출
         const roadData = jsonData['routes'][0]['sections'][0]['roads'];
-
+        const timeData: number[] = []
+        const distanceData: number[] = []
         console.log('roadData : ', roadData);
 
         // roads 데이터에서 반복문을 통해 Node 좌표 추출
 
         for(let a = 0; a < jsonData['routes'][0]['sections'].length; a++) {
+          timeData.push(jsonData['routes'][0]['sections'][a]['duration']);
+          distanceData.push(jsonData['routes'][0]['sections'][a]['distance']);
           for(let i = 0; i < jsonData['routes'][0]['sections'][a]['roads'].length; i++) {
             const test = [];
             for(let j = 0; j < jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'].length; j = j + 2) {
@@ -251,8 +263,6 @@ function KakaoMap() {
                   break;
               }
 
-              // console.log('startlatlng: ', startlatlng)
-              // console.log('endlatlng: ', endlatlng)
               console.log('test : ', test);
               const polyline = new window.kakao.maps.Polyline({
                 path: test,
@@ -268,6 +278,8 @@ function KakaoMap() {
             }
           }
         }
+        setTime(timeData);
+        setDistance(distanceData);
       })
       .catch((error) => {
         // 오류 처리
