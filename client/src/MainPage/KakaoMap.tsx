@@ -16,7 +16,12 @@ function KakaoMap() {
 
   const [startPath, setStartPath] = useState<string[]>([]);
   const [endPath, setEndPath] = useState<string[]>([]);
+  const [wayPath, setWayPath] = useState<string[]>([]); //? 경유지
   const [roadPath, setRoadPath] = useState<number[]>([]);
+  const [wayCount, setWayCount] = useState<number>(0); //? 경유지 추가 할 때 사용해야 할 지도?
+  const startRef = useRef<string[]>([]); //? 출발지
+  const endRef = useRef<string[]>([]); //? 목적지
+  const wayRef = useRef<string[]>([]); //? 경유지
   const [dataCheck, setDataCheck] = useState<boolean>(false);
   const mapRef = useRef<any>(null);
 
@@ -162,12 +167,93 @@ function KakaoMap() {
       });
     }; */
   }, [startPath]);
+  useEffect(() => {
+    window.kakao.maps.event.addListener(
+      mapRef.current,
+      'click',
+      function (mouseEvent: { latLng: any }) {
+        const latlng = mouseEvent.latLng;
+
+        if (startRef.current.length === 0) {
+          setStartPath([latlng.getLat(), latlng.getLng()]);
+        } else if (
+          startRef.current.length !== 0 &&
+          endRef.current.length === 0
+        ) {
+          setEndPath([latlng.getLat(), latlng.getLng()]);
+        } else if (
+          startRef.current.length !== 0 &&
+          endRef.current.length !== 0 &&
+          wayRef.current.length < 10
+        ) {
+          setWayPath(() => [
+            ...wayRef.current,
+            latlng.getLat(),
+            latlng.getLng(),
+          ]);
+        } else {
+          console.log('그 외');
+        }
+
+        const message =
+          '클릭한 위치의 위도는 ' +
+          latlng.getLat() +
+          ' 이고, 경도는 ' +
+          latlng.getLng() +
+          ' 입니다';
+        const resultDiv = document.getElementById('result')!;
+        resultDiv.innerHTML = message;
+      },
+    );
+  }, [startPath, endPath, wayPath]);
 
   // 확인용 console
   useEffect(() => {
+    startRef.current = startPath;
+    endRef.current = endPath;
+    wayRef.current = wayPath;
     console.log('startPath: ', startPath);
     console.log('endPath: ', endPath);
-  }, [startPath, endPath]);
+    console.log('wayPath: ', wayPath);
+  }, [startPath, endPath, wayPath]);
+
+  // polyline 그리기
+  useEffect(() => {
+    console.log('polyline 그리기');
+    if (dataCheck === true && mapRef.current) {
+      // path 데이터 저장용 빈 배열
+      const linePath = [];
+
+      // roadPath의 데이터를 kakao.maps.LatLng() 메서드에 입력
+      for (let i = 0; i < roadPath.length; i = i + 2) {
+        const lng = roadPath[i];
+        const lat = roadPath[i + 1];
+        const latlng = new window.kakao.maps.LatLng(lat, lng);
+        linePath.push(latlng);
+      }
+
+      console.log('linePath', linePath);
+      const polyline = new window.kakao.maps.Polyline({
+        path: linePath,
+        strokeWeight: 7,
+        strokeColor: '#F86F03',
+        strokeOpacity: 1,
+        strokeStyle: 'solid',
+      });
+
+      polyline.setMap(mapRef.current);
+    }
+  }, [dataCheck, roadPath]);
+
+  // 확인용 console
+  useEffect(() => {
+    startRef.current = startPath;
+    endRef.current = endPath;
+    wayRef.current = wayPath;
+    console.log('startPath: ', startPath);
+    console.log('endPath: ', endPath);
+    console.log('wayPath: ', wayPath);
+  }, [startPath, endPath, wayPath]);
 
   // polyline 그리기
   useEffect(() => {
@@ -199,6 +285,7 @@ function KakaoMap() {
 
   // 경로안내 버튼 클릭 시 지정된 출발지/도착지 정보를 가지고 최단거리 산출
   const handleNavi = () => {
+    //아래 추가?
     const url = `https://apis-navi.kakaomobility.com/v1/directions?priority=RECOMMEND&car_type=1&car_fuel=GASOLINE&origin=${startPath[1]}%2C+${startPath[0]}&destination=${endPath[1]}%2C+${endPath[0]}`;
     console.log('url: ', url);
 
@@ -280,11 +367,17 @@ function KakaoMap() {
     setSelectedPlace(place);
     setStartPath([String(place.y), String(place.x)]);
   };
-  const handleSelectPlaceTwo = (place: Place) => {
+  const handleSelectPlaceEnd = (place: Place) => {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
     mapRef.current.setCenter(markerPosition);
     setSelectedPlace(place);
     setEndPath([String(place.y), String(place.x)]);
+  };
+  const handleSelectPlaceWay = (place: Place) => {
+    const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
+    mapRef.current.setCenter(markerPosition);
+    setSelectedPlace(place);
+    setWayPath([String(place.y), String(place.x)]);
   };
 
   return (
@@ -309,7 +402,8 @@ function KakaoMap() {
           <div key={place.id}>
             {place.name}
             <button onClick={() => handleSelectPlace(place)}>출발지</button>
-            <button onClick={() => handleSelectPlaceTwo(place)}>목적지</button>
+            <button onClick={() => handleSelectPlaceEnd(place)}>목적지</button>
+            <button onClick={() => handleSelectPlaceWay(place)}>경유지</button>
           </div>
         ))}
       </div>
