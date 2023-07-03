@@ -10,6 +10,7 @@ import SaveWayModal from './SaveWayModal';
 import MongoCat from '../MongoDB/MongoCat';
 
 import './Main.css';
+import MyWayDetail from './MyWayDetail';
 
 function MainPage() {
   return (
@@ -21,6 +22,7 @@ function MainPage() {
       <SearchBox />
       <SaveWayModal />
       <MongoCat />
+      <MyWayDetail />
     </div>
   );
 }
