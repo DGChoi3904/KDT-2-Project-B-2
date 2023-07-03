@@ -238,6 +238,7 @@ function KakaoMap() {
           timeData.push(jsonData['routes'][0]['sections'][a]['duration']);
           distanceData.push(jsonData['routes'][0]['sections'][a]['distance']);
           for(let i = 0; i < jsonData['routes'][0]['sections'][a]['roads'].length; i++) {
+            // 좌표 저장용 배열
             const traffic = [];
             for(let j = 0; j < jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'].length; j = j + 2) {
               const lng = jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j];
