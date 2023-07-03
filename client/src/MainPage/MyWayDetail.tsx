@@ -236,12 +236,18 @@ const MyWayDetail: React.FC = () => {
         <div>뒤로 가기</div>
       </div>
       <div style={{ height: '195px', backgroundColor: 'beige' }}>
+        <div style={{display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', margin: '2px'}}>
+          <p style={{width: '10%', textAlign: 'center', fontWeight:'bolder'}}>#</p>
+            <p style={{width: '50%', textAlign: 'center',  fontWeight:'bolder'}}>길 이름</p>
+            <p style={{width: '20%', textAlign: 'center', fontWeight:'bolder'}}>교통 상황</p>
+            <p style={{width: '20%', textAlign: 'center', fontWeight:'bolder'}}>소요 시간</p>
+        </div>
         {wayInfo.map((way : wayInfo, index : number) => (
           <div key={index} style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
-            <p style={{width: '10%'}}>#{index + 1}</p>
-            <p style={{width: '30%'}}>{way.name}</p>
-            <p style={{width: '30%', color : way.state, fontWeight: 'bold', textAlign: 'center', textShadow: '-1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000'}}>{way.stateText}</p>
-            <p style={{width: '30%'}}>소요 시간: {way.duration}초</p>
+            <p style={{width: '10%', paddingLeft:'10px'}}>#{index + 1}</p>
+            <p style={{width: '50%'}}>{way.name}</p>
+            <p style={{width: '20%', color : way.state, fontWeight: 'bolder', textAlign: 'center', textShadow: '1px 1px #000'}}>{way.stateText}</p>
+            <p style={{width: '20%', textAlign: 'right', paddingRight: '10px'}}>{way.duration}초</p>
           </div>
         ))}
       </div>
