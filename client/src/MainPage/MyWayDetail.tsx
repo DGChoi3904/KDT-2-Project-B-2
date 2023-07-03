@@ -12,7 +12,7 @@ interface wayInfo {
 
 const MyWayDetail: React.FC = () => {
   const [showSaveButton, setShowSaveButton] = useState<boolean>(false);
-  const wayResult = {
+  const resultSample = {
     trans_id: '0188fbec0082724392ac52fe9e946e49',
     routes: [
       {
@@ -184,81 +184,91 @@ const MyWayDetail: React.FC = () => {
       },
     ],
   };
+  // 길찾기 API 응답 결과값을 저장하는 상수. Props로 상속할시, WayResult에 추가할 것.
+  const wayResult = resultSample; // 샘플 값을 적용한 상수.
+  // fetch로 받아온 길찾기 API 결과값에서 모든 roads의 값을 꺼내 저장할 배열. 데이터 타입이 string, number, number[]가 복합적으로 들어가기에 any[]타입으로 명시.
+  const mergeRoads: any[] = [];
+  // 모든 roads의 값을 꺼내 mergeRoads에 push한다.
+  wayResult.routes.forEach((route) => {
+    route.sections.forEach((section) => {
+      mergeRoads.push(...section.roads);
+    });
+  });
+  // MyWayList에 표시된 저장된 MyWay일 경우, 보기를 누를 시 길찾기 API 기능을 사용, 결과값과 MyWay 이름과 인덱스를 해당 컴포넌트에서 상속받아 저장할 객체.
   const MyWayName = {
     index: 1,
     name: '저장된 MyWay 경로 명',
   };
-  // fetch로 받아온 길찾기 API 결과값에서 roads에서 필요한 데이터만 꺼내 저장하는 구문.
-  // 만약 fetch로 요청 결과 JSON을 상속받았을 경우, wayResult에 할당하여 적용하면 된다.
-  const wayInfo: any[] = wayResult.routes[0].sections[0].roads.map(
-    (wayNames) => {
-      let roadName, roadDistance, roadState, roadStateText, roadDuration;
-      if (wayNames.name === '') {
-        roadName = '도로';
-      } else {
-        roadName = wayNames.name;
-      }
-      switch (wayNames.traffic_state) {
-        case 0:
-          roadState = '#2DB400';
-          roadStateText = '정보없음';
-          break;
-        case 1:
-          roadState = '#C80000';
-          roadStateText = '정체';
-          break;
-        case 2:
-          roadState = '#F86F03';
-          roadStateText = '지체';
-          break;
-        case 3:
-          roadState = '#FEE500';
-          roadStateText = '서행';
-          break;
-        case 4:
-          roadState = '#2DB400';
-          roadStateText = '원활';
-          break;
-        case 6:
-          roadState = '#6B6E70';
-          roadStateText = '통행 불가';
-          break;
-        default:
-          roadState = '#000000';
-          roadStateText = '―';
-          break;
-      }
-      roadDistance = wayNames.distance;
 
-      //
-      const timeSum: number = wayNames.duration;
-      let hour: number = 0;
-      let minutes: number = 0;
-      let seconds: number = 0;
-      // 분 계산
-      if (Math.floor(timeSum / 60) > 60) {
-        hour = Math.floor(Math.floor(timeSum / 60) / 60);
-        minutes = Math.floor(timeSum / 60) % 60;
-      } else {
-        minutes = Math.floor(timeSum / 60);
-      }
-      // 초 계산
-      seconds = timeSum % 60;
-      roadDuration =
-        (hour !== 0 ? `${hour}시간` : '') +
-        ' ' +
-        (minutes !== 0 ? `${minutes}분` : '') +
-        ' ' +
-        (seconds !== 0 ? `${seconds}초` : '');
-      return {
-        name: roadName,
-        distance: roadDistance,
-        state: roadState,
-        stateText: roadStateText,
-        duration: roadDuration,
-      };
-    },
-  );
+  // 만약 fetch로 요청 결과 JSON을 상속받았을 경우, wayResult에 할당하여 적용하면 된다.
+  const wayInfo: any[] = mergeRoads.map((wayNames) => {
+    let roadName, roadDistance, roadState, roadStateText, roadDuration;
+    if (wayNames.name === '') {
+      roadName = '도로';
+    } else {
+      roadName = wayNames.name;
+    }
+    switch (wayNames.traffic_state) {
+      case 0:
+        roadState = '#2DB400';
+        roadStateText = '정보없음';
+        break;
+      case 1:
+        roadState = '#C80000';
+        roadStateText = '정체';
+        break;
+      case 2:
+        roadState = '#F86F03';
+        roadStateText = '지체';
+        break;
+      case 3:
+        roadState = '#FEE500';
+        roadStateText = '서행';
+        break;
+      case 4:
+        roadState = '#2DB400';
+        roadStateText = '원활';
+        break;
+      case 6:
+        roadState = '#6B6E70';
+        roadStateText = '통행 불가';
+        break;
+      default:
+        roadState = '#000000';
+        roadStateText = '―';
+        break;
+    }
+    roadDistance = wayNames.distance;
+
+    // 시간 계산 기능.
+    const timeSum: number = wayNames.duration;
+    let hour: number = 0;
+    let minutes: number = 0;
+    let seconds: number = 0;
+    // 분 계산
+    if (Math.floor(timeSum / 60) > 60) {
+      hour = Math.floor(Math.floor(timeSum / 60) / 60);
+      minutes = Math.floor(timeSum / 60) % 60;
+    } else {
+      minutes = Math.floor(timeSum / 60);
+    }
+    // 초 계산
+    seconds = timeSum % 60;
+    // 계산된 시간을 string으로 저장
+    roadDuration =
+      (hour !== 0 ? `${hour}시간` : '') +
+      ' ' +
+      (minutes !== 0 ? `${minutes}분` : '') +
+      ' ' +
+      (seconds !== 0 ? `${seconds}초` : '');
+    return {
+      name: roadName,
+      distance: roadDistance,
+      state: roadState,
+      stateText: roadStateText,
+      duration: roadDuration,
+    };
+  });
   function changeMyWayDetailTitleType() {
     setShowSaveButton(!showSaveButton);
   }
