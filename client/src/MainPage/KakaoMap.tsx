@@ -413,9 +413,50 @@ function KakaoMap() {
 
   return (
     <div>
-      <div id="map" className="MapNormalSize"></div>
+      <div id="mapContainer" style={{ position: 'relative' }}>
+        <div id="map" className="MapNormalSize"></div>
+        <div
+          style={{
+            position: 'absolute',
+            top: '10px',
+            right: '10px',
+            zIndex: '1',
+          }}
+        >
+          <input
+            type="text"
+            value={keyword}
+            onChange={(e) => setKeyword(e.target.value)}
+          />
+          <button onClick={handleSearch}>🔍</button>
+          {places.map((place) => (
+            <div key={place.id}>
+              {place.name}
+              <button
+                onClick={() => handleSelectPlace(place)}
+                style={{ zIndex: '2' }}
+              >
+                출발지
+              </button>
+              <button
+                onClick={() => handleSelectPlaceEnd(place)}
+                style={{ zIndex: '2' }}
+              >
+                목적지
+              </button>
+              <button
+                onClick={() => handleSelectPlaceWay(place)}
+                style={{ zIndex: '2' }}
+              >
+                경유지
+              </button>
+            </div>
+          ))}
+        </div>
+      </div>
+
       {minute !== 0 && second !== 0 ? (
-        <div className="timer">
+        <div className="timer" style={{ zIndex: '2' }}>
           <img
             src={process.env.PUBLIC_URL + '/resource/timer.png'}
             className="timerImg"
@@ -428,27 +469,9 @@ function KakaoMap() {
         <div style={{ display: 'none' }}></div>
       )}
       <div id="result"></div>
-      <div>
-        <input
-          type="text"
-          value={keyword}
-          onChange={(e) => setKeyword(e.target.value)}
-        />
-        <button onClick={handleSearch}>Search</button>
-      </div>
-
-      <button onClick={handleNavi}>경로 안내</button>
-      <div>
-        {/* 검색확인 */}
-        {places.map((place) => (
-          <div key={place.id}>
-            {place.name}
-            <button onClick={() => handleSelectPlace(place)}>출발지</button>
-            <button onClick={() => handleSelectPlaceEnd(place)}>목적지</button>
-            <button onClick={() => handleSelectPlaceWay(place)}>경유지</button>
-          </div>
-        ))}
-      </div>
+      <button onClick={handleNavi} style={{ zIndex: '2' }}>
+        경로 안내
+      </button>
     </div>
   );
 }
