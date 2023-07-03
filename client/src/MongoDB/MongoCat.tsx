@@ -142,7 +142,7 @@ export default function MongoCat() {
       if (response.ok) {
         console.log('수정 성공');
         setCatSearchName(updateCatName);
-        handleFindOne(); // 수정 후 고양이 정보 다시 조회
+        loadCats(); // 수정 후 고양이 정보 다시 조회
       } else {
         console.error('수정 실패');
       }
@@ -202,6 +202,7 @@ export default function MongoCat() {
         type="text"
         value={updateCatId}
         onChange={(e) => setUpdateCatId(e.target.value)}
+        style={displayNone}
       />
       <input
         type="text"
