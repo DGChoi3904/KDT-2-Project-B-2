@@ -240,7 +240,7 @@ const MyWayDetail: React.FC = () => {
           <div key={index} style={{display: 'flex', flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center'}}>
             <p style={{width: '10%'}}>#{index + 1}</p>
             <p style={{width: '30%'}}>{way.name}</p>
-            <p style={{width: '30%', color : way.state, fontWeight: 'bold'}}>{way.stateText}</p>
+            <p style={{width: '30%', color : way.state, fontWeight: 'bold', textAlign: 'center', textShadow: '-1px 0 #000, 0 1px #000, 1px 0 #000, 0 -1px #000'}}>{way.stateText}</p>
             <p style={{width: '30%'}}>소요 시간: {way.duration}초</p>
           </div>
         ))}
