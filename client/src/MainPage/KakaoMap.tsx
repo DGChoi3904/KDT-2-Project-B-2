@@ -13,7 +13,7 @@ function KakaoMap() {
   const [keyword, setKeyword] = useState('');
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
-  const [waypoints, setWaypoints] = useState<string[]>([]);
+
   const [startPath, setStartPath] = useState<string[]>([]);
   const [endPath, setEndPath] = useState<string[]>([]);
   const [roadPath, setRoadPath] = useState<number[]>([]);
@@ -145,6 +145,22 @@ function KakaoMap() {
         },
       );
     }
+
+    /*     const placesService = new window.kakao.maps.services.Places();
+    const searchPlaces = (keyword: string) => {
+      placesService.keywordSearch(keyword, (result: any, status: any) => {
+        if (status === window.kakao.maps.services.Status.OK) {
+          setPlaces(
+            result.map((place: any) => ({
+              id: place.id,
+              name: place.place_name,
+              x: place.x,
+              y: place.y,
+            })),
+          );
+        }
+      });
+    }; */
   }, [startPath]);
 
   // 확인용 console
@@ -183,11 +199,7 @@ function KakaoMap() {
 
   // 경로안내 버튼 클릭 시 지정된 출발지/도착지 정보를 가지고 최단거리 산출
   const handleNavi = () => {
-    const origin = startPath.join(',');
-    const destination = endPath.join(',');
-    const waypointsParam = waypoints.join(',');
-    const url = `https://apis-navi.kakaomobility.com/v1/directions?priority=RECOMMEND&car_type=1&car_fuel=GASOLINE&origin=${origin}&destination=${destination}&waypoints=${waypointsParam}`;
-    // const url = `https://apis-navi.kakaomobility.com/v1/directions?priority=RECOMMEND&car_type=1&car_fuel=GASOLINE&origin=${startPath[1]}%2C+${startPath[0]}&destination=${endPath[1]}%2C+${endPath[0]}`;
+    const url = `https://apis-navi.kakaomobility.com/v1/directions?priority=RECOMMEND&car_type=1&car_fuel=GASOLINE&origin=${startPath[1]}%2C+${startPath[0]}&destination=${endPath[1]}%2C+${endPath[0]}`;
     console.log('url: ', url);
 
     const headers = {
@@ -214,7 +226,6 @@ function KakaoMap() {
             NodeData.push(roadData[i]['vertexes'][j]);
           }
         }
-        mapRef.current.setLevel(5);
         console.log(NodeData);
         // Node 좌표를 RoadPath에 저장
         setRoadPath(NodeData);
@@ -224,26 +235,6 @@ function KakaoMap() {
         // 오류 처리
         console.error(error);
       });
-  };
-  // 검색된 장소를 클릭했을 때 경유지로 추가
-  const handleClickPlace = (place: Place) => {
-    // waypoints 배열에 현재 선택한 장소의 좌표를 추가
-    setWaypoints((prevWaypoints) => [
-      ...prevWaypoints,
-      `${place.y},${place.x}`,
-    ]);
-
-    // 마커를 클릭한 위치에 표시
-    const marker = new window.kakao.maps.Marker({
-      position: new window.kakao.maps.LatLng(place.y, place.x),
-      map: mapRef.current,
-    });
-
-    // 인포윈도우에 클릭한 위치에 대한 정보를 표시
-    const infowindow = new window.kakao.maps.InfoWindow({
-      content: place.name,
-    });
-    infowindow.open(mapRef.current, marker);
   };
   const handleSearch = () => {
     const placesService = new window.kakao.maps.services.Places();
@@ -266,43 +257,19 @@ function KakaoMap() {
             firstPlace.y,
             firstPlace.x,
           );
-          // startMarker2.setMap(mapRef);
-          // mapRef.current.setLevel(5);
+          mapRef.current.setLevel(5);
           mapRef.current.setCenter(firstPlacePosition);
 
           // 출발지와 목적지 모두 설정
           if (startPath.length === 0) {
             setStartPath([firstPlace.y, firstPlace.x]);
             startMarker2.setPosition(firstPlacePosition);
-
             startMarker2.setMap(mapRef.current);
-            endMarker2.setMap(null);
           } else {
             setEndPath([firstPlace.y, firstPlace.x]);
             endMarker2.setPosition(firstPlacePosition);
             endMarker2.setMap(mapRef.current);
-            startMarker2.setMap(null);
           }
-          result.forEach((place: any) => {
-            const marker = new window.kakao.maps.Marker({
-              position: new window.kakao.maps.LatLng(place.y, place.x),
-              map: mapRef.current,
-            });
-
-            // 인포윈도우에 클릭한 위치에 대한 정보를 표시
-            const infowindow = new window.kakao.maps.InfoWindow({
-              content: place.name,
-            });
-
-            // 장소 클릭 시 해당 위치를 경유지로 추가하고 인포윈도우 표시
-            window.kakao.maps.event.addListener(marker, 'click', () => {
-              setWaypoints((prevWaypoints) => [
-                ...prevWaypoints,
-                `${place.y},${place.x}`,
-              ]);
-              infowindow.open(mapRef.current, marker);
-            });
-          });
         }
       }
     });
@@ -322,13 +289,6 @@ function KakaoMap() {
       </div>
       {/* <button onClick={handleNaviStart}>출발지 설정</button> */}
       {/* <button onClick={handleNaviEnd}>목적지 설정</button> */}
-      <div className="search-result">
-        {places.map((place) => (
-          <div key={place.id} onClick={() => handleClickPlace(place)}>
-            {place.name}
-          </div>
-        ))}
-      </div>
       <button onClick={handleNavi}>경로 안내</button>
       <div>
         {/* 검색확인 */}
