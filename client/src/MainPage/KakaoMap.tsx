@@ -15,6 +15,8 @@ function KakaoMap() {
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
   const [time, setTime] = useState<number[]>([]);
+  const [minute, setMinute] = useState<number>(0);
+  const [second, setSecond] = useState<number>(0);
   const [distance, setDistance] = useState<number[]>([]);
 
   const mapRef = useRef<any>(null);
@@ -63,11 +65,15 @@ function KakaoMap() {
   // 시간·거리 표시
   useEffect(() => {
     console.log('time(초) : ', time);
-    const timeSum: number = time.reduce((accumulator, currentValue) => accumulator + currentValue, 0)
+    const timeSum: number = time.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    const minutes: number = Math.floor(timeSum / 60);
+    const seconds: number = timeSum % 60;
+    setMinute(minutes);
+    setSecond(seconds);
     console.log('time(초) : ', timeSum)
-    console.log('time(분) : ', timeSum / 60)
+    console.log('time(분) : ', minutes + '분 ' + seconds + '초');
     console.log('distance(m) : ', distance);
-  }, [time, distance])
+  }, [time, distance, minute, second])
 
   function setClickEvents(mouseEvent: { latLng: any }) {
     // 맵을 클릭시 해당 좌표에 출발지 마커를 찍고 위치정보를 인포윈도우에 저장하는 함수
@@ -232,8 +238,8 @@ function KakaoMap() {
         for(let a = 0; a < jsonData['routes'][0]['sections'].length; a++) {
           timeData.push(jsonData['routes'][0]['sections'][a]['duration']);
           distanceData.push(jsonData['routes'][0]['sections'][a]['distance']);
+          const test = [];
           for(let i = 0; i < jsonData['routes'][0]['sections'][a]['roads'].length; i++) {
-            const test = [];
             for(let j = 0; j < jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'].length; j = j + 2) {
               const lng = jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j];
               const lat = jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j + 1];
@@ -318,6 +324,7 @@ function KakaoMap() {
   return (
     <div>
       <div id="map" className="MapNormalSize"></div>
+      {(minute !== 0 && second !== 0) ? <div className='timer'><img src={process.env.PUBLIC_URL + '/resource/timer.png'} className="timerImg" alt="timerImg" /> {minute}분 {second}초</div> : <div style={{display: 'none'}}></div>}
       <div id="result"></div>
       <div>
         <input
@@ -327,8 +334,7 @@ function KakaoMap() {
         />
         <button onClick={handleSearch}>Search</button>
       </div>
-      {/* <button onClick={handleNaviStart}>출발지 설정</button> */}
-      {/* <button onClick={handleNaviEnd}>목적지 설정</button> */}
+
       <button onClick={handleNavi}>경로 안내</button>
     </div>
   );
