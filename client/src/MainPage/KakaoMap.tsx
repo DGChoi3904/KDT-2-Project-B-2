@@ -472,7 +472,7 @@ function KakaoMap() {
       </div>
   
       {minute !== 0 && second !== 0 ? (
-        <div className="timer" style={{ zIndex: '2' }}>
+        <div className="timer" style={{ zIndex: '2', marginTop: '7px' }}>
           <img
             src={process.env.PUBLIC_URL + '/resource/timer.png'}
             className="timerImg"
@@ -490,7 +490,6 @@ function KakaoMap() {
       </button>
     </div>
   );
-  
 }
 
 export default KakaoMap;
