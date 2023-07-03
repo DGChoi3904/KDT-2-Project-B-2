@@ -452,6 +452,7 @@ function KakaoMap() {
               display: 'flex',
               flexDirection: 'column',
               alignItems: 'stretch',
+              backgroundColor: 'rgba(255, 255, 255, 0.8)',
             }}
           >
             {places.map((place) => (
@@ -460,9 +461,9 @@ function KakaoMap() {
                   <div style={{ textAlign: 'left' }}>{place.name}</div>
                 </div>
                 <div style={{ display: 'flex' }}>
-                  <button onClick={() => handleSelectPlace(place)}>출발지</button>
-                  <button onClick={() => handleSelectPlaceEnd(place)}>목적지</button>
-                  <button onClick={() => handleSelectPlaceWay(place)}>경유지</button>
+                  <button onClick={() => handleSelectPlace(place)}style={{ color: 'green' }}>출발지</button>
+                  <button onClick={() => handleSelectPlaceEnd(place)}style={{ color: 'red' }}>목적지</button>
+                  <button onClick={() => handleSelectPlaceWay(place)}style={{ color: 'rgb(255, 164, 27)' }}>경유지</button>
                 </div>
               </div>
             ))}
