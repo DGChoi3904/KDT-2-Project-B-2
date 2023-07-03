@@ -1,4 +1,12 @@
-const globalVar = {
+interface global {
+    isSearchingStart : boolean,
+    isSearchingEnd : boolean,
+    startPoint : [number, number],
+    endPoint : [number, number],
+    wayPoint : number[],
+}
+
+const globalVar: global = {
     isSearchingStart : false,
     isSearchingEnd : false,
     startPoint : [0,0],

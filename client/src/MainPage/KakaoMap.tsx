@@ -14,7 +14,16 @@ function KakaoMap() {
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
+  // const [startPath, setStartPath] = useState<string[]>([]);
+  // const [endPath, setEndPath] = useState<string[]>([]);
+  // const [wayPath, setWayPath] = useState<string[]>([]); //? 경유지
+  // const [roadPath, setRoadPath] = useState<number[]>([]);
+  const [wayCount, setWayCount] = useState<number>(0); //? 경유지 제한
+
   const [time, setTime] = useState<number[]>([]);
+  const [hour, setHour] = useState<number>(0);
+  const [minute, setMinute] = useState<number>(0);
+  const [second, setSecond] = useState<number>(0);
   const [distance, setDistance] = useState<number[]>([]);
 
   const mapRef = useRef<any>(null);
@@ -58,13 +67,58 @@ function KakaoMap() {
       'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png',
       new window.kakao.maps.Size(64, 69),
     );
+
+    const addMarkersToMap = () => {
+      places.forEach((place) => {
+        const markerPosition = new window.kakao.maps.LatLng(
+          place.y,
+          place.x,
+        );
+        const marker = new window.kakao.maps.Marker({
+          position: markerPosition,
+          image: markerImage,
+        });
+
+        marker.setMap(map);
+
+        window.kakao.maps.event.addListener(marker, 'click', () => {
+          setSelectedPlace(place);
+          map.setCenter(markerPosition);
+        });
+      });
+
+      if (places.length > 0) {
+        const firstPlace = places[0];
+        const firstPlacePosition = new window.kakao.maps.LatLng(
+          firstPlace.y,
+          firstPlace.x,
+        );
+        map.setCenter(firstPlacePosition); // 검색에 해당하는 첫 번째 장소로 지도 이동
+      }
+    };
+
+    addMarkersToMap();
+
   }, []);
 
   // 시간·거리 표시
   useEffect(() => {
-    console.log('time : ', time);
-    console.log('distance : ', distance);
-  }, [time, distance])
+    // sections의 소요 시간 합계 계산
+    const timeSum: number = time.reduce((accumulator, currentValue) => accumulator + currentValue, 0);
+    // 분 계산
+    if(Math.floor(timeSum / 60) > 60) {
+      const hour: number = Math.floor(Math.floor(timeSum / 60) / 60);
+      setHour(hour);
+      const minutes: number = Math.floor(timeSum / 60) % 60;
+      setMinute(minutes);
+    } else {
+      const minutes: number = Math.floor(timeSum / 60);
+      setMinute(minutes);
+    }
+    // 초 계산
+    const seconds: number = timeSum % 60;
+    setSecond(seconds);
+  }, [time, distance, minute, second])
 
   function setClickEvents(mouseEvent: { latLng: any }) {
     // 맵을 클릭시 해당 좌표에 출발지 마커를 찍고 위치정보를 인포윈도우에 저장하는 함수
@@ -175,6 +229,7 @@ function KakaoMap() {
       );
     }
 
+    
     // 좌표로 상세 주소 정보를 요청하는 콜백함수
     function searchDetailAddrFromCoords(
       coords: { getLng: any; getLat: any },
@@ -191,6 +246,7 @@ function KakaoMap() {
       onClickSetEndPoint(mouseEvent);
     }
   }
+  
   // 클릭 이벤트 분리
   useEffect(() => {
     window.kakao.maps.event.addListener(
@@ -202,8 +258,26 @@ function KakaoMap() {
 
   // 경로안내 버튼 클릭 시 지정된 출발지/도착지 정보를 가지고 최단거리 산출
   const handleNavi = () => {
-    const url = `https://apis-navi.kakaomobility.com/v1/directions?priority=RECOMMEND&car_type=1&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C+${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C+${globalVar.endPoint[0]}`;
-    console.log('url: ', url);
+    let url
+    if(globalVar.wayPoint.length === 0) {
+      url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C${globalVar.endPoint[0]}`;
+      console.log('url1: ', url);
+    } else {
+      const waypointsString = globalVar.wayPoint
+  .map((point, index) => {
+    if (index % 2 === 0) {
+      const nextIndex = index + 1;
+      if (nextIndex < globalVar.wayPoint.length) {
+        return `${globalVar.wayPoint[nextIndex]}%2C${point}`;
+      }
+    }
+    return null;
+  })
+  .filter(point => point !== null)
+  .join("%7C");
+      url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C${globalVar.endPoint[0]}&waypoints=${waypointsString}`;
+      console.log('url2: ', url);
+    }
 
     const headers = {
       Authorization: 'KakaoAK 0f6a05d1d1d9ce7b4b2d324b0e39f02d',
@@ -225,19 +299,19 @@ function KakaoMap() {
         console.log('roadData : ', roadData);
 
         // roads 데이터에서 반복문을 통해 Node 좌표 추출
-
         for(let a = 0; a < jsonData['routes'][0]['sections'].length; a++) {
           timeData.push(jsonData['routes'][0]['sections'][a]['duration']);
           distanceData.push(jsonData['routes'][0]['sections'][a]['distance']);
           for(let i = 0; i < jsonData['routes'][0]['sections'][a]['roads'].length; i++) {
-            const test = [];
+            // 좌표 저장용 배열
+            const traffic = [];
             for(let j = 0; j < jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'].length; j = j + 2) {
               const lng = jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j];
               const lat = jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j + 1];
               const latlng = new window.kakao.maps.LatLng(lat, lng);
-              test.push(latlng);
-              console.log('test : ', test)
+              traffic.push(latlng);
 
+              // 도로의 트래픽에 따라 polyline 색상값 변경
               let strokeColors;
               switch(jsonData['routes'][0]['sections'][a]['roads'][i]['traffic_state']) {
                 case 0:
@@ -263,9 +337,8 @@ function KakaoMap() {
                   break;
               }
 
-              console.log('test : ', test);
               const polyline = new window.kakao.maps.Polyline({
-                path: test,
+                path: traffic,
                 strokeWeight: 7,
                 strokeColor: strokeColors,
                 strokeOpacity: 1,
@@ -290,6 +363,8 @@ function KakaoMap() {
   const handleSearch = () => {
     const placesService = new window.kakao.maps.services.Places();
     placesService.keywordSearch(keyword, (result: any, status: any) => {
+      // let startMarker2 = new window.kakao.maps.Marker(); // 출발지 위치를 표시할 마커.
+      // let endMarker2 = new window.kakao.maps.Marker(); // 목적지 위치를 표시할 마커.
       if (status === window.kakao.maps.services.Status.OK) {
         setPlaces(
           result.map((place: any) => ({
@@ -306,15 +381,57 @@ function KakaoMap() {
             firstPlace.y,
             firstPlace.x,
           );
+          mapRef.current.setLevel(2); //검색후 지도 level설정
           mapRef.current.setCenter(firstPlacePosition);
         }
       }
     });
   };
+  const handleSelectPlace = (place: Place) => {
+    const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
+    mapRef.current.setCenter(markerPosition);
+    setSelectedPlace(place);
+    globalVar.startPoint = [
+      Number(place.y),
+      Number(place.x),
+    ];
+    globalVar.isSearchingStart = false;
+    console.log(
+      `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
+    );
+  };
+  const handleSelectPlaceEnd = (place: Place) => {
+    const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
+    mapRef.current.setCenter(markerPosition);
+    setSelectedPlace(place);
+    globalVar.endPoint = [
+      Number(place.y),
+      Number(place.x),
+    ];
+    globalVar.isSearchingEnd = false;
+    console.log(
+      `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
+    );
+  };
+  const handleSelectPlaceWay = (place: Place) => {
+    //경유지 5개로 설정
+    if (wayCount < 5) {
+      const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
+      mapRef.current.setCenter(markerPosition);
+      setSelectedPlace(place);
+      globalVar.wayPoint.push(Number(place.y))
+      globalVar.wayPoint.push(Number(place.x))
+      console.log(
+        `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
+      );
+      setWayCount(wayCount + 1);
+    }
+  };
 
   return (
     <div>
       <div id="map" className="MapNormalSize"></div>
+      {(minute !== 0 && second !== 0) ? <div className='timer'><img src={process.env.PUBLIC_URL + '/resource/timer.png'} className="timerImg" alt="timerImg" /> {(hour !== 0) ? hour + '시간' : ''}{minute}분 {second}초</div> : <div style={{display: 'none'}}></div>}
       <div id="result"></div>
       <div>
         <input
@@ -324,9 +441,19 @@ function KakaoMap() {
         />
         <button onClick={handleSearch}>Search</button>
       </div>
-      {/* <button onClick={handleNaviStart}>출발지 설정</button> */}
-      {/* <button onClick={handleNaviEnd}>목적지 설정</button> */}
+
       <button onClick={handleNavi}>경로 안내</button>
+      <div>
+        {/* 검색확인 */}
+        {places.map((place) => (
+          <div key={place.id}>
+            {place.name}
+            <button onClick={() => handleSelectPlace(place)}>출발지</button>
+            <button onClick={() => handleSelectPlaceEnd(place)}>목적지</button>
+            <button onClick={() => handleSelectPlaceWay(place)}>경유지</button>
+          </div>
+        ))}
+      </div>
     </div>
   );
 }
