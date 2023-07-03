@@ -11,6 +11,7 @@ interface wayInfo {
 }
 
 const MyWayDetail: React.FC = () => {
+  const [showSaveButton, setShowSaveButton] = useState<boolean>(false);
   const wayResult = {
     trans_id: '0188fbec0082724392ac52fe9e946e49',
     routes: [
@@ -184,9 +185,9 @@ const MyWayDetail: React.FC = () => {
     ],
   };
   const MyWayName = {
-    index : 1,
-    name : "저장된 MyWay 경로 명"
-  }
+    index: 1,
+    name: '저장된 MyWay 경로 명',
+  };
   // fetch로 받아온 길찾기 API 결과값에서 roads에서 필요한 데이터만 꺼내 저장하는 구문.
   // 만약 fetch로 요청 결과 JSON을 상속받았을 경우, wayResult에 할당하여 적용하면 된다.
   const wayInfo: any[] = wayResult.routes[0].sections[0].roads.map(
@@ -228,12 +229,12 @@ const MyWayDetail: React.FC = () => {
           break;
       }
       roadDistance = wayNames.distance;
-      
+
       //
       const timeSum: number = wayNames.duration;
-      let hour : number = 0;
-      let minutes :number = 0;
-      let seconds : number = 0;
+      let hour: number = 0;
+      let minutes: number = 0;
+      let seconds: number = 0;
       // 분 계산
       if (Math.floor(timeSum / 60) > 60) {
         hour = Math.floor(Math.floor(timeSum / 60) / 60);
@@ -243,7 +244,12 @@ const MyWayDetail: React.FC = () => {
       }
       // 초 계산
       seconds = timeSum % 60;
-      roadDuration = (hour !== 0 ? `${hour}시간`:'') + " " + (minutes !== 0 ? `${minutes}분` : '') + " " + (seconds !== 0 ? `${seconds}초`: '');
+      roadDuration =
+        (hour !== 0 ? `${hour}시간` : '') +
+        ' ' +
+        (minutes !== 0 ? `${minutes}분` : '') +
+        ' ' +
+        (seconds !== 0 ? `${seconds}초` : '');
       return {
         name: roadName,
         distance: roadDistance,
@@ -253,14 +259,28 @@ const MyWayDetail: React.FC = () => {
       };
     },
   );
+  function changeMyWayDetailTitleType() {
+    setShowSaveButton(!showSaveButton);
+  }
 
   return (
     <div>
       <div className="MyWayListTitle">
-        <p>#{MyWayName.index} {MyWayName.name}</p>
-        <button type="button" className="MyWayDetail-SaveButton">
-          저장하기
-        </button>
+        {showSaveButton ? (
+          <>
+            <p>검색 결과</p>
+            <button type="button" className="MyWayDetail-SaveButton">
+              저장하기
+            </button>
+          </>
+        ) : (
+          <>
+            <p>
+              #{MyWayName.index} {MyWayName.name}
+            </p>
+            <p></p>
+          </>
+        )}
       </div>
       <div style={{ height: '195px', backgroundColor: 'beige' }}>
         <div
@@ -319,10 +339,12 @@ const MyWayDetail: React.FC = () => {
             <p
               style={{ width: '30%', textAlign: 'right', paddingRight: '10px' }}
             >
-              {way.duration}</p>
+              {way.duration}
+            </p>
           </div>
         ))}
       </div>
+      <button type="button" onClick={changeMyWayDetailTitleType}></button>
     </div>
   );
 };
