@@ -234,19 +234,18 @@ function KakaoMap() {
         console.log('roadData : ', roadData);
 
         // roads 데이터에서 반복문을 통해 Node 좌표 추출
-
         for(let a = 0; a < jsonData['routes'][0]['sections'].length; a++) {
           timeData.push(jsonData['routes'][0]['sections'][a]['duration']);
           distanceData.push(jsonData['routes'][0]['sections'][a]['distance']);
-          const test = [];
           for(let i = 0; i < jsonData['routes'][0]['sections'][a]['roads'].length; i++) {
+            const traffic = [];
             for(let j = 0; j < jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'].length; j = j + 2) {
               const lng = jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j];
               const lat = jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j + 1];
               const latlng = new window.kakao.maps.LatLng(lat, lng);
-              test.push(latlng);
-              console.log('test : ', test)
+              traffic.push(latlng);
 
+              // 도로의 트래픽에 따라 polyline 색상값 변경
               let strokeColors;
               switch(jsonData['routes'][0]['sections'][a]['roads'][i]['traffic_state']) {
                 case 0:
@@ -274,7 +273,7 @@ function KakaoMap() {
 
               console.log('test : ', test);
               const polyline = new window.kakao.maps.Polyline({
-                path: test,
+                path: traffic,
                 strokeWeight: 7,
                 strokeColor: strokeColors,
                 strokeOpacity: 1,
