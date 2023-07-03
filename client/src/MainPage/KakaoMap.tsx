@@ -211,27 +211,15 @@ function KakaoMap() {
 
         // 응답 데이터에서 roads 데이터만 추출
         const roadData = jsonData['routes'][0]['sections'][0]['roads'];
+
         console.log('roadData : ', roadData);
 
         // roads 데이터에서 반복문을 통해 Node 좌표 추출
-        // const NodeData0: number[] = [];
-        // const NodeData1: number[] = [];
-        // const NodeData2: number[] = [];
-        // const NodeData3: number[] = [];
-        // const NodeData4: number[] = [];
-        // const NodeData6: number[] = [];
+
         for(let a = 0; a < jsonData['routes'][0]['sections'].length; a++) {
           for(let i = 0; i < jsonData['routes'][0]['sections'][a]['roads'].length; i++) {
             const test = [];
             for(let j = 0; j < jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'].length; j = j + 2) {
-              // const startlng = jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j];
-              // const endlng = jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j + 2];
-              // const startlat = jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j + 1];
-              // const endlat = jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j + 3];
-              // const startlatlng = new window.kakao.maps.LatLng(startlat, startlng);
-              // const endlatlng = new window.kakao.maps.LatLng(endlat, endlng);
-              // test.push(startlatlng);
-              // test.push(endlatlng);
               const lng = jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j];
               const lat = jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes'][j + 1];
               const latlng = new window.kakao.maps.LatLng(lat, lng);
