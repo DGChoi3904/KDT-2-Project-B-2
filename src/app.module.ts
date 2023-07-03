@@ -10,6 +10,9 @@ import { FallbackModule } from './fallback/fallback.module';
     MongooseModule.forRoot(
       'mongodb+srv://dvover931:1234@cluster0.p7kbkbj.mongodb.net/cats',
     ),
+    MongooseModule.forRoot(
+      'mongodb+srv://dvover931:1234@cluster0.p7kbkbj.mongodb.net/cats',
+    ),
     CatsModule,
     FallbackModule,
   ],
