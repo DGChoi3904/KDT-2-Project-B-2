@@ -14,14 +14,6 @@ function KakaoMap() {
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
-  const [roadPath0, setRoadPath0] = useState<number[]>([]);
-  const [roadPath1, setRoadPath1] = useState<number[]>([]);
-  const [roadPath2, setRoadPath2] = useState<number[]>([]);
-  const [roadPath3, setRoadPath3] = useState<number[]>([]);
-  const [roadPath4, setRoadPath4] = useState<number[]>([]);
-  const [roadPath6, setRoadPath6] = useState<number[]>([]);
-  const [dataCheck, setDataCheck] = useState<boolean>(false);
-
   const mapRef = useRef<any>(null);
 
   let geocoder = new window.kakao.maps.services.Geocoder();
@@ -199,63 +191,6 @@ function KakaoMap() {
     );
   }, []);
 
-  // polyline 그리기
-  // useEffect(() => {
-  //   console.log('polyline 그리기');
-  //   if (dataCheck === true && mapRef.current) {
-  //     // path 데이터 저장용 빈 배열
-  //     // 0: 정보 없음
-  //     // 1: 정체
-  //     // 2: 지체
-  //     // 3: 서행
-  //     // 4: 원활
-  //     // 6: 교통사고(통행 불가)
-
-  //     console.log('roadPath0 : ', roadPath0)
-  //     console.log('roadPath1 : ', roadPath1)
-  //     console.log('roadPath2 : ', roadPath2)
-  //     console.log('roadPath3 : ', roadPath3)
-  //     console.log('roadPath4 : ', roadPath4)
-  //     console.log('roadPath6 : ', roadPath6)
-
-  //     interface RoadPathData {
-  //       path: number[];
-  //       strokeColor: string;
-  //     }
-
-  //     const roadPaths: RoadPathData[] = [
-  //       { path: roadPath0, strokeColor: '#FFF6F4' },
-  //       { path: roadPath1, strokeColor: '#C80000' },
-  //       { path: roadPath2, strokeColor: '#F86F03' },
-  //       { path: roadPath3, strokeColor: '#FEE500' },
-  //       { path: roadPath4, strokeColor: '#2DB400' },
-  //       { path: roadPath6, strokeColor: '#6B6E70' }
-  //     ];
-
-  //     const polylines = roadPaths.map((roadPathData) => {
-  //       const linePath = [];
-  //       for (let i = 0; i < roadPathData.path.length; i = i + 2) {
-  //         const lng = roadPathData.path[i];
-  //         const lat = roadPathData.path[i + 1];
-  //         const latlng = new window.kakao.maps.LatLng(lat, lng);
-  //         linePath.push(latlng);
-  //       }
-
-  //       return new window.kakao.maps.Polyline({
-  //         path: linePath,
-  //         strokeWeight: 7,
-  //         strokeColor: roadPathData.strokeColor,
-  //         strokeOpacity: 1,
-  //         strokeStyle: 'solid'
-  //       });
-  //     });
-
-  //     polylines.forEach((polyline) => {
-  //       polyline.setMap(mapRef.current);
-  //     });
-  //   }
-  // }, [dataCheck, roadPath0, roadPath1, roadPath2, roadPath3, roadPath4, roadPath6]);
-
   // 경로안내 버튼 클릭 시 지정된 출발지/도착지 정보를 가지고 최단거리 산출
   const handleNavi = () => {
     const url = `https://apis-navi.kakaomobility.com/v1/directions?priority=RECOMMEND&car_type=1&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C+${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C+${globalVar.endPoint[0]}`;
@@ -345,7 +280,6 @@ function KakaoMap() {
             }
           }
         }
-        setDataCheck(true);
       })
       .catch((error) => {
         // 오류 처리
