@@ -271,7 +271,6 @@ function KakaoMap() {
                   break;
               }
 
-              console.log('test : ', test);
               const polyline = new window.kakao.maps.Polyline({
                 path: traffic,
                 strokeWeight: 7,
