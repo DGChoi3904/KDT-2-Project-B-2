@@ -1,3 +1,6 @@
+import { ok } from 'assert';
+import { error } from 'console';
+import { response } from 'express';
 import React, { useState, useEffect, FormEvent } from 'react';
 import Modal from 'react-modal';
 interface Cat {
@@ -150,7 +153,26 @@ export default function MongoCat() {
       console.error('수정 중 에러 발생.', error);
     }
   };
-  const handleDeleteCat = async () => {};
+  const handleDeleteCat = async () => {
+    try {
+      fetch(`/cats/${updateCatId}`, {
+        method: 'delete',
+        headers: { 'Content-Type': 'application/json' },
+      }).then((response) => {
+        if (response.ok) {
+          console.log('삭제성공');
+          loadCats();
+        } else {
+          console.error(
+            '삭제 실패',
+            response.status + '+' + response.statusText,
+          );
+        }
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <>
       <h1>고양이 생성</h1>
