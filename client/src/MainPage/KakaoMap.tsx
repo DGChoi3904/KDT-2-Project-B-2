@@ -18,7 +18,7 @@ function KakaoMap() {
   const [endPath, setEndPath] = useState<string[]>([]);
   const [wayPath, setWayPath] = useState<string[]>([]); //? 경유지
   const [roadPath, setRoadPath] = useState<number[]>([]);
-  const [wayCount, setWayCount] = useState<number>(0); //? 경유지 추가 할 때 사용해야 할 지도?
+  const [wayCount, setWayCount] = useState<number>(0); //? 경유지 제한
   const startRef = useRef<string[]>([]); //? 출발지
   const endRef = useRef<string[]>([]); //? 목적지
   const wayRef = useRef<string[]>([]); //? 경유지
@@ -283,7 +283,7 @@ function KakaoMap() {
     }
   }, [dataCheck, roadPath]);
 
-  // 경로안내 버튼 클릭 시 지정된 출발지/도착지 정보를 가지고 최단거리 산출
+  // 경로안내 버튼 클릭 시 지정된 출발지/도착지 정보를 가지고 최단거리 산출 +경유지 추가
   const handleNavi = () => {
     //아래 추가?
     const url = `https://apis-navi.kakaomobility.com/v1/directions?priority=RECOMMEND&car_type=1&car_fuel=GASOLINE&origin=${startPath[1]}%2C+${startPath[0]}&destination=${endPath[1]}%2C+${endPath[0]}`;
@@ -374,10 +374,15 @@ function KakaoMap() {
     setEndPath([String(place.y), String(place.x)]);
   };
   const handleSelectPlaceWay = (place: Place) => {
-    const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
-    mapRef.current.setCenter(markerPosition);
-    setSelectedPlace(place);
-    setWayPath([String(place.y), String(place.x)]);
+    //경유지 5개로 설정
+    if (wayCount < 5) {
+      const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
+      mapRef.current.setCenter(markerPosition);
+      setSelectedPlace(place);
+      // setWayPath([String(place.y), String(place.x)]);
+      setWayPath([...wayPath, String(place.y), String(place.x)]); //경유지 추가
+      setWayCount(wayCount + 1);
+    }
   };
 
   return (
