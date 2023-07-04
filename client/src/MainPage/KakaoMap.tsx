@@ -480,7 +480,7 @@ function KakaoMap() {
               type="text"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              style={{ width: '20%' }}
+              style={{ width: '40%' }}
             />
             <button onClick={handleSearch}>🔍</button>
           </div>
@@ -509,7 +509,7 @@ function KakaoMap() {
                   <div style={{ display: 'flex' }}>
                     <button
                       onClick={() => handleSelectPlace(place)}
-                      style={{ color: 'green' }}
+                      style={{ color: 'blue' }}
                     >
                       출발지
                     </button>
