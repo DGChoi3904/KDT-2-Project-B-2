@@ -1,11 +1,30 @@
 import React from 'react';
 import './Main.css';
+import globalVar from './Global';
+
+type MySavedWay = {
+  WayName: string;
+  start: [number, number];
+  end: [number, number];
+  wayPoints: number[];
+};
 
 interface MyWayComponentProps {
+  mySavedWay: MySavedWay;
   index: number;
 }
 
-const MyWayComponent: React.FC<MyWayComponentProps> = ({ index }) => {
+const MyWayComponent: React.FC<MyWayComponentProps> = ({
+  mySavedWay,
+  index,
+}) => {
+  function handleButtonClick() {
+    // 전역변수에 입력, 검색을 실행하려 하나, KakaoMap에서 인식하지 못함. 데이터 입력방법에 수정이 필요하다.
+    // globalVar.startPoint = mySavedWay.start;
+    // globalVar.endPoint = mySavedWay.end;
+    // globalVar.wayPoint = mySavedWay.wayPoints;
+    // globalVar.isSearchingSavedWay = !globalVar.isSearchingSavedWay;
+  }
   return (
     <div
       style={{
@@ -16,8 +35,10 @@ const MyWayComponent: React.FC<MyWayComponentProps> = ({ index }) => {
       }}
     >
       <p style={{ flexGrow: '1' }}>#{index}</p>
-      <p style={{ flexGrow: '5' }}>저장된 MyWay 경로 명</p>
-      <button style={{ flexGrow: '2' }}>보기</button>
+      <p style={{ flexGrow: '5' }}>{mySavedWay.WayName}</p>
+      <button style={{ flexGrow: '2' }} onClick={handleButtonClick}>
+        보기
+      </button>
     </div>
   );
 };
