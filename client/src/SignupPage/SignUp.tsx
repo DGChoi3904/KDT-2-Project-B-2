@@ -54,7 +54,7 @@ function SignUp() {
       if (response.ok) {
         console.log('회원가입 데이터 전송 성공');
       } else {
-        console.log('회원가입에러');
+        console.log('회원가입 에러');
       }
     } catch (error) {
       console.log('try 에러 발생', error);

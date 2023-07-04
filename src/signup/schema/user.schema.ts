@@ -1,6 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument } from 'mongoose';
-
 export type UserDocument = HydratedDocument<User>; // Mongoose에서 반환되는 문서(Document) 객체의 타입을 지정하는 데 사용
 
 @Schema({ collection: 'userData' }) //몽고DB의 userData Collection 에 접근하기 위해 별도의 Collection을 지정함.
