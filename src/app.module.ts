@@ -4,6 +4,8 @@ import { AppService } from './app.service';
 import { MongooseModule } from '@nestjs/mongoose';
 import { CatsModule } from './cats/cats.module';
 import { FallbackModule } from './fallback/fallback.module';
+import { SignupController } from './signup/signup.controller';
+import { SignupModule } from './signup/signup.module';
 
 @Module({
   imports: [
@@ -15,8 +17,9 @@ import { FallbackModule } from './fallback/fallback.module';
     ),
     CatsModule,
     FallbackModule,
+    SignupModule,
   ],
-  controllers: [AppController],
+  controllers: [AppController, SignupController],
   providers: [AppService],
 })
 export class AppModule {}
