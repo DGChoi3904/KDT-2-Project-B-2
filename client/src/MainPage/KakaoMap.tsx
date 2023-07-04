@@ -19,7 +19,7 @@ function KakaoMap() {
   // const [wayPath, setWayPath] = useState<string[]>([]); //? 경유지
   // const [roadPath, setRoadPath] = useState<number[]>([]);
   const [wayCount, setWayCount] = useState<number>(0); //? 경유지 제한
-  const [showPlaces, setShowPlaces] = useState(true); //? 경로 안내버튼
+  const [showPlaces, setShowPlaces] = useState(true); //? 길 리스트 숨김 처리
 
   const [time, setTime] = useState<number[]>([]);
   const [hour, setHour] = useState<number>(0);
@@ -225,7 +225,7 @@ function KakaoMap() {
   // 경로안내 버튼 클릭 시 지정된 출발지/도착지 정보를 가지고 최단거리 산출
   const handleNavi = () => {
     let url;
-    mapRef.current.setLevel(5); //경로 안내 클릭시 지도 범위 변경
+    mapRef.current.setLevel(5); // 경로 안내 클릭시 지도 범위 변경
     if (globalVar.wayPoint.length === 0) {
       url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C${globalVar.endPoint[0]}`;
       console.log('url1: ', url);
@@ -244,11 +244,10 @@ function KakaoMap() {
         .join('%7C');
       url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C${globalVar.endPoint[0]}&waypoints=${waypointsString}`;
       console.log('url2: ', url);
-      setShowPlaces(false); //수정
+      setShowPlaces(false); //검색후 결과값, 버튼 숨김 처리
     }
-
     const headers = {
-      Authorization: 'KakaoAK 0f6a05d1d1d9ce7b4b2d324b0e39f02d',
+      Authorization: 'KakaoAK 0ce7da7c92dd2a150bc0111177dfc283',
     };
     // fetch를 통해 카카오 네비 API에 요청을 보냄
     fetch(url, {
@@ -354,8 +353,6 @@ function KakaoMap() {
   const handleSearch = () => {
     const placesService = new window.kakao.maps.services.Places();
     placesService.keywordSearch(keyword, (result: any, status: any) => {
-      // let startMarker2 = new window.kakao.maps.Marker(); // 출발지 위치를 표시할 마커.
-      // let endMarker2 = new window.kakao.maps.Marker(); // 목적지 위치를 표시할 마커.
       if (status === window.kakao.maps.services.Status.OK) {
         setPlaces(
           result.map((place: any) => ({
@@ -365,7 +362,6 @@ function KakaoMap() {
             y: place.y,
           })),
         );
-
         if (mapRef.current && result.length > 0) {
           const firstPlace = result[0];
           const firstPlacePosition = new window.kakao.maps.LatLng(
@@ -375,12 +371,23 @@ function KakaoMap() {
           mapRef.current.setLevel(2); //검색후 지도 level설정
           mapRef.current.setCenter(firstPlacePosition);
         }
+        setShowPlaces(true);
       }
     });
   };
   const handleSelectPlace = (place: Place) => {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
-    mapRef.current.setCenter(markerPosition);
+    const markerStart = new window.kakao.maps.Marker({
+      position: markerPosition,
+      map: mapRef.current,
+      icon: new window.kakao.maps.MarkerImage(
+        'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi_hdpi.png', //마커
+        new window.kakao.maps.Size(22, 22),
+        {
+          offset: new window.kakao.maps.Point(11, 11),
+        },
+      ),
+    });
     setSelectedPlace(place);
     globalVar.startPoint = [Number(place.y), Number(place.x)];
     globalVar.isSearchingStart = false;
@@ -388,8 +395,20 @@ function KakaoMap() {
       `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
     );
   };
+
   const handleSelectPlaceEnd = (place: Place) => {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
+    const markerEnd = new window.kakao.maps.Marker({
+      position: markerPosition,
+      map: mapRef.current,
+      icon: new window.kakao.maps.MarkerImage(
+        'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi_hdpi.png', //마커
+        new window.kakao.maps.Size(22, 22),
+        {
+          offset: new window.kakao.maps.Point(11, 11),
+        },
+      ),
+    });
     mapRef.current.setCenter(markerPosition);
     setSelectedPlace(place);
     globalVar.endPoint = [Number(place.y), Number(place.x)];
@@ -402,6 +421,17 @@ function KakaoMap() {
     //경유지 5개로 설정
     if (wayCount < 5) {
       const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
+      const markerWay = new window.kakao.maps.Marker({
+        position: markerPosition,
+        map: mapRef.current,
+        icon: new window.kakao.maps.MarkerImage(
+          'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi_hdpi.png', //마커
+          new window.kakao.maps.Size(22, 22),
+          {
+            offset: new window.kakao.maps.Point(11, 11),
+          },
+        ),
+      });
       mapRef.current.setCenter(markerPosition);
       setSelectedPlace(place);
       globalVar.wayPoint.push(Number(place.y));
@@ -413,7 +443,6 @@ function KakaoMap() {
     }
   };
 
-  //검색창 오른쪽으로 고정, 검색 값은 가로 80%(버튼은 오른쪽으로 고정)
   return (
     <div>
       <div id="mapContainer" style={{ position: 'relative' }}>
@@ -422,50 +451,91 @@ function KakaoMap() {
           style={{
             position: 'absolute',
             top: '10px',
-            left: '80%',
+            right: '10px',
             zIndex: '1',
-            width: '80%',
+            width: '100%',
+            display: 'flex',
+            flexDirection: 'column',
+            alignItems: 'flex-end',
           }}
         >
-          <input
-            type="text"
-            value={keyword}
-            onChange={(e) => setKeyword(e.target.value)}
-            style={{ width: '20%' }}
-          />
-          <button onClick={handleSearch}>🔍</button>
+          <div
+            style={{
+              width: '100%',
+              display: 'flex',
+              justifyContent: 'flex-end',
+              margin: '0 auto',
+            }}
+          >
+            <input
+              type="text"
+              value={keyword}
+              onChange={(e) => setKeyword(e.target.value)}
+              style={{ width: '20%' }}
+            />
+            <button onClick={handleSearch}>🔍</button>
+          </div>
+          {showPlaces && (
+            <div
+              style={{
+                width: '75%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'stretch',
+                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+              }}
+            >
+              {places.map((place) => (
+                <div
+                  key={place.id}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <div style={{ flex: '1' }}>
+                    <div style={{ textAlign: 'left' }}>{place.name}</div>
+                  </div>
+                  <div style={{ display: 'flex' }}>
+                    <button
+                      onClick={() => handleSelectPlace(place)}
+                      style={{ color: 'green' }}
+                    >
+                      출발지
+                    </button>
+                    <button
+                      onClick={() => handleSelectPlaceEnd(place)}
+                      style={{ color: 'red' }}
+                    >
+                      목적지
+                    </button>
+                    <button
+                      onClick={() => handleSelectPlaceWay(place)}
+                      style={{ color: 'rgb(255, 164, 27)' }}
+                    >
+                      경유지
+                    </button>
+                  </div>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
         <div
           style={{
-            position: 'relative',
-            top: '10px',
-            // left: '10%',
-            zIndex: '1',
-            width: '80%',
+            position: 'absolute',
+            bottom: '10px',
+            right: '10px',
+            zIndex: '2',
           }}
         >
-          {places.map((place) => (
-            <div
-              key={place.id}
-              style={{ display: 'flex', alignItems: 'center' }}
-            >
-              <div style={{ flex: '1' }}>{place.name}</div>
-              <div>
-                <button onClick={() => handleSelectPlace(place)}>출발지</button>
-                <button onClick={() => handleSelectPlaceEnd(place)}>
-                  목적지
-                </button>
-                <button onClick={() => handleSelectPlaceWay(place)}>
-                  경유지
-                </button>
-              </div>
-            </div>
-          ))}
+          <button onClick={handleNavi}>경로 안내</button>
         </div>
       </div>
 
       {minute !== 0 && second !== 0 ? (
-        <div className="timer" style={{ zIndex: '2' }}>
+        <div className="timer" style={{ zIndex: '2', marginTop: '10px' }}>
           <img
             src={process.env.PUBLIC_URL + '/resource/timer.png'}
             className="timerImg"
@@ -478,9 +548,6 @@ function KakaoMap() {
         <div style={{ display: 'none' }}></div>
       )}
       <div id="result"></div>
-      <button onClick={handleNavi} style={{ zIndex: '2' }}>
-        경로 안내
-      </button>
     </div>
   );
 }
