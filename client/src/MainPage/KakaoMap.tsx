@@ -19,7 +19,7 @@ function KakaoMap() {
   // const [wayPath, setWayPath] = useState<string[]>([]); //? 경유지
   // const [roadPath, setRoadPath] = useState<number[]>([]);
   const [wayCount, setWayCount] = useState<number>(0); //? 경유지 제한
-  const [showPlaces, setShowPlaces] = useState(true); //? 경로 안내버튼
+  const [showPlaces, setShowPlaces] = useState(true); //? 길 리스트 숨김 처리
 
   const [time, setTime] = useState<number[]>([]);
   const [hour, setHour] = useState<number>(0);
@@ -244,7 +244,7 @@ function KakaoMap() {
         .join('%7C');
       url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C${globalVar.endPoint[0]}&waypoints=${waypointsString}`;
       console.log('url2: ', url);
-      setShowPlaces(false); // showPlaces 값을 false로 변경하여 숨김 처리
+      setShowPlaces(false); //검색후 결과값, 버튼 숨김 처리
     }
     const headers = {
       Authorization: 'KakaoAK 0ce7da7c92dd2a150bc0111177dfc283',
@@ -353,8 +353,6 @@ function KakaoMap() {
   const handleSearch = () => {
     const placesService = new window.kakao.maps.services.Places();
     placesService.keywordSearch(keyword, (result: any, status: any) => {
-      // let startMarker2 = new window.kakao.maps.Marker(); // 출발지 위치를 표시할 마커.
-      // let endMarker2 = new window.kakao.maps.Marker(); // 목적지 위치를 표시할 마커.
       if (status === window.kakao.maps.services.Status.OK) {
         setPlaces(
           result.map((place: any) => ({
@@ -364,7 +362,6 @@ function KakaoMap() {
             y: place.y,
           })),
         );
-
         if (mapRef.current && result.length > 0) {
           const firstPlace = result[0];
           const firstPlacePosition = new window.kakao.maps.LatLng(
@@ -525,7 +522,18 @@ function KakaoMap() {
             </div>
           )}
         </div>
+        <div
+          style={{
+            position: 'absolute',
+            bottom: '10px',
+            right: '10px',
+            zIndex: '2',
+          }}
+        >
+          <button onClick={handleNavi}>경로 안내</button>
+        </div>
       </div>
+
       {minute !== 0 && second !== 0 ? (
         <div className="timer" style={{ zIndex: '2', marginTop: '10px' }}>
           <img
@@ -540,9 +548,6 @@ function KakaoMap() {
         <div style={{ display: 'none' }}></div>
       )}
       <div id="result"></div>
-      <button onClick={handleNavi} style={{ zIndex: '2' }}>
-        경로 안내
-      </button>
     </div>
   );
 }
