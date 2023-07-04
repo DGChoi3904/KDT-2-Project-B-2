@@ -1,5 +1,7 @@
-import React from 'react';
-import { Link } from 'react-router-dom';
+import React, { useState } from 'react';
+import Modal, { Styles } from 'react-modal';
+
+import LoginModal from './LoginModal';
 
 const TopMenuStyle = {
   display: 'flex',
@@ -11,13 +13,48 @@ const TopMenuStyle = {
   height: '80px',
 }
 
+const modalStyles: Styles = {
+  overlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 9999,
+  },
+  content: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '400px',
+    padding: '20px',
+    border: '1px solid #ccc',
+    borderRadius: '4px',
+    backgroundColor: '#fff',
+  },
+};
+
 
 function TopMenu() {
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
   return (
     <div style={TopMenuStyle}>
       <img src={process.env.PUBLIC_URL + '/resource/MyWay_Logo_S.png'} alt="logo" />
       <div>
-        <Link to="/signup">Sign Up</Link>
+        <button onClick={openModal}>SIGN IN</button>
+        <Modal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        style={modalStyles}
+        contentLabel="Example Modal"
+      >
+        <LoginModal />
+      </Modal>
       </div>
     </div>
   )
