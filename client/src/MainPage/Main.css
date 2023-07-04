@@ -10,6 +10,10 @@
   --font_saria: 'Saira';
 }
 
+.fontSaria {
+  font-family: var(--font_saria);
+}
+
 /* 카카오 지도 초기 사이즈 */
 .MapNormalSize {
   width: 100%;
@@ -135,4 +139,10 @@
 .MyWayDetail-SaveButton:active {
   background: #df8a00;
   box-shadow: 2px 2px 4px 0px rgba(0, 0, 0, 0.25) inset;
+}
+
+.flexRowEvenly {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-evenly;
 }

@@ -28,9 +28,9 @@ const LoginModal: React.FC = () => {
         value={inputPwValue}
         onChange={handlePwChange}
       />
-      <div style={{display: 'flex'}}>
-        <button>SIGN IN</button>
-        <button>SIGN UP</button>
+      <div className='flexRowEvenly' style={{width: '50%'}}>
+        <button className='fontSaria' style={{backgroundColor: 'transparent', border: 'none', fontWeight: '500'}}>SIGN IN</button>
+        <button className='fontSaria' style={{backgroundColor: 'transparent', border: 'none', fontWeight: '500'}}>SIGN UP</button>
       </div>
     </div>
   );

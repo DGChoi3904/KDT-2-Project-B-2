@@ -1,13 +1,25 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import './SignUp.css';
 
 function SignUp() {
+
   const [id, setId] = useState<string>('');
   const [pwd, setPwd] = useState<string>('');
   const [pwdCheck, setPwdCheck] = useState<string>('');
   const [name, setName] = useState<string>('');
   // 커서가 버튼위에 Hover되었는지 확인하는 구문.
   const [isHovered, setIsHovered] = useState<boolean>(false);
+  // SIGN UP 버튼 눌림 확인
+  // const [buttonOn, setButtonOn] = useState<boolean>(false);
+
+  // SIGN UP 버튼 눌릴 경우 /main으로 이동
+  // const navigate = useNavigate();
+  // useEffect(() => {
+  //   if(buttonOn) {
+  //     navigate('/main');
+  //   }
+  // }, [navigate]);
 
   const handleIdChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setId(event.target.value);
@@ -35,6 +47,12 @@ function SignUp() {
   const handleMouseLeave = (): void => {
     setIsHovered(false);
   };
+
+  // SING UP 누를 경우 /main으로 이동
+  const navigate = useNavigate();
+  const handleOnPress = (): void => {
+    navigate('/main');
+  }
 
   return (
     <div id="signup" className="signup">
@@ -101,6 +119,7 @@ function SignUp() {
             type="submit"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
+            onClick={handleOnPress}
             className="signup-button"
             style={{ color: isHovered ? '#fff' : 'inherit' }}
           >
