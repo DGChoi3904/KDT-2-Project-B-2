@@ -375,19 +375,23 @@ function KakaoMap() {
       }
     });
   };
+  //출발지 마커
   const handleSelectPlace = (place: Place) => {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
+    let img = new window.kakao.maps.MarkerImage(
+      process.env.PUBLIC_URL + '/resource/startMarker.png',
+      new window.kakao.maps.Size(29, 50),
+      {
+        offset: new window.kakao.maps.Point(11, 11),
+      },
+    );
     const markerStart = new window.kakao.maps.Marker({
       position: markerPosition,
       map: mapRef.current,
-      icon: new window.kakao.maps.MarkerImage(
-        'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi_hdpi.png', //마커
-        new window.kakao.maps.Size(22, 22),
-        {
-          offset: new window.kakao.maps.Point(11, 11),
-        },
-      ),
+      image: img,
     });
+    markerStart.setMap(mapRef.current);
+    mapRef.current.setCenter(markerPosition); //해당하는 좌표를 가지고 지도 중심으로 이동시킴
     setSelectedPlace(place);
     globalVar.startPoint = [Number(place.y), Number(place.x)];
     globalVar.isSearchingStart = false;
@@ -395,22 +399,23 @@ function KakaoMap() {
       `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
     );
   };
-  //목적지 마커에 테스트중
+  //도착지 마커
   const handleSelectPlaceEnd = (place: Place) => {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
+    let img = new window.kakao.maps.MarkerImage(
+      process.env.PUBLIC_URL + '/resource/endMarker.png',
+      new window.kakao.maps.Size(29, 50),
+      {
+        offset: new window.kakao.maps.Point(11, 11),
+      },
+    );
     const markerEnd = new window.kakao.maps.Marker({
       position: markerPosition,
       map: mapRef.current,
-      icon: new window.kakao.maps.MarkerImage(
-        'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi_hdpi.png', //마커
-        new window.kakao.maps.Size(22, 22),
-        {
-          offset: new window.kakao.maps.Point(11, 11),
-        },
-      ),
+      image: img,
     });
     markerEnd.setMap(mapRef.current);
-    mapRef.current.setCenter(markerPosition);
+    mapRef.current.setCenter(markerPosition); //해당하는 좌표를 가지고 지도 중심으로 이동시킴
     setSelectedPlace(place);
     globalVar.endPoint = [Number(place.y), Number(place.x)];
     globalVar.isSearchingEnd = false;
@@ -418,22 +423,24 @@ function KakaoMap() {
       `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
     );
   };
-
+  //경유지 마커
   const handleSelectPlaceWay = (place: Place) => {
     //경유지 5개로 설정
     if (wayCount < 5) {
       const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
+      let img = new window.kakao.maps.MarkerImage(
+        process.env.PUBLIC_URL + '/resource/mywayMarker.png',
+        new window.kakao.maps.Size(29, 50),
+        {
+          offset: new window.kakao.maps.Point(11, 11),
+        },
+      );
       const markerWay = new window.kakao.maps.Marker({
         position: markerPosition,
         map: mapRef.current,
-        icon: new window.kakao.maps.MarkerImage(
-          'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi_hdpi.png', //마커
-          new window.kakao.maps.Size(22, 22),
-          {
-            offset: new window.kakao.maps.Point(11, 11),
-          },
-        ),
+        image: img,
       });
+      markerWay.setMap(mapRef.current);
       mapRef.current.setCenter(markerPosition);
       setSelectedPlace(place);
       globalVar.wayPoint.push(Number(place.y));
