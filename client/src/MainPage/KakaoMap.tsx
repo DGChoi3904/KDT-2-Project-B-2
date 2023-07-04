@@ -375,7 +375,7 @@ function KakaoMap() {
       }
     });
   };
-  //출발지 마커
+  //출발지 마커(파랑)
   const handleSelectPlace = (place: Place) => {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
     let img = new window.kakao.maps.MarkerImage(
@@ -399,7 +399,7 @@ function KakaoMap() {
       `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
     );
   };
-  //도착지 마커
+  //도착지 마커(빨강)
   const handleSelectPlaceEnd = (place: Place) => {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
     let img = new window.kakao.maps.MarkerImage(
@@ -423,7 +423,7 @@ function KakaoMap() {
       `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
     );
   };
-  //경유지 마커
+  //경유지 마커(myway마커)
   const handleSelectPlaceWay = (place: Place) => {
     //경유지 5개로 설정
     if (wayCount < 5) {
