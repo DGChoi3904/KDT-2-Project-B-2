@@ -51,8 +51,8 @@ function TopMenu() {
         isOpen={isModalOpen}
         onRequestClose={closeModal}
         style={modalStyles}
-        contentLabel="Example Modal"
-      >
+        contentLabel="Login Modal"
+        >
         <LoginModal />
       </Modal>
       </div>

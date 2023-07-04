@@ -1,6 +1,8 @@
 import React, { useEffect, useState, useRef } from 'react';
+import Modal, { Styles } from 'react-modal';
 import './Main.css';
 import globalVar from './Global';
+import SaveWayModal from './SaveWayModal';
 
 interface Place {
   id: string;
@@ -9,6 +11,24 @@ interface Place {
   y: number;
 }
 
+const modalStyles: Styles = {
+  overlay: {
+    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    zIndex: 9999,
+  },
+  content: {
+    position: 'absolute',
+    top: '50%',
+    left: '50%',
+    transform: 'translate(-50%, -50%)',
+    width: '400px',
+    height: '200px',
+    border: '1px solid black',
+    backgroundColor: 'beige',
+    padding: '0'
+  },
+};
+
 function KakaoMap() {
   const [keyword, setKeyword] = useState('');
   const [places, setPlaces] = useState<Place[]>([]);
@@ -16,6 +36,7 @@ function KakaoMap() {
 
   const [wayCount, setWayCount] = useState<number>(0); //? 경유지 제한
   const [showPlaces, setShowPlaces] = useState(true); //? 길 리스트 숨김 처리
+  const [waySaveBtn, setWaySaveBtn] = useState<boolean>(false); //? 길 저장 버튼 활성화/비활성화
 
   const [time, setTime] = useState<number[]>([]);
   const [hour, setHour] = useState<number>(0);
@@ -24,6 +45,16 @@ function KakaoMap() {
   const [distance, setDistance] = useState<number[]>([]);
 
   const mapRef = useRef<any>(null);
+
+  const [isModalOpen, setIsModalOpen] = useState(false);  //? 모달 상태 제어
+
+  const openModal = () => {
+    setIsModalOpen(true);
+  };
+
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
 
   let geocoder = new window.kakao.maps.services.Geocoder();
 
@@ -373,6 +404,7 @@ function KakaoMap() {
         }
         setTime(timeData);
         setDistance(distanceData);
+        setWaySaveBtn(true);
       })
       .catch((error) => {
         // 오류 처리
@@ -481,7 +513,6 @@ function KakaoMap() {
           style={{
             position: 'absolute',
             top: '10px',
-            right: '10px',
             zIndex: '1',
             width: '100%',
             display: 'flex',
@@ -495,6 +526,7 @@ function KakaoMap() {
               display: 'flex',
               justifyContent: 'flex-end',
               margin: '0 auto',
+              transform: 'translateX(-5%)'
             }}
           >
             <input
@@ -556,14 +588,26 @@ function KakaoMap() {
         <div
           style={{
             position: 'absolute',
+            display: 'flex',
+            flexDirection: 'row',
+            justifyContent: 'space-between',
             bottom: '10px',
             right: '10px',
             zIndex: '2',
           }}
         >
-          <button onClick={handleNavi} style={{padding: '5px'}}>경로 안내</button>
+          {waySaveBtn ? <button onClick={openModal} style={{padding: '5px'}}>경로 저장</button> : <div></div>}
+          <button onClick={handleNavi} style={{padding: '5px', marginLeft: '5px'}}>경로 안내</button>
         </div>
       </div>
+      <Modal
+        isOpen={isModalOpen}
+        onRequestClose={closeModal}
+        style={modalStyles}
+        contentLabel="Login Modal"
+      >
+        <SaveWayModal onClose = {closeModal}/>
+      </Modal>
       {minute !== 0 && second !== 0 ? (
         <div className="timer" style={{ zIndex: '2' }}>
           <img
