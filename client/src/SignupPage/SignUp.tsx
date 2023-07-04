@@ -7,7 +7,7 @@ function SignUp() {
   const [id, setId] = useState<string>('');
   const [pwd, setPwd] = useState<string>('');
   const [pwdCheck, setPwdCheck] = useState<string>('');
-  const [name, setName] = useState<string>('');
+  const [nickName, setNickName] = useState<string>('');
   // 커서가 버튼위에 Hover되었는지 확인하는 구문.
   const [isHovered, setIsHovered] = useState<boolean>(false);
   // SIGN UP 버튼 눌림 확인
@@ -21,6 +21,7 @@ function SignUp() {
   //   }
   // }, [navigate]);
 
+  // * jsx onchange 부분
   const handleIdChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setId(event.target.value);
   };
@@ -37,13 +38,11 @@ function SignUp() {
   const handleNameChange = (
     event: React.ChangeEvent<HTMLInputElement>,
   ): void => {
-    setName(event.target.value);
+    setNickName(event.target.value);
   };
-
   const handleMouseEnter = (): void => {
     setIsHovered(true);
   };
-
   const handleMouseLeave = (): void => {
     setIsHovered(false);
   };
@@ -53,10 +52,35 @@ function SignUp() {
   const handleOnPress = (): void => {
     navigate('/main');
   }
-
+  //*useEffect 부분
+  useEffect(() => {});
+  //* fetch 메소드 부분
+  const createUser = async () => {
+    try {
+      const response = await fetch('/signup', {
+        // Post방식으로 /user 경로에 요청을 보냄
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          _id: id,
+          password: pwdCheck,
+          nickName: nickName,
+        }),
+      });
+      if (response.ok) {
+        console.log('회원가입 데이터 전송 성공');
+      } else {
+        console.log('회원가입에러');
+      }
+    } catch (error) {
+      console.log('try 에러 발생', error);
+    }
+  };
   return (
     <div id="signup" className="signup">
-      <form method="POST" className="flex-column-center">
+      <form method="POST" className="flex-column-center" onSubmit={createUser}>
         <h2 className="title-style">회원가입</h2>
         <label htmlFor="id" className="signup-label-size flex-row-center">
           <div className="flex-row-center signup-input-name">ID</div>
@@ -108,7 +132,7 @@ function SignUp() {
               name="name"
               type="text"
               onChange={handleNameChange}
-              value={name}
+              value={nickName}
               className="signup-input"
               placeholder="20자 이하로 입력해주세요."
             />
