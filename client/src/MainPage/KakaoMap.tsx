@@ -19,7 +19,7 @@ function KakaoMap() {
   // const [wayPath, setWayPath] = useState<string[]>([]); //? 경유지
   // const [roadPath, setRoadPath] = useState<number[]>([]);
   const [wayCount, setWayCount] = useState<number>(0); //? 경유지 제한
-  const [showPlaces, setShowPlaces] = useState(true); //? 경로 리스트
+  const [showPlaces, setShowPlaces] = useState(true); //? 경로 안내버튼
 
   const [time, setTime] = useState<number[]>([]);
   const [hour, setHour] = useState<number>(0);
@@ -134,7 +134,6 @@ function KakaoMap() {
             console.log(
               `출발지 좌표 : ${globalVar.startPoint}, 목적지 좌표 ${globalVar.endPoint}`,
             );
-
             // 출발지 지정 이후, 전역변수를 false로 설정.
             globalVar.isSearchingStart = false;
           }
@@ -188,7 +187,6 @@ function KakaoMap() {
             console.log(
               `출발지 좌표 : ${globalVar.startPoint}, 목적지 좌표 ${globalVar.endPoint}`,
             );
-
             // 목적지 지정 이후, 전역변수를 false로 설정.
             globalVar.isSearchingEnd = false;
           }
@@ -244,12 +242,12 @@ function KakaoMap() {
         .join('%7C');
       url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C${globalVar.endPoint[0]}&waypoints=${waypointsString}`;
       console.log('url2: ', url);
-      setShowPlaces(false); // 클릭하면 showPlaces 값을 false로 변경하여 숨김
+      setShowPlaces(false); // showPlaces 값을 false로 변경하여 숨김 처리
     }
     const headers = {
       Authorization: 'KakaoAK 0ce7da7c92dd2a150bc0111177dfc283',
     };
-    // fetch를 통해 카카오 내비 API에 요청을 보냄
+    // fetch를 통해 카카오 네비 API에 요청을 보냄
     fetch(url, {
       method: 'GET',
       headers: headers,
@@ -374,6 +372,7 @@ function KakaoMap() {
           mapRef.current.setLevel(2); //검색후 지도 level설정
           mapRef.current.setCenter(firstPlacePosition);
         }
+        setShowPlaces(true);
       }
     });
   };
