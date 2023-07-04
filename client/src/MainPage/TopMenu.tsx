@@ -24,10 +24,10 @@ const modalStyles: Styles = {
     left: '50%',
     transform: 'translate(-50%, -50%)',
     width: '400px',
-    padding: '20px',
-    border: '1px solid #ccc',
-    borderRadius: '4px',
-    backgroundColor: '#fff',
+    height: '200px',
+    border: '1px solid black',
+    backgroundColor: 'beige',
+    padding: '0'
   },
 };
 
@@ -46,7 +46,7 @@ function TopMenu() {
     <div style={TopMenuStyle}>
       <img src={process.env.PUBLIC_URL + '/resource/MyWay_Logo_S.png'} alt="logo" />
       <div>
-        <button onClick={openModal}>SIGN IN</button>
+        <button onClick={openModal} className="ModalBtn">SIGN IN</button>
         <Modal
         isOpen={isModalOpen}
         onRequestClose={closeModal}
