@@ -10,8 +10,25 @@
   --font_saria: 'Saira';
 }
 
-.fontSaria {
+.signButton {
   font-family: var(--font_saria);
+  font-weight: 500;
+  font-size: 16px;
+  color: #000;
+  background-color: transparent;
+  border: none;
+  translate: 0.3;
+}
+
+.signButtonEnter {
+  font-family: var(--font_saria);
+  font-weight: 500;
+  font-size: 16px;
+  color: #000;
+  background-color: transparent;
+  border: none;
+  transform: scale(1.1);
+  translate: 0.3;
 }
 
 /* 카카오 지도 초기 사이즈 */

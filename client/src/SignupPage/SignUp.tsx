@@ -10,16 +10,6 @@ function SignUp() {
   const [nickName, setNickName] = useState<string>('');
   // 커서가 버튼위에 Hover되었는지 확인하는 구문.
   const [isHovered, setIsHovered] = useState<boolean>(false);
-  // SIGN UP 버튼 눌림 확인
-  // const [buttonOn, setButtonOn] = useState<boolean>(false);
-
-  // SIGN UP 버튼 눌릴 경우 /main으로 이동
-  // const navigate = useNavigate();
-  // useEffect(() => {
-  //   if(buttonOn) {
-  //     navigate('/main');
-  //   }
-  // }, [navigate]);
 
   // * jsx onchange 부분
   const handleIdChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
@@ -47,11 +37,12 @@ function SignUp() {
     setIsHovered(false);
   };
 
-  // SING UP 누를 경우 /main으로 이동
+  //? SING UP 누를 경우 /main으로 이동
   const navigate = useNavigate();
   const handleOnPress = (): void => {
     navigate('/main');
   }
+
   //*useEffect 부분
   useEffect(() => {});
   //* fetch 메소드 부분
