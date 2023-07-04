@@ -17,14 +17,21 @@ function MainPage() {
   return (
     <div className="MainWrap">
       <TopMenu />
+      {/* 탑 */}
       <KakaoMap />
+      {/* 메인 */}
       <MyWayList />
+      {/* 푸터 */}
       <LoginModal />
+      {/* 모달 */}
       <SearchBox />
+      {/* 푸터 */}
       <SaveWayModal />
-      <MongoCat />
+      {/* 모달 */}
+      {/* <MongoCat /> */}
       <MyWayDetail />
-      <SignUp />
+      {/* 푸터 */}
+      {/* <SignUp /> */}
     </div>
   );
 }

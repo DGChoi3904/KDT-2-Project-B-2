@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import './SignUp.css';
 
 function SignUp() {
@@ -8,7 +9,7 @@ function SignUp() {
   const [nickName, setNickName] = useState<string>('');
   // 커서가 버튼위에 Hover되었는지 확인하는 구문.
   const [isHovered, setIsHovered] = useState<boolean>(false);
-
+  const navigate = useNavigate(); //회원가입 완료시 페이지 이동
   // * jsx onchange 부분
   const handleIdChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setId(event.target.value);
@@ -46,12 +47,14 @@ function SignUp() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          _id: id,
+          userId: id,
           password: pwdCheck,
-          nickName: nickName,
+          nickname: nickName,
         }),
       });
       if (response.ok) {
+        navigate('/main'); //회원가입완료시 이동될 페이지 URL
+
         console.log('회원가입 데이터 전송 성공');
       } else {
         console.log('회원가입 에러');
@@ -111,7 +114,7 @@ function SignUp() {
           <div className="flex-row-center signup-input-name">Name</div>
           <div className="flex-column-center signup-input-box">
             <input
-              name="name"
+              name="nickName"
               type="text"
               onChange={handleNameChange}
               value={nickName}

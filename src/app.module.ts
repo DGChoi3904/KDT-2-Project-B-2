@@ -8,17 +8,17 @@ import { SignupModule } from './signup/signup.module';
 //
 @Module({
   imports: [
-    MongooseModule.forRoot(
-      'mongodb+srv://dvover931:1234@cluster0.p7kbkbj.mongodb.net/cats',
-      {
-        connectionName: 'catsConnection',
-      },
-    ),
+    // MongooseModule.forRoot(
+    //   'mongodb+srv://dvover931:1234@cluster0.p7kbkbj.mongodb.net/cats',
+    //   // {
+    //   //   connectionName: 'catsConnection',
+    //   // },
+    // ),
     MongooseModule.forRoot(
       'mongodb+srv://dvover931:1234@cluster0.p7kbkbj.mongodb.net/users',
-      {
-        connectionName: 'usersConnection',
-      },
+      // {
+      //   connectionName: 'usersConnection',
+      // },
     ),
     CatsModule,
     SignupModule,

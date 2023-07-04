@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { HydratedDocument, Document } from 'mongoose';
-// export type UserDocument = HydratedDocument<Cat>; // Mongoose에서 반환되는 문서(Document) 객체의 타입을 지정하는 데 사용
-export type UserDocument = Document & Cat; // Mongoose에서 반환되는 문서(Document) 객체의 타입을 지정하는 데 사용
+export type UserDocument = HydratedDocument<Cat>; // Mongoose에서 반환되는 문서(Document) 객체의 타입을 지정하는 데 사용
+// export type UserDocument = Document & Cat; // Mongoose에서 반환되는 문서(Document) 객체의 타입을 지정하는 데 사용
 
 @Schema() //몽고DB의 스키마임을 나타냄
 export class Cat {
