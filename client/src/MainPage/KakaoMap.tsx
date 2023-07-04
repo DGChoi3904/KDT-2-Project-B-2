@@ -48,6 +48,10 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
+  // const [startPath, setStartPath] = useState<string[]>([]);
+  // const [endPath, setEndPath] = useState<string[]>([]);
+  // const [wayPath, setWayPath] = useState<string[]>([]); //? 경유지
+  // const [roadPath, setRoadPath] = useState<number[]>([]);
   const [wayCount, setWayCount] = useState<number>(0); //? 경유지 제한
   const [showPlaces, setShowPlaces] = useState(true); //? 길 리스트 숨김 처리
   const [waySaveBtn, setWaySaveBtn] = useState<boolean>(false); //? 길 저장 버튼 활성화/비활성화
@@ -104,39 +108,6 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
         }
       });
     };
-
-    const markerImage = new window.kakao.maps.MarkerImage(
-      'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png',
-      new window.kakao.maps.Size(64, 69),
-    );
-
-    const addMarkersToMap = () => {
-      places.forEach((place) => {
-        const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
-        const marker = new window.kakao.maps.Marker({
-          position: markerPosition,
-          image: markerImage,
-        });
-
-        marker.setMap(map);
-
-        window.kakao.maps.event.addListener(marker, 'click', () => {
-          setSelectedPlace(place);
-          map.setCenter(markerPosition);
-        });
-      });
-
-      if (places.length > 0) {
-        const firstPlace = places[0];
-        const firstPlacePosition = new window.kakao.maps.LatLng(
-          firstPlace.y,
-          firstPlace.x,
-        );
-        map.setCenter(firstPlacePosition); // 검색에 해당하는 첫 번째 장소로 지도 이동
-      }
-    };
-
-    addMarkersToMap();
   }, []);
 
   // 시간·거리 표시
@@ -303,7 +274,7 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
     if (globalVar.wayPoint.length === 0) {
       url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C${globalVar.endPoint[0]}`;
       console.log('url1: ', url);
-      setShowPlaces(false); //검색후 결과값, 버튼 숨김 처리
+      setShowPlaces(false);
     } else {
       const waypointsString = globalVar.wayPoint
         .map((point, index) => {
@@ -453,19 +424,23 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
       }
     });
   };
+  //출발지 마커
   const handleSelectPlace = (place: Place) => {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
+    let img = new window.kakao.maps.MarkerImage(
+      process.env.PUBLIC_URL + '/resource/startMarker.png',
+      new window.kakao.maps.Size(29, 50),
+      {
+        offset: new window.kakao.maps.Point(11, 11),
+      },
+    );
     const markerStart = new window.kakao.maps.Marker({
       position: markerPosition,
       map: mapRef.current,
-      icon: new window.kakao.maps.MarkerImage(
-        'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi_hdpi.png', //마커
-        new window.kakao.maps.Size(22, 22),
-        {
-          offset: new window.kakao.maps.Point(11, 11),
-        },
-      ),
+      image: img,
     });
+    markerStart.setMap(mapRef.current);
+    mapRef.current.setCenter(markerPosition); //해당하는 좌표를 가지고 지도 중심으로 이동시킴
     setSelectedPlace(place);
     globalVar.startPoint = [Number(place.y), Number(place.x)];
     globalVar.isSearchingStart = false;
@@ -473,21 +448,23 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
       `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
     );
   };
-
+  //도착지 마커
   const handleSelectPlaceEnd = (place: Place) => {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
+    let img = new window.kakao.maps.MarkerImage(
+      process.env.PUBLIC_URL + '/resource/endMarker.png',
+      new window.kakao.maps.Size(29, 50),
+      {
+        offset: new window.kakao.maps.Point(11, 11),
+      },
+    );
     const markerEnd = new window.kakao.maps.Marker({
       position: markerPosition,
       map: mapRef.current,
-      icon: new window.kakao.maps.MarkerImage(
-        'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi_hdpi.png', //마커
-        new window.kakao.maps.Size(22, 22),
-        {
-          offset: new window.kakao.maps.Point(11, 11),
-        },
-      ),
+      image: img,
     });
-    mapRef.current.setCenter(markerPosition);
+    markerEnd.setMap(mapRef.current);
+    mapRef.current.setCenter(markerPosition); //해당하는 좌표를 가지고 지도 중심으로 이동시킴
     setSelectedPlace(place);
     globalVar.endPoint = [Number(place.y), Number(place.x)];
     globalVar.isSearchingEnd = false;
@@ -495,25 +472,28 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
       `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
     );
   };
+  //경유지 마커
   const handleSelectPlaceWay = (place: Place) => {
     //경유지 5개로 설정
     if (wayCount < 5) {
       const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
+      let img = new window.kakao.maps.MarkerImage(
+        process.env.PUBLIC_URL + '/resource/mywayMarker.png',
+        new window.kakao.maps.Size(29, 50),
+        {
+          offset: new window.kakao.maps.Point(11, 11),
+        },
+      );
       const markerWay = new window.kakao.maps.Marker({
         position: markerPosition,
         map: mapRef.current,
-        icon: new window.kakao.maps.MarkerImage(
-          'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi_hdpi.png', //마커
-          new window.kakao.maps.Size(22, 22),
-          {
-            offset: new window.kakao.maps.Point(11, 11),
-          },
-        ),
+        image: img,
       });
+      markerWay.setMap(mapRef.current);
       mapRef.current.setCenter(markerPosition);
       setSelectedPlace(place);
-      globalVar.wayPoint.push(Number(place.y))
-      globalVar.wayPoint.push(Number(place.x))
+      globalVar.wayPoint.push(Number(place.y));
+      globalVar.wayPoint.push(Number(place.x));
       console.log(
         `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
       );
@@ -561,7 +541,6 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
                 flexDirection: 'column',
                 alignItems: 'stretch',
                 backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                zIndex: '3',
               }}
             >
               {places.map((place) => (
@@ -579,7 +558,7 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
                   <div style={{ display: 'flex' }}>
                     <button
                       onClick={() => handleSelectPlace(place)}
-                      style={{ color: 'green' }}
+                      style={{ color: 'blue' }}
                     >
                       출발지
                     </button>
@@ -625,13 +604,13 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
         <SaveWayModal onClose = {closeModal}/>
       </Modal>
       {minute !== 0 && second !== 0 ? (
-        <div className="timer" style={{ zIndex: '2' }}>
+        <div className="timer" style={{ zIndex: '2', marginTop: '10px' }}>
           <img
             src={process.env.PUBLIC_URL + '/resource/timer.png'}
             className="timerImg"
             alt="timerImg"
           />{' '}
-          {hour !== 0 ? hour + '시간 ' : ''}
+          {hour !== 0 ? hour + '시간' : ''}
           {minute}분 {second}초
         </div>
       ) : (
