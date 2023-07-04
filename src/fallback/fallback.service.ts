@@ -10,7 +10,7 @@ export class FallbackModuleService {
       '..',
       '..',
       'client',
-      'public',
+      'build',
       'index.html',
     );
   }
