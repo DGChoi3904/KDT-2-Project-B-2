@@ -19,10 +19,11 @@ const MyWayComponent: React.FC<MyWayComponentProps> = ({
   index,
 }) => {
   function handleButtonClick() {
-    globalVar.startPoint = mySavedWay.start;
-    globalVar.endPoint = mySavedWay.end;
-    globalVar.wayPoint = mySavedWay.wayPoints;
-    globalVar.isSearchingSavedWay = !globalVar.isSearchingSavedWay;
+    // 전역변수에 입력, 검색을 실행하려 하나, KakaoMap에서 인식하지 못함. 데이터 입력방법에 수정이 필요하다.
+    // globalVar.startPoint = mySavedWay.start;
+    // globalVar.endPoint = mySavedWay.end;
+    // globalVar.wayPoint = mySavedWay.wayPoints;
+    // globalVar.isSearchingSavedWay = !globalVar.isSearchingSavedWay;
   }
   return (
     <div
