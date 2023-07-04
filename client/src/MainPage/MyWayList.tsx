@@ -3,21 +3,60 @@ import KakaoMap from './KakaoMap';
 import './Main.css';
 
 import MyWayComponent from './MyWayComponent';
+interface old {
+  $old: string;
+}
 
 interface MyWay {
-  _id: {
-    $old: string;
-  };
+  _id: any;
   WayName: string;
   start: string;
   wayPoints: string[];
   end: string;
-  'userData,_id': string;
   __v: number;
 }
+const data = {
+  _id: {
+    $oid: '9153w5d655d85a6c5d63b8a1e6',
+  },
+  WayName: '백화점 탐방 길',
+  start: '36.322523526532486,127.40338689348418',
+  wayPoints: [
+    '36.35181184574371,127.37817317154799',
+    '36.375233842244825,127.38137482509418',
+    '36.3205479997952,127.40846930046254',
+  ],
+  end: '36.37414016449389,127.31788135939522',
+  'userData,_id': 'tmp_user_id',
+  __v: 0,
+};
+const userDbSample: MyWay[] = [
+  {
+    _id: { $oid: '649d2f11da8d02d4d13e76d5' },
+    WayName: '장보고 오는 길',
+    start: '36.378778859662745,127.3253416274792',
+    wayPoints: ['36.375233842244825,127.38137482509418'],
+    end: '36.34926776227329,127.3776809108991',
+    __v: 0,
+  },
+  {
+    _id: {
+      $oid: '9153w5d655d85a6c5d63b8a1e6',
+    },
+    WayName: '백화점 탐방 길',
+    start: '36.322523526532486,127.40338689348418',
+    wayPoints: [
+      '36.35181184574371,127.37817317154799',
+      '36.375233842244825,127.38137482509418',
+      '36.3205479997952,127.40846930046254',
+    ],
+    end: '36.37414016449389,127.31788135939522',
+    __v: 0,
+  },
+];
 
 function MyWayList() {
-  const userDbSample = [
+  const userDbSample: MyWay[] = [
     {
       _id: {
         $oid: '649d2f11da8d02d4d13e76d5',
@@ -26,7 +65,6 @@ function MyWayList() {
       start: '36.378778859662745,127.3253416274792',
       wayPoints: ['36.375233842244825,127.38137482509418'],
       end: '36.34926776227329,127.3776809108991',
-      'userData,_id': 'tmp_user_id',
       __v: 0,
     },
     {
@@ -41,7 +79,6 @@ function MyWayList() {
         '36.3205479997952,127.40846930046254',
       ],
       end: '36.37414016449389,127.31788135939522',
-      'userData,_id': 'tmp_user_id',
       __v: 0,
     },
   ];
