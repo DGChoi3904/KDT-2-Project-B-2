@@ -1,21 +1,29 @@
 import {
   Body,
   Controller,
-  Delete,
-  Get,
-  Param,
+  Request, // 추가된 부분
   Post,
-  Put,
 } from '@nestjs/common';
 import { SignupService } from './signup.service';
 import { CreateUserDto } from './dto/create-user.dto';
-import { User } from './schema/user.schema';
 
-@Controller('signup')
+@Controller()
 export class SignupController {
-  constructor(private readonly sighupService: SignupService) {}
-  @Post()
+  constructor(private readonly signupService: SignupService) {} // 수정된 부분
+
+  @Post('sighup')
   async create(@Body() createUserDto: CreateUserDto) {
-    await this.sighupService.create(createUserDto);
+    await this.signupService.create(createUserDto);
+  }
+
+  @Post('login')
+  async login(@Body() createUserDto: CreateUserDto) {
+    const user = await this.signupService.findUser(createUserDto);
+    if (user) {
+      console.log(user);
+      return { success: true, nickname: user.nickname };
+    } else {
+      return { success: false };
+    }
   }
 }
