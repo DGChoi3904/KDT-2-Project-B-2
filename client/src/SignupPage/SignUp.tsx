@@ -1,5 +1,5 @@
-import React, { useState, useEffect } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, { FormEvent, useEffect, useState } from 'react';
+import { useNavigate, Link } from 'react-router-dom';
 import './SignUp.css';
 
 function SignUp() {
@@ -10,7 +10,7 @@ function SignUp() {
   const [nickName, setNickName] = useState<string>('');
   // 커서가 버튼위에 Hover되었는지 확인하는 구문.
   const [isHovered, setIsHovered] = useState<boolean>(false);
-
+  const navigate = useNavigate(); //회원가입 완료시 페이지 이동
   // * jsx onchange 부분
   const handleIdChange = (event: React.ChangeEvent<HTMLInputElement>): void => {
     setId(event.target.value);
@@ -38,15 +38,13 @@ function SignUp() {
   };
 
   //? SING UP 누를 경우 /main으로 이동
-  const navigate = useNavigate();
-  const handleOnPress = (): void => {
-    navigate('/main');
-  }
+  // const handleOnPress = (): void => {
+  //   navigate('/main');
+  // }
 
-  //*useEffect 부분
-  useEffect(() => {});
   //* fetch 메소드 부분
-  const createUser = async () => {
+  const createUser = async (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
     try {
       const response = await fetch('/signup', {
         // Post방식으로 /user 경로에 요청을 보냄
@@ -55,15 +53,16 @@ function SignUp() {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
-          _id: id,
+          userId: id,
           password: pwdCheck,
-          nickName: nickName,
+          nickname: nickName,
         }),
       });
       if (response.ok) {
+        navigate('/main');
         console.log('회원가입 데이터 전송 성공');
       } else {
-        console.log('회원가입에러');
+        console.log('회원가입 에러');
       }
     } catch (error) {
       console.log('try 에러 발생', error);
@@ -120,7 +119,7 @@ function SignUp() {
           <div className="flex-row-center signup-input-name">Name</div>
           <div className="flex-column-center signup-input-box">
             <input
-              name="name"
+              name="nickName"
               type="text"
               onChange={handleNameChange}
               value={nickName}
@@ -134,7 +133,7 @@ function SignUp() {
             type="submit"
             onMouseEnter={handleMouseEnter}
             onMouseLeave={handleMouseLeave}
-            onClick={handleOnPress}
+            // onClick={handleOnPress}
             className="signup-button"
             style={{ color: isHovered ? '#fff' : 'inherit' }}
           >

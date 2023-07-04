@@ -18,7 +18,7 @@ export class CatsService {
   }
 
   async findOne(str: string): Promise<Cat | null> {
-    //findOne의 key자리는 실제 DB의 검색할 key를 입력.
+    //findOne의 key자리는 실제 DB의 검색할 key를 입력.//
     //현재 _id와 name으로 테스트 가능.
     return this.catModel.findOne({ name: str }).exec();
   }
