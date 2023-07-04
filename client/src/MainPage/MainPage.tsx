@@ -1,26 +1,26 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 import TopMenu from './TopMenu';
 import KakaoMap from './KakaoMap';
 import MyWayList from './MyWayList';
-// 테스트를 위해 임시로 넣음
-
-// import SearchBox from './SearchBox';
-// import MongoCat from '../MongoDB/MongoCat';
-
-import './Main.css';
 import MyWayDetail from './MyWayDetail';
 
+import './Main.css';
+
 function MainPage() {
+  const [showDetail, setShowDetail] = useState(false);
+
+  const toggleDetail = () => {
+    setShowDetail(true);
+  };
+
   return (
     <div className="MainWrap">
       <TopMenu />
       {/* 탑 */}
-      <KakaoMap />
+      <KakaoMap onButtonClicked={toggleDetail} />
       {/* 메인 */}
-      <MyWayList />
-      {/* <MongoCat /> */}
-      <MyWayDetail />
+      {showDetail ? <MyWayDetail /> : <MyWayList />}
     </div>
   );
 }

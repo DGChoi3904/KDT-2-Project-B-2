@@ -1,14 +1,20 @@
-import React, { useEffect, useState, useRef } from 'react';
+import React, { useEffect, useState, useRef, useContext } from 'react';
 import Modal, { Styles } from 'react-modal';
 import './Main.css';
 import globalVar from './Global';
 import SaveWayModal from './SaveWayModal';
+
+import { MyWayContext } from './MyWayContext';
 
 interface Place {
   id: string;
   name: string;
   x: number;
   y: number;
+}
+
+interface ShowDetail {
+  onButtonClicked: () => void;
 }
 
 const modalStyles: Styles = {
@@ -29,7 +35,15 @@ const modalStyles: Styles = {
   },
 };
 
-function KakaoMap() {
+const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
+
+  const handleButtonClick = () => {
+    // 버튼이 클릭되었을 때, MyWayDetail을 보여주기 위해 상위 컴포넌트(MainPage)로 이벤트를 전달
+    onButtonClicked();
+  };
+
+  const { showDetail, setShowDetail } = useContext(MyWayContext); //? 컨텍스트
+
   const [keyword, setKeyword] = useState('');
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
@@ -405,6 +419,8 @@ function KakaoMap() {
         setTime(timeData);
         setDistance(distanceData);
         setWaySaveBtn(true);
+        handleButtonClick()
+        console.log('값 전달', showDetail)
       })
       .catch((error) => {
         // 오류 처리
