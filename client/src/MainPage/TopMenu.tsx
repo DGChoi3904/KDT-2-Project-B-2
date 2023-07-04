@@ -1,7 +1,8 @@
 import React, { useState } from 'react';
 import Modal, { Styles } from 'react-modal';
-
+import { setCookie, removeCookie } from '../util/cookies';
 import LoginModal from './LoginModal';
+import { useNavigate } from 'react-router-dom'; // 여기 추가
 
 const TopMenuStyle = {
   display: 'flex',
@@ -35,7 +36,7 @@ function TopMenu() {
   const [signUpStatus, setSignUpStatus] = useState(false);
   const [nickname, setNickname] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
-
+  const navigate = useNavigate(); // 여기 추가
   const openModal = () => {
     setIsModalOpen(true);
   };
@@ -45,6 +46,8 @@ function TopMenu() {
   };
   const logOut = () => {
     setSignUpStatus(false);
+    removeCookie('nickname'); // removeCookie 함수를 사용하여 쿠키를 삭제합니다.
+    navigate('/'); // 메인 페이지로 이동합니다.
   };
   const logIn = () => {
     setSignUpStatus(true);
@@ -57,7 +60,10 @@ function TopMenu() {
       />
       <div>
         {signUpStatus ? (
-          <p onClick={logOut}>{nickname}</p>
+          <div>
+            <p>{nickname}</p>
+            <button onClick={logOut}>logout</button>
+          </div>
         ) : (
           <button onClick={openModal} className="ModalBtn">
             SIGN IN
@@ -69,7 +75,11 @@ function TopMenu() {
           style={modalStyles}
           contentLabel="Login Modal"
         >
-          <LoginModal />
+          <LoginModal
+            setSignUpStatus={setSignUpStatus}
+            setNickname={setNickname}
+            closeModal={closeModal} // closeModal 함수 전달
+          />
         </Modal>
       </div>
     </div>

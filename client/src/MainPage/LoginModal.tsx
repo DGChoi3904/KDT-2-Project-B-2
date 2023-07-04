@@ -3,7 +3,17 @@ import { Link } from 'react-router-dom';
 import './Main.css';
 import { setCookie } from '../util/cookies';
 
-const LoginModal: React.FC = () => {
+interface LoginModalProps {
+  setSignUpStatus: React.Dispatch<React.SetStateAction<boolean>>;
+  setNickname: React.Dispatch<React.SetStateAction<string>>;
+  closeModal: () => void; // closeModal 함수 타입 추가
+}
+
+const LoginModal: React.FC<LoginModalProps> = ({
+  setSignUpStatus,
+  setNickname,
+  closeModal,
+}: any) => {
   const [inputIdValue, setInputIdValue] = useState('');
   const [inputPwValue, setInputPwValue] = useState('');
   // 커서가 버튼위에 Hover되었는지 확인하는 구문.
@@ -50,6 +60,9 @@ const LoginModal: React.FC = () => {
         console.log('로그인 성공');
         console.log(result);
         setCookie('nickname', result.nickname); // 로그인 성공 시, 쿠키에 user 정보 저장
+        setSignUpStatus(true); // 로그인 상태 변경
+        setNickname(result.nickname); // 사용자 이름 변경
+        closeModal();
       } else {
         console.log('로그인 실패');
       }
