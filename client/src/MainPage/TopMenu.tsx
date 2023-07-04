@@ -11,7 +11,7 @@ const TopMenuStyle = {
   backgroundColor: '#FFA41B',
   width: '430px',
   height: '80px',
-}
+};
 
 const modalStyles: Styles = {
   overlay: {
@@ -27,12 +27,13 @@ const modalStyles: Styles = {
     height: '200px',
     border: '1px solid black',
     backgroundColor: 'beige',
-    padding: '0'
+    padding: '0',
   },
 };
 
-
 function TopMenu() {
+  const [signUpStatus, setSignUpStatus] = useState(false);
+  const [nickname, setNickname] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const openModal = () => {
@@ -42,22 +43,37 @@ function TopMenu() {
   const closeModal = () => {
     setIsModalOpen(false);
   };
+  const logOut = () => {
+    setSignUpStatus(false);
+  };
+  const logIn = () => {
+    setSignUpStatus(true);
+  };
   return (
     <div style={TopMenuStyle}>
-      <img src={process.env.PUBLIC_URL + '/resource/MyWay_Logo_S.png'} alt="logo" />
+      <img
+        src={process.env.PUBLIC_URL + '/resource/MyWay_Logo_S.png'}
+        alt="logo"
+      />
       <div>
-        <button onClick={openModal} className="ModalBtn">SIGN IN</button>
+        {signUpStatus ? (
+          <p onClick={logOut}>{nickname}</p>
+        ) : (
+          <button onClick={openModal} className="ModalBtn">
+            SIGN IN
+          </button>
+        )}
         <Modal
-        isOpen={isModalOpen}
-        onRequestClose={closeModal}
-        style={modalStyles}
-        contentLabel="Login Modal"
+          isOpen={isModalOpen}
+          onRequestClose={closeModal}
+          style={modalStyles}
+          contentLabel="Login Modal"
         >
-        <LoginModal />
-      </Modal>
+          <LoginModal />
+        </Modal>
       </div>
     </div>
-  )
+  );
 }
 
 export default TopMenu;

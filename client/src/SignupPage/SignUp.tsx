@@ -3,7 +3,6 @@ import { useNavigate, Link } from 'react-router-dom';
 import './SignUp.css';
 
 function SignUp() {
-
   const [id, setId] = useState<string>('');
   const [pwd, setPwd] = useState<string>('');
   const [pwdCheck, setPwdCheck] = useState<string>('');

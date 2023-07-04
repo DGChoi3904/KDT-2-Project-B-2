@@ -8,8 +8,16 @@ export class SignupService {
   constructor(
     @InjectModel(User.name) private readonly userModel: Model<User>,
   ) {}
+
   async create(createUserDto: CreateUserDto): Promise<User> {
+    //회원가입 서비스
     const createdUser = await this.userModel.create(createUserDto);
     return createdUser;
+  }
+
+  async findUser(createUserDto: CreateUserDto): Promise<User | null> {
+    const { userId, password } = createUserDto;
+    const user = await this.userModel.findOne({ userId, password }).exec();
+    return user;
   }
 }
