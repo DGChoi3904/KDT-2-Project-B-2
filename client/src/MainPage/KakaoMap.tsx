@@ -14,10 +14,6 @@ function KakaoMap() {
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
-  // const [startPath, setStartPath] = useState<string[]>([]);
-  // const [endPath, setEndPath] = useState<string[]>([]);
-  // const [wayPath, setWayPath] = useState<string[]>([]); //? 경유지
-  // const [roadPath, setRoadPath] = useState<number[]>([]);
   const [wayCount, setWayCount] = useState<number>(0); //? 경유지 제한
   const [showPlaces, setShowPlaces] = useState(true); //? 길 리스트 숨김 처리
 
@@ -262,6 +258,7 @@ function KakaoMap() {
     if (globalVar.wayPoint.length === 0) {
       url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C${globalVar.endPoint[0]}`;
       console.log('url1: ', url);
+      setShowPlaces(false); //검색후 결과값, 버튼 숨김 처리
     } else {
       const waypointsString = globalVar.wayPoint
         .map((point, index) => {
@@ -516,6 +513,7 @@ function KakaoMap() {
                 flexDirection: 'column',
                 alignItems: 'stretch',
                 backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                zIndex: '3',
               }}
             >
               {places.map((place) => (
@@ -567,13 +565,13 @@ function KakaoMap() {
         </div>
       </div>
       {minute !== 0 && second !== 0 ? (
-        <div className="timer" style={{ zIndex: '2', marginTop: '10px' }}>
+        <div className="timer" style={{ zIndex: '2' }}>
           <img
             src={process.env.PUBLIC_URL + '/resource/timer.png'}
             className="timerImg"
             alt="timerImg"
           />{' '}
-          {hour !== 0 ? hour + '시간' : ''}
+          {hour !== 0 ? hour + '시간 ' : ''}
           {minute}분 {second}초
         </div>
       ) : (

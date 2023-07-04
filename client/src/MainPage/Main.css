@@ -113,6 +113,9 @@
   transform: translateX(-50%);
   z-index: 1;
   font-weight: 700;
+  background-color: white;
+  padding: 10px;
+  border-radius: 999px;
 }
 
 .timerImg {
