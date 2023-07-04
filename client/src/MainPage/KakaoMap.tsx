@@ -32,7 +32,7 @@ function KakaoMap() {
   let endMarker = new window.kakao.maps.Marker(), // 목적지 위치를 표시할 마커.
     endInfowindow = new window.kakao.maps.InfoWindow({ zindex: 6 }); // 목적지에 대한 주소를 표시할 인포윈도우
 
-  // 지도 생성
+  // 카카오지도 생성
   useEffect(() => {
     const Container = document.getElementById('map');
     const Options = {
@@ -59,40 +59,56 @@ function KakaoMap() {
         }
       });
     };
+  }, []);
+  // 네이버 지도 생성
+  /*   useEffect(() => {
+    const script = document.createElement('script');
+    script.src =
+      'https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=YOUR_CLIENT_ID&submodules=geocoder';
+    script.async = true;
+    document.head.appendChild(script);
 
-    const markerImage = new window.kakao.maps.MarkerImage(
-      'https://t1.daumcdn.net/localimg/localimages/07/mapapidoc/marker_red.png',
-      new window.kakao.maps.Size(64, 69),
-    );
-
-    const addMarkersToMap = () => {
-      places.forEach((place) => {
-        const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
-        const marker = new window.kakao.maps.Marker({
-          position: markerPosition,
-          image: markerImage,
-        });
-
-        marker.setMap(map);
-
-        window.kakao.maps.event.addListener(marker, 'click', () => {
-          setSelectedPlace(place);
-          map.setCenter(markerPosition);
-        });
-      });
-
-      if (places.length > 0) {
-        const firstPlace = places[0];
-        const firstPlacePosition = new window.kakao.maps.LatLng(
-          firstPlace.y,
-          firstPlace.x,
-        );
-        map.setCenter(firstPlacePosition); // 검색에 해당하는 첫 번째 장소로 지도 이동
-      }
+    script.onload = () => {
+      handleLoadNaverMap();
     };
 
-    addMarkersToMap();
+    return () => {
+      document.head.removeChild(script);
+    };
   }, []);
+  // 네이버지도 초기화 및 생성
+  const handleLoadNaverMap = () => {
+    window.onload=()=>{
+    if (window.naver && window.naver.maps) {
+      const naverMapContainer = document.getElementById('naverMapContainer');
+      if (naverMapContainer) {
+        const naverMap = new window.naver.maps.Map(naverMapContainer, {
+          center: new window.naver.maps.LatLng(36.35, 127.385),
+          zoom: 10,
+        });
+        // 네이버지도에 마커 추가 예시
+        const marker = new window.naver.maps.Marker({
+          position: new window.naver.maps.LatLng(37.5665, 126.978),
+          map: naverMap,
+        });
+      }
+    } else {
+      console.log('네이버지도 API 로드 실패');
+    }
+  };
+ */
+  // 네이버지도 보이기
+  const handleSwitchToNaverMap = () => {
+    const kakaoMapContainer = document.getElementById('map');
+    if (kakaoMapContainer) {
+      kakaoMapContainer.style.display = 'none';
+    }
+
+    const naverMapContainer = document.getElementById('naverMapContainer');
+    if (naverMapContainer) {
+      naverMapContainer.style.display = 'block';
+    }
+  };
 
   // 시간·거리 표시
   useEffect(() => {
@@ -451,11 +467,13 @@ function KakaoMap() {
     //경유지 5개로 설정
     if (wayCount < 5) {
       const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
+      //경유지 마커 설정
+      let markerImageA = process.env.PUBLIC_URL + '/resource/markerWay.png';
       const markerWay = new window.kakao.maps.Marker({
         position: markerPosition,
         map: mapRef.current,
         icon: new window.kakao.maps.MarkerImage(
-          'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi_hdpi.png', //마커
+          markerImageA, //마커
           new window.kakao.maps.Size(22, 22),
           {
             offset: new window.kakao.maps.Point(11, 11),
@@ -464,8 +482,8 @@ function KakaoMap() {
       });
       mapRef.current.setCenter(markerPosition);
       setSelectedPlace(place);
-      globalVar.wayPoint.push(Number(place.y))
-      globalVar.wayPoint.push(Number(place.x))
+      globalVar.wayPoint.push(Number(place.y));
+      globalVar.wayPoint.push(Number(place.x));
       console.log(
         `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
       );
@@ -473,9 +491,35 @@ function KakaoMap() {
     }
   };
 
+  /*   const handleLoadNaverMap=()=>{
+    const naver=window.naver;
+    const naverMap=new naver.maps.Map('naverMap',{
+      center:new naver.maps.LatLng(36.35,127.385),
+      zoom:10,
+    })
+ */
+  //네이버지도 버튼
+  const NaverMap = () => {
+    // 카카오맵 숨기기
+    const mapContainer = document.getElementById('mapContainer');
+    if (mapContainer) {
+      mapRef.current.style.display = 'none';
+    }
+    // 네이버맵 보여주기
+    const naverMapContainer = document.getElementById('naverMapContainer');
+    if (naverMapContainer) {
+      naverMapContainer.style.display = 'block';
+    }
+  };
+
   return (
     <div>
       <div id="mapContainer" style={{ position: 'relative' }}>
+        <div
+          id="naverMapContainer"
+          style={{ display: 'none', width: '430px', height: '600px' }}
+        ></div>
+
         <div id="map" className="MapNormalSize"></div>
         <div
           style={{
@@ -561,7 +605,11 @@ function KakaoMap() {
             zIndex: '2',
           }}
         >
-          <button onClick={handleNavi} style={{padding: '5px'}}>경로 안내</button>
+          <button onClick={handleNavi} style={{ padding: '5px' }}>
+            경로 안내
+          </button>
+          <button onClick={NaverMap}>Naver</button>
+          {/* 네이버맵 변경 버튼 */}
         </div>
       </div>
       {minute !== 0 && second !== 0 ? (
