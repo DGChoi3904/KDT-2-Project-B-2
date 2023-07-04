@@ -1,11 +1,29 @@
 import React from 'react';
 import './Main.css';
+import globalVar from './Global';
+
+type MySavedWay = {
+  WayName: string;
+  start: [number, number];
+  end: [number, number];
+  wayPoints: number[];
+};
 
 interface MyWayComponentProps {
+  mySavedWay: MySavedWay;
   index: number;
 }
 
-const MyWayComponent: React.FC<MyWayComponentProps> = ({ index }) => {
+const MyWayComponent: React.FC<MyWayComponentProps> = ({
+  mySavedWay,
+  index,
+}) => {
+  function handleButtonClick() {
+    globalVar.startPoint = mySavedWay.start;
+    globalVar.endPoint = mySavedWay.end;
+    globalVar.wayPoint = mySavedWay.wayPoints;
+    globalVar.isSearchingSavedWay = !globalVar.isSearchingSavedWay;
+  }
   return (
     <div
       style={{
@@ -16,8 +34,10 @@ const MyWayComponent: React.FC<MyWayComponentProps> = ({ index }) => {
       }}
     >
       <p style={{ flexGrow: '1' }}>#{index}</p>
-      <p style={{ flexGrow: '5' }}>저장된 MyWay 경로 명</p>
-      <button style={{ flexGrow: '2' }}>보기</button>
+      <p style={{ flexGrow: '5' }}>{mySavedWay.WayName}</p>
+      <button style={{ flexGrow: '2' }} onClick={handleButtonClick}>
+        보기
+      </button>
     </div>
   );
 };
