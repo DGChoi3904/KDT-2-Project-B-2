@@ -11,7 +11,7 @@ import { CreateUserDto } from './dto/create-user.dto';
 export class SignupController {
   constructor(private readonly signupService: SignupService) {} // 수정된 부분
 
-  @Post('sighup')
+  @Post('signup')
   async create(@Body() createUserDto: CreateUserDto) {
     await this.signupService.create(createUserDto);
   }
