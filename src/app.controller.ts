@@ -7,6 +7,11 @@ import { join } from 'path';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  @Get('*')
+  fallback(@Res() res: any) {
+    res.sendFile(this.appService.getBuildPath());
+  }
+
   // @Get('*')
   // serveFile(@Req() req: Request, @Res() res: Response) {
   //   const filePath = join(
