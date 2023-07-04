@@ -4,6 +4,18 @@ import './Main.css';
 
 import MyWayComponent from './MyWayComponent';
 
+interface MyWay {
+  _id: {
+    $old: string;
+  };
+  WayName: string;
+  start: string;
+  wayPoints: string[];
+  end: string;
+  'userData,_id': string;
+  __v: number;
+}
+
 function MyWayList() {
   const userDbSample = [];
   const count = 3;
