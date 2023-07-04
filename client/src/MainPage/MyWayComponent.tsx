@@ -24,7 +24,6 @@ const MyWayComponent: React.FC<MyWayComponentProps> = ({
     globalVar.wayPoint = mySavedWay.wayPoints;
     globalVar.isSearchingSavedWay = !globalVar.isSearchingSavedWay;
   }
-  console.log(mySavedWay);
   return (
     <div
       style={{
