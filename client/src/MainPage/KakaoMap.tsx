@@ -501,7 +501,7 @@ function KakaoMap() {
               type="text"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              style={{ width: '20%' }}
+              style={{ width: '40%' }}
             />
             <button onClick={handleSearch}>🔍</button>
           </div>
