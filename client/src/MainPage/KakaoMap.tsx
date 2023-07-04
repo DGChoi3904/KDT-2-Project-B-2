@@ -14,6 +14,10 @@ function KakaoMap() {
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
+  // const [startPath, setStartPath] = useState<string[]>([]);
+  // const [endPath, setEndPath] = useState<string[]>([]);
+  // const [wayPath, setWayPath] = useState<string[]>([]); //? 경유지
+  // const [roadPath, setRoadPath] = useState<number[]>([]);
   const [wayCount, setWayCount] = useState<number>(0); //? 경유지 제한
   const [showPlaces, setShowPlaces] = useState(true); //? 길 리스트 숨김 처리
 
@@ -32,7 +36,7 @@ function KakaoMap() {
   let endMarker = new window.kakao.maps.Marker(), // 목적지 위치를 표시할 마커.
     endInfowindow = new window.kakao.maps.InfoWindow({ zindex: 6 }); // 목적지에 대한 주소를 표시할 인포윈도우
 
-  // 카카오지도 생성
+  // 지도 생성
   useEffect(() => {
     const Container = document.getElementById('map');
     const Options = {
@@ -60,55 +64,6 @@ function KakaoMap() {
       });
     };
   }, []);
-  // 네이버 지도 생성
-  /*   useEffect(() => {
-    const script = document.createElement('script');
-    script.src =
-      'https://openapi.map.naver.com/openapi/v3/maps.js?ncpClientId=YOUR_CLIENT_ID&submodules=geocoder';
-    script.async = true;
-    document.head.appendChild(script);
-
-    script.onload = () => {
-      handleLoadNaverMap();
-    };
-
-    return () => {
-      document.head.removeChild(script);
-    };
-  }, []);
-  // 네이버지도 초기화 및 생성
-  const handleLoadNaverMap = () => {
-    window.onload=()=>{
-    if (window.naver && window.naver.maps) {
-      const naverMapContainer = document.getElementById('naverMapContainer');
-      if (naverMapContainer) {
-        const naverMap = new window.naver.maps.Map(naverMapContainer, {
-          center: new window.naver.maps.LatLng(36.35, 127.385),
-          zoom: 10,
-        });
-        // 네이버지도에 마커 추가 예시
-        const marker = new window.naver.maps.Marker({
-          position: new window.naver.maps.LatLng(37.5665, 126.978),
-          map: naverMap,
-        });
-      }
-    } else {
-      console.log('네이버지도 API 로드 실패');
-    }
-  };
- */
-  // 네이버지도 보이기
-  const handleSwitchToNaverMap = () => {
-    const kakaoMapContainer = document.getElementById('map');
-    if (kakaoMapContainer) {
-      kakaoMapContainer.style.display = 'none';
-    }
-
-    const naverMapContainer = document.getElementById('naverMapContainer');
-    if (naverMapContainer) {
-      naverMapContainer.style.display = 'block';
-    }
-  };
 
   // 시간·거리 표시
   useEffect(() => {
@@ -274,7 +229,6 @@ function KakaoMap() {
     if (globalVar.wayPoint.length === 0) {
       url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C${globalVar.endPoint[0]}`;
       console.log('url1: ', url);
-      setShowPlaces(false); //검색후 결과값, 버튼 숨김 처리
     } else {
       const waypointsString = globalVar.wayPoint
         .map((point, index) => {
@@ -441,7 +395,7 @@ function KakaoMap() {
       `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
     );
   };
-
+  //목적지 마커에 테스트중
   const handleSelectPlaceEnd = (place: Place) => {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
     const markerEnd = new window.kakao.maps.Marker({
@@ -455,6 +409,7 @@ function KakaoMap() {
         },
       ),
     });
+    markerEnd.setMap(mapRef.current);
     mapRef.current.setCenter(markerPosition);
     setSelectedPlace(place);
     globalVar.endPoint = [Number(place.y), Number(place.x)];
@@ -463,17 +418,16 @@ function KakaoMap() {
       `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
     );
   };
+
   const handleSelectPlaceWay = (place: Place) => {
     //경유지 5개로 설정
     if (wayCount < 5) {
       const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
-      //경유지 마커 설정
-      let markerImageA = process.env.PUBLIC_URL + '/resource/markerWay.png';
       const markerWay = new window.kakao.maps.Marker({
         position: markerPosition,
         map: mapRef.current,
         icon: new window.kakao.maps.MarkerImage(
-          markerImageA, //마커
+          'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi_hdpi.png', //마커
           new window.kakao.maps.Size(22, 22),
           {
             offset: new window.kakao.maps.Point(11, 11),
@@ -491,35 +445,9 @@ function KakaoMap() {
     }
   };
 
-  /*   const handleLoadNaverMap=()=>{
-    const naver=window.naver;
-    const naverMap=new naver.maps.Map('naverMap',{
-      center:new naver.maps.LatLng(36.35,127.385),
-      zoom:10,
-    })
- */
-  //네이버지도 버튼
-  const NaverMap = () => {
-    // 카카오맵 숨기기
-    const mapContainer = document.getElementById('mapContainer');
-    if (mapContainer) {
-      mapRef.current.style.display = 'none';
-    }
-    // 네이버맵 보여주기
-    const naverMapContainer = document.getElementById('naverMapContainer');
-    if (naverMapContainer) {
-      naverMapContainer.style.display = 'block';
-    }
-  };
-
   return (
     <div>
       <div id="mapContainer" style={{ position: 'relative' }}>
-        <div
-          id="naverMapContainer"
-          style={{ display: 'none', width: '430px', height: '600px' }}
-        ></div>
-
         <div id="map" className="MapNormalSize"></div>
         <div
           style={{
@@ -545,7 +473,7 @@ function KakaoMap() {
               type="text"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              style={{ width: '40%' }}
+              style={{ width: '20%' }}
             />
             <button onClick={handleSearch}>🔍</button>
           </div>
@@ -557,7 +485,6 @@ function KakaoMap() {
                 flexDirection: 'column',
                 alignItems: 'stretch',
                 backgroundColor: 'rgba(255, 255, 255, 0.8)',
-                zIndex: '3',
               }}
             >
               {places.map((place) => (
@@ -605,21 +532,18 @@ function KakaoMap() {
             zIndex: '2',
           }}
         >
-          <button onClick={handleNavi} style={{ padding: '5px' }}>
-            경로 안내
-          </button>
-          <button onClick={NaverMap}>Naver</button>
-          {/* 네이버맵 변경 버튼 */}
+          <button onClick={handleNavi}>경로 안내</button>
         </div>
       </div>
+
       {minute !== 0 && second !== 0 ? (
-        <div className="timer" style={{ zIndex: '2' }}>
+        <div className="timer" style={{ zIndex: '2', marginTop: '10px' }}>
           <img
             src={process.env.PUBLIC_URL + '/resource/timer.png'}
             className="timerImg"
             alt="timerImg"
           />{' '}
-          {hour !== 0 ? hour + '시간 ' : ''}
+          {hour !== 0 ? hour + '시간' : ''}
           {minute}분 {second}초
         </div>
       ) : (
