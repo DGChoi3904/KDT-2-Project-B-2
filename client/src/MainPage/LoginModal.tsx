@@ -28,7 +28,10 @@ const LoginModal: React.FC = () => {
         value={inputPwValue}
         onChange={handlePwChange}
       />
-      <button>SIGN IN</button>
+      <div style={{display: 'flex'}}>
+        <button>SIGN IN</button>
+        <button>SIGN UP</button>
+      </div>
     </div>
   );
 };
