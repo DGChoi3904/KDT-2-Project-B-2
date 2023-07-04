@@ -134,6 +134,7 @@ function KakaoMap() {
             console.log(
               `출발지 좌표 : ${globalVar.startPoint}, 목적지 좌표 ${globalVar.endPoint}`,
             );
+
             // 출발지 지정 이후, 전역변수를 false로 설정.
             globalVar.isSearchingStart = false;
           }
@@ -187,6 +188,7 @@ function KakaoMap() {
             console.log(
               `출발지 좌표 : ${globalVar.startPoint}, 목적지 좌표 ${globalVar.endPoint}`,
             );
+
             // 목적지 지정 이후, 전역변수를 false로 설정.
             globalVar.isSearchingEnd = false;
           }
@@ -378,7 +380,17 @@ function KakaoMap() {
   };
   const handleSelectPlace = (place: Place) => {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
-    mapRef.current.setCenter(markerPosition);
+    const markerStart = new window.kakao.maps.Marker({
+      position: markerPosition,
+      map: mapRef.current,
+      icon: new window.kakao.maps.MarkerImage(
+        'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi_hdpi.png', //마커
+        new window.kakao.maps.Size(22, 22),
+        {
+          offset: new window.kakao.maps.Point(11, 11),
+        },
+      ),
+    });
     setSelectedPlace(place);
     globalVar.startPoint = [Number(place.y), Number(place.x)];
     globalVar.isSearchingStart = false;
@@ -386,8 +398,20 @@ function KakaoMap() {
       `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
     );
   };
+
   const handleSelectPlaceEnd = (place: Place) => {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
+    const markerEnd = new window.kakao.maps.Marker({
+      position: markerPosition,
+      map: mapRef.current,
+      icon: new window.kakao.maps.MarkerImage(
+        'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi_hdpi.png', //마커
+        new window.kakao.maps.Size(22, 22),
+        {
+          offset: new window.kakao.maps.Point(11, 11),
+        },
+      ),
+    });
     mapRef.current.setCenter(markerPosition);
     setSelectedPlace(place);
     globalVar.endPoint = [Number(place.y), Number(place.x)];
@@ -400,6 +424,17 @@ function KakaoMap() {
     //경유지 5개로 설정
     if (wayCount < 5) {
       const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
+      const markerWay = new window.kakao.maps.Marker({
+        position: markerPosition,
+        map: mapRef.current,
+        icon: new window.kakao.maps.MarkerImage(
+          'https://maps.gstatic.com/mapfiles/api-3/images/spotlight-poi_hdpi.png', //마커
+          new window.kakao.maps.Size(22, 22),
+          {
+            offset: new window.kakao.maps.Point(11, 11),
+          },
+        ),
+      });
       mapRef.current.setCenter(markerPosition);
       setSelectedPlace(place);
       globalVar.wayPoint.push(Number(place.y));
