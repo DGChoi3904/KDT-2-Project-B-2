@@ -561,7 +561,7 @@ function KakaoMap() {
             zIndex: '2',
           }}
         >
-          <button onClick={handleNavi}>경로 안내</button>
+          <button onClick={handleNavi} style={{padding: '5px'}}>경로 안내</button>
         </div>
       </div>
       {minute !== 0 && second !== 0 ? (
