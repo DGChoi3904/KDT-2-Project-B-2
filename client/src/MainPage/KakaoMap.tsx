@@ -19,7 +19,7 @@ function KakaoMap() {
   // const [wayPath, setWayPath] = useState<string[]>([]); //? 경유지
   // const [roadPath, setRoadPath] = useState<number[]>([]);
   const [wayCount, setWayCount] = useState<number>(0); //? 경유지 제한
-  const [showPlaces, setShowPlaces] = useState(true); //? 경로 안내버튼
+  const [showPlaces, setShowPlaces] = useState(true); //? 경로 리스트
 
   const [time, setTime] = useState<number[]>([]);
   const [hour, setHour] = useState<number>(0);
@@ -225,7 +225,7 @@ function KakaoMap() {
   // 경로안내 버튼 클릭 시 지정된 출발지/도착지 정보를 가지고 최단거리 산출
   const handleNavi = () => {
     let url;
-    mapRef.current.setLevel(5); //경로 안내 클릭시 지도 범위 변경
+    mapRef.current.setLevel(5); // 경로 안내 클릭시 지도 범위 변경
     if (globalVar.wayPoint.length === 0) {
       url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C${globalVar.endPoint[0]}`;
       console.log('url1: ', url);
@@ -244,13 +244,12 @@ function KakaoMap() {
         .join('%7C');
       url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C${globalVar.endPoint[0]}&waypoints=${waypointsString}`;
       console.log('url2: ', url);
-      setShowPlaces(false); //수정
+      setShowPlaces(false); // 클릭하면 showPlaces 값을 false로 변경하여 숨김
     }
-
     const headers = {
       Authorization: 'KakaoAK 0ce7da7c92dd2a150bc0111177dfc283',
     };
-    // fetch를 통해 카카오 네비 API에 요청을 보냄
+    // fetch를 통해 카카오 내비 API에 요청을 보냄
     fetch(url, {
       method: 'GET',
       headers: headers,
@@ -413,7 +412,6 @@ function KakaoMap() {
     }
   };
 
-  //검색창 오른쪽으로 고정, 검색 값은 가로 80%(버튼은 오른쪽으로 고정)
   return (
     <div>
       <div id="mapContainer" style={{ position: 'relative' }}>
@@ -446,33 +444,56 @@ function KakaoMap() {
             />
             <button onClick={handleSearch}>🔍</button>
           </div>
-          <div
-            style={{
-              width: '75%',//리스트 값 조절
-              display: 'flex',
-              flexDirection: 'column',
-              alignItems: 'stretch',
-              backgroundColor: 'rgba(255, 255, 255, 0.8)',
-            }}
-          >
-            {places.map((place) => (
-              <div key={place.id} style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
-                <div style={{ flex: '1' }}>
-                  <div style={{ textAlign: 'left' }}>{place.name}</div>
+          {showPlaces && (
+            <div
+              style={{
+                width: '75%',
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'stretch',
+                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+              }}
+            >
+              {places.map((place) => (
+                <div
+                  key={place.id}
+                  style={{
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                  }}
+                >
+                  <div style={{ flex: '1' }}>
+                    <div style={{ textAlign: 'left' }}>{place.name}</div>
+                  </div>
+                  <div style={{ display: 'flex' }}>
+                    <button
+                      onClick={() => handleSelectPlace(place)}
+                      style={{ color: 'green' }}
+                    >
+                      출발지
+                    </button>
+                    <button
+                      onClick={() => handleSelectPlaceEnd(place)}
+                      style={{ color: 'red' }}
+                    >
+                      목적지
+                    </button>
+                    <button
+                      onClick={() => handleSelectPlaceWay(place)}
+                      style={{ color: 'rgb(255, 164, 27)' }}
+                    >
+                      경유지
+                    </button>
+                  </div>
                 </div>
-                <div style={{ display: 'flex' }}>
-                  <button onClick={() => handleSelectPlace(place)}style={{ color: 'green' }}>출발지</button>
-                  <button onClick={() => handleSelectPlaceEnd(place)}style={{ color: 'red' }}>목적지</button>
-                  <button onClick={() => handleSelectPlaceWay(place)}style={{ color: 'rgb(255, 164, 27)' }}>경유지</button>
-                </div>
-              </div>
-            ))}
-          </div>
+              ))}
+            </div>
+          )}
         </div>
       </div>
-  
       {minute !== 0 && second !== 0 ? (
-        <div className="timer" style={{ zIndex: '2', marginTop: '7px' }}>
+        <div className="timer" style={{ zIndex: '2', marginTop: '10px' }}>
           <img
             src={process.env.PUBLIC_URL + '/resource/timer.png'}
             className="timerImg"
