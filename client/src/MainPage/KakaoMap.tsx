@@ -66,6 +66,10 @@ const KakaoMap: React.FC = () => {
 
   const [isModalOpen, setIsModalOpen] = useState(false); //? 모달 상태 제어
   const [naviSearchCounter, setNaviSearchCounter] = useState<number>(0); //? 길찾기 횟수 카운터
+  const [currentMyWayNameObj, setCurrentMyWayNameObj] = useState<Object>({
+    index: 0,
+    name: '',
+  }); //? 현재 저장된 길 이름
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -505,7 +509,13 @@ const KakaoMap: React.FC = () => {
 
   const startNaviSearch = () => {
     setNaviSearchCounter(naviSearchCounter + 1);
+    console.log(naviSearchCounter);
   };
+  useEffect(() => {
+    if (naviSearchCounter > 0) {
+      handleNavi();
+    }
+  }, [naviSearchCounter]);
 
   return (
     <div>
@@ -635,11 +645,15 @@ const KakaoMap: React.FC = () => {
       )}
       <div id="result"></div>
       {showDetail ? (
-        <MyWayDetail naviDataResult={naviDataResult} />
+        <MyWayDetail
+          naviDataResult={naviDataResult}
+          currentMyWayNameObj={currentMyWayNameObj}
+        />
       ) : (
         <MyWayList
           myWayDataResult={myWayDataResult}
           onMyButtonClick={startNaviSearch}
+          setCurrentMyWayNameObj={setCurrentMyWayNameObj}
         />
       )}
     </div>
