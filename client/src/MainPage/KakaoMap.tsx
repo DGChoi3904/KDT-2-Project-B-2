@@ -45,37 +45,26 @@ function KakaoMap() {
     };
 
     const map = new window.kakao.maps.Map(Container, Options);
-    // map을 Ref값에 등록
     mapRef.current = map;
-    // 접속시 사용자 위치로 center값 줌.
+
+    //접속시 사용자 위치로 지도 중심 이동
     if (navigator.geolocation) {
-      navigator.geolocation.getCurrentPosition(function (position) {
-        let lat = position.coords.latitude, //위도
-          lon = position.coords.longitude; //경도
-
-        let userPosition = new window.kakao.maps.LatLng(lat, lon);
-      });
+      navigator.geolocation.getCurrentPosition(
+        (position) => {
+          const lat = position.coords.latitude;
+          const lon = position.coords.longitude;
+          const userPosition = new window.kakao.maps.LatLng(lat, lon);
+          map.panTo(userPosition); //panTo:지도 중심좌표 부드럽게 이동
+        },
+        () => {
+          map.panTo(new window.kakao.maps.LatLng(36.35, 127.385)); //위치 파악을 못했을 경우 center값 고정
+        },
+      );
     } else {
-      //위치파악이 어려울 경우에는 고정된 center값으로
-      let locPosition = new window.kakao.maps.LatLng(36.35, 127.385);
+      map.panTo(new window.kakao.maps.LatLng(36.35, 127.385));
     }
-
-    const placesService = new window.kakao.maps.services.Places();
-    const searchPlaces = (keyword: string) => {
-      placesService.keywordSearch(keyword, (result: any, status: any) => {
-        if (status === window.kakao.maps.services.Status.OK) {
-          setPlaces(
-            result.map((place: any) => ({
-              id: place.id,
-              name: place.place_name,
-              x: place.x,
-              y: place.y,
-            })),
-          );
-        }
-      });
-    };
   }, []);
+
   // 시간·거리 표시
   useEffect(() => {
     // sections의 소요 시간 합계 계산
