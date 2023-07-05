@@ -13,9 +13,16 @@ type naviDataResult = any;
 
 type naviDataResultProps = {
   naviDataResult: naviDataResult;
+  currenyMyWayNameObj: {
+    index: number;
+    name: string;
+  };
 };
 
-const MyWayDetail: React.FC<naviDataResult> = ({ naviDataResult }) => {
+const MyWayDetail: React.FC<naviDataResult> = ({
+  naviDataResult,
+  currentMyWayNameObj,
+}) => {
   const [showSaveButton, setShowSaveButton] = useState<boolean>(false);
   const resultSample = {
     trans_id: '0188fbec0082724392ac52fe9e946e49',
@@ -291,7 +298,7 @@ const MyWayDetail: React.FC<naviDataResult> = ({ naviDataResult }) => {
         ) : (
           <>
             <p>
-              #{MyWayName.index} {MyWayName.name}
+              #{currentMyWayNameObj.index} {currentMyWayNameObj.name}
             </p>
             <p></p>
           </>
