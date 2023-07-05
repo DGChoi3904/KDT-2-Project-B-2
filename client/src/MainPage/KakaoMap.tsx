@@ -31,12 +31,11 @@ const modalStyles: Styles = {
     height: '200px',
     border: '1px solid black',
     backgroundColor: 'beige',
-    padding: '0'
+    padding: '0',
   },
 };
 
-const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
-
+const KakaoMap: React.FC<ShowDetail> = ({ onButtonClicked }) => {
   const handleButtonClick = () => {
     // 버튼이 클릭되었을 때, MyWayDetail을 보여주기 위해 상위 컴포넌트(MainPage)로 이벤트를 전달
     onButtonClicked();
@@ -64,8 +63,10 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
 
   const mapRef = useRef<any>(null);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);  //? 모달 상태 제어
-
+  const [isModalOpen, setIsModalOpen] = useState(false); //? 모달 상태 제어
+  const [mongoStart, setMongoStart] = useState('');
+  const [mongoWay, setMongoWay] = useState('');
+  const [mongoEnd, setMongoEnd] = useState('');
   const openModal = () => {
     setIsModalOpen(true);
   };
@@ -390,8 +391,8 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
         setTime(timeData);
         setDistance(distanceData);
         setWaySaveBtn(true);
-        handleButtonClick()
-        console.log('값 전달', showDetail)
+        handleButtonClick();
+        console.log('값 전달', showDetail);
       })
       .catch((error) => {
         // 오류 처리
@@ -522,7 +523,7 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
               display: 'flex',
               justifyContent: 'flex-end',
               margin: '0 auto',
-              transform: 'translateX(-5%)'
+              transform: 'translateX(-5%)',
             }}
           >
             <input
@@ -591,8 +592,19 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
             zIndex: '2',
           }}
         >
-          {waySaveBtn ? <button onClick={openModal} style={{padding: '5px'}}>경로 저장</button> : <div></div>}
-          <button onClick={handleNavi} style={{padding: '5px', marginLeft: '5px'}}>경로 안내</button>
+          {waySaveBtn ? (
+            <button onClick={openModal} style={{ padding: '5px' }}>
+              경로 저장
+            </button>
+          ) : (
+            <div></div>
+          )}
+          <button
+            onClick={handleNavi}
+            style={{ padding: '5px', marginLeft: '5px' }}
+          >
+            경로 안내
+          </button>
         </div>
       </div>
       <Modal
@@ -601,7 +613,7 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
         style={modalStyles}
         contentLabel="Login Modal"
       >
-        <SaveWayModal onClose = {closeModal}/>
+        <SaveWayModal onClose={closeModal} />
       </Modal>
       {minute !== 0 && second !== 0 ? (
         <div className="timer" style={{ zIndex: '2', marginTop: '10px' }}>
@@ -619,6 +631,6 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
       <div id="result"></div>
     </div>
   );
-}
+};
 
 export default KakaoMap;
