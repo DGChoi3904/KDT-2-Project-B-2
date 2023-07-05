@@ -563,7 +563,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'stretch',
-                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
               }}
             >
               {places.map((place) => (
