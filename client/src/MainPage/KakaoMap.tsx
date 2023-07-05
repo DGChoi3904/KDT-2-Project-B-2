@@ -5,6 +5,7 @@ import globalVar from './Global';
 import SaveWayModal from './SaveWayModal';
 
 import { MyWayContext } from './MyWayContext';
+import { json } from 'stream/consumers';
 
 interface Place {
   id: string;
@@ -64,9 +65,9 @@ const KakaoMap: React.FC<ShowDetail> = ({ onButtonClicked }) => {
   const mapRef = useRef<any>(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false); //? 모달 상태 제어
-  const [mongoStart, setMongoStart] = useState('');
-  const [mongoWay, setMongoWay] = useState('');
-  const [mongoEnd, setMongoEnd] = useState('');
+  const [mongoStart, setMongoStart] = useState<string>('');
+  const [mongoWay, setMongoWay] = useState<string[]>([]);
+  const [mongoEnd, setMongoEnd] = useState<string>('');
   const openModal = () => {
     setIsModalOpen(true);
   };
@@ -75,6 +76,17 @@ const KakaoMap: React.FC<ShowDetail> = ({ onButtonClicked }) => {
     setIsModalOpen(false);
   };
 
+  const transferMongo = (start: number[], way: number[], end: number[]) => {
+    let strStart: string = '';
+    let strWay: string[] = [];
+    let strEnd: string = '';
+
+    strStart = start.map((str) => str.toString()).join(', ');
+
+    setMongoStart(strStart);
+    setMongoWay(strWay);
+    setMongoEnd(strEnd);
+  };
   let geocoder = new window.kakao.maps.services.Geocoder();
 
   let startMarker = new window.kakao.maps.Marker(), // 출발지 위치를 표시할 마커.
@@ -291,6 +303,11 @@ const KakaoMap: React.FC<ShowDetail> = ({ onButtonClicked }) => {
         .join('%7C');
       url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C${globalVar.endPoint[0]}&waypoints=${waypointsString}`;
       console.log('url2: ', url);
+      transferMongo(
+        globalVar.startPoint,
+        globalVar.wayPoint,
+        globalVar.endPoint,
+      ); // 경로 안내 버튼 실행시 start, way, end포인트를 useState에 저장함.
       setShowPlaces(false); //검색후 결과값, 버튼 숨김 처리
     }
     const headers = {
