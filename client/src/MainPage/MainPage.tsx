@@ -8,11 +8,13 @@ import MyWayDetail from './MyWayDetail';
 import './Main.css';
 
 function MainPage() {
+  const [login, setLogin] = useState<boolean>(false);
+
   return (
     <div className="MainWrap">
-      <TopMenu />
+      <TopMenu setLogin={setLogin} />
       {/* 탑 */}
-      <KakaoMap />
+      <KakaoMap login={login} />
       {/* 메인 */}
       {}
     </div>

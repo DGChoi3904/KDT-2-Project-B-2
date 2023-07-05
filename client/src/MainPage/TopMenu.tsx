@@ -31,8 +31,11 @@ const modalStyles: Styles = {
     padding: '0',
   },
 };
+type TopMenuProps = {
+  setLogin : React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-function TopMenu() {
+const TopMenu:React.FC<TopMenuProps> = ({setLogin}) => {
   const [signUpStatus, setSignUpStatus] = useState(false);
   const [nickname, setNickname] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -79,6 +82,7 @@ function TopMenu() {
             setSignUpStatus={setSignUpStatus}
             setNickname={setNickname}
             closeModal={closeModal} // closeModal 함수 전달
+            setLogin={setLogin}
           />
         </Modal>
       </div>

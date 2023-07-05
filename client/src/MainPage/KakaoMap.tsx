@@ -33,14 +33,18 @@ const modalStyles: Styles = {
   },
 };
 
-const KakaoMap: React.FC = () => {
+type KakaoMapPros = {
+  login: boolean;
+}
+
+const KakaoMap: React.FC<KakaoMapPros> = ({login}) => {
   const [showDetail, setShowDetail] = useState(false);
   const handleButtonClick = () => {
     // 버튼이 클릭되었을 때, MyWayDetail을 보여주기 위해 상위 컴포넌트(MainPage)로 이벤트를 전달
     setShowDetail(!showDetail);
   };
 
-  // const { showDetail, setShowDetail } = useContext(MyWayContext); //? 컨텍스트
+  const [loginCheck, setLoginCheck] = useState(false);
 
   const [keyword, setKeyword] = useState('');
   const [places, setPlaces] = useState<Place[]>([]);
@@ -636,11 +640,18 @@ const KakaoMap: React.FC = () => {
       <div id="result"></div>
       {showDetail ? (
         <MyWayDetail naviDataResult={naviDataResult} />
-      ) : (
+      ) : ( login ?
         <MyWayList
           myWayDataResult={myWayDataResult}
           onMyButtonClick={startNaviSearch}
-        />
+        /> : 
+        <div>
+          <div className="MyWayListTitle">
+            <p>MyWay 목록</p>
+            <div>UI 숨기기</div>
+          </div>
+          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: '195px', backgroundColor: 'beige' }}> 로그인 필요</div>
+        </div>
       )}
     </div>
   );
