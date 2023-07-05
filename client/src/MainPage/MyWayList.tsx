@@ -34,11 +34,7 @@ const MyWayList: React.FC<myWayDataResultandEventProps> = ({
     {
       WayName: '백화점 탐방 길',
       start: '36.322523526532486,127.40338689348418',
-      wayPoints: [
-        '36.35181184574371,127.37817317154799',
-        '36.375233842244825,127.38137482509418',
-        '36.3205479997952,127.40846930046254',
-      ],
+      wayPoints: ['36.35181184574371,127.37817317154799'],
       end: '36.37414016449389,127.31788135939522',
     },
   ];
@@ -79,7 +75,7 @@ const MyWayList: React.FC<myWayDataResultandEventProps> = ({
         <p>MyWay 목록</p>
         <div>UI 숨기기</div>
       </div>
-      <div style={{ height: '195px', backgroundColor: 'beige' }}>
+      <div style={{ minHeight: '195px', backgroundColor: 'beige' }}>
         {ways.map((mySavedWay, index) => (
           <MyWayComponent
             key={index}

@@ -35,9 +35,9 @@ const modalStyles: Styles = {
 
 type KakaoMapPros = {
   login: boolean;
-}
+};
 
-const KakaoMap: React.FC<KakaoMapPros> = ({login}) => {
+const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   const [showDetail, setShowDetail] = useState(false);
   const handleButtonClick = () => {
     // 버튼이 클릭되었을 때, MyWayDetail을 보여주기 위해 상위 컴포넌트(MainPage)로 이벤트를 전달
@@ -520,7 +520,10 @@ const KakaoMap: React.FC<KakaoMapPros> = ({login}) => {
       handleNavi();
     }
   }, [naviSearchCounter]);
-
+  function handleDefaultSearch() {
+    setCurrentMyWayNameObj({ index: 0, name: '' });
+    handleNavi();
+  }
   return (
     <div>
       <div id="mapContainer" style={{ position: 'relative' }}>
@@ -619,7 +622,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({login}) => {
             <div></div>
           )}
           <button
-            onClick={handleNavi}
+            onClick={handleDefaultSearch}
             style={{ padding: '5px', marginLeft: '5px' }}
           >
             경로 안내
@@ -653,18 +656,31 @@ const KakaoMap: React.FC<KakaoMapPros> = ({login}) => {
           naviDataResult={naviDataResult}
           currentMyWayNameObj={currentMyWayNameObj}
         />
-      ) : ( login ?
+      ) : login ? (
         <MyWayList
           myWayDataResult={myWayDataResult}
           onMyButtonClick={startNaviSearch}
           setCurrentMyWayNameObj={setCurrentMyWayNameObj}
-        /> : 
+        />
+      ) : (
         <div>
           <div className="MyWayListTitle">
             <p>MyWay 목록</p>
             <div>UI 숨기기</div>
           </div>
-          <div style={{ display: 'flex', flexDirection: 'row', justifyContent: 'center', alignItems: 'center', height: '195px', backgroundColor: 'beige' }}> 로그인 필요</div>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '195px',
+              backgroundColor: 'beige',
+            }}
+          >
+            {' '}
+            로그인 필요
+          </div>
         </div>
       )}
     </div>

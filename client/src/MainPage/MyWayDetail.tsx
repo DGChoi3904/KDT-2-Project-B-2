@@ -288,12 +288,13 @@ const MyWayDetail: React.FC<naviDataResult> = ({
   return (
     <div>
       <div className="MyWayListTitle">
-        {showSaveButton ? (
+        {currentMyWayNameObj.index === 0 ? (
           <>
             <p>검색 결과</p>
-            <button type="button" className="MyWayDetail-SaveButton">
+            <p></p>
+            {/* <button type="button" className="MyWayDetail-SaveButton">
               저장하기
-            </button>
+            </button> */}
           </>
         ) : (
           <>
@@ -304,7 +305,7 @@ const MyWayDetail: React.FC<naviDataResult> = ({
           </>
         )}
       </div>
-      <div style={{ height: '195px', backgroundColor: 'beige' }}>
+      <div style={{ minHeight: '195px', backgroundColor: 'beige' }}>
         <div
           style={{
             display: 'flex',
@@ -366,9 +367,9 @@ const MyWayDetail: React.FC<naviDataResult> = ({
           </div>
         ))}
       </div>
-      <button type="button" onClick={changeMyWayDetailTitleType}>
+      {/* <button type="button" onClick={changeMyWayDetailTitleType}>
         뷰 변경 스위치
-      </button>
+      </button> */}
     </div>
   );
 };
