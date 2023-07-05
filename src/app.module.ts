@@ -5,6 +5,7 @@ import { MongooseModule } from '@nestjs/mongoose';
 import { CatsModule } from './cats/cats.module';
 import { FallbackModule } from './fallback/fallback.module';
 import { SignupModule } from './signup/signup.module';
+import { MyWayPointModule } from './my-way-point/my-way-point.module';
 //
 @Module({
   imports: [
@@ -20,8 +21,9 @@ import { SignupModule } from './signup/signup.module';
       //   connectionName: 'usersConnection',
       // },
     ),
-    CatsModule,
+    // CatsModule,
     SignupModule,
+    MyWayPointModule,
     FallbackModule,
   ],
   controllers: [AppController],
