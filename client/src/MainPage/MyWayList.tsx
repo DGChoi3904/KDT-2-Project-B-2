@@ -2,44 +2,36 @@ import React from 'react';
 import './Main.css';
 
 import MyWayComponent from './MyWayComponent';
-interface $oid {
-  $oid: string;
-}
-
 interface MyWay {
-  _id: $oid;
   WayName: string;
   start: string;
   wayPoints: string[];
   end: string;
-  __v: number;
 }
 type myWayDataResult = any;
 
 type myWayDataResultandEventProps = {
   myWayDataResult: myWayDataResult;
   onMyButtonClick: () => void;
+  setCurrentMyWayNameObj: (myWayNameObj: {
+    index: number;
+    name: string;
+  }) => void;
 };
 
 const MyWayList: React.FC<myWayDataResultandEventProps> = ({
   myWayDataResult,
   onMyButtonClick,
+  setCurrentMyWayNameObj,
 }) => {
   const userDbSample: MyWay[] = [
     {
-      _id: {
-        $oid: '649d2f11da8d02d4d13e76d5',
-      },
       WayName: '장보고 오는 길',
       start: '36.378778859662745,127.3253416274792',
       wayPoints: ['36.375233842244825,127.38137482509418'],
       end: '36.34926776227329,127.3776809108991',
-      __v: 0,
     },
     {
-      _id: {
-        $oid: '9153w5d655d85a6c5d63b8a1e6',
-      },
       WayName: '백화점 탐방 길',
       start: '36.322523526532486,127.40338689348418',
       wayPoints: [
@@ -48,18 +40,20 @@ const MyWayList: React.FC<myWayDataResultandEventProps> = ({
         '36.3205479997952,127.40846930046254',
       ],
       end: '36.37414016449389,127.31788135939522',
-      __v: 0,
     },
   ];
   function parseYXFromXYString(xyString: string): [number, number] {
     const xyStringArr = xyString.split(',');
     let yxNumberArr: [number, number] = [0, 0];
     xyStringArr.forEach((yxValue: string, index: number) => {
-      yxNumberArr[index] = Number(yxValue);
+      yxNumberArr[index] = Number.parseFloat(yxValue);
     });
     return yxNumberArr;
   }
-
+  function handleCurrentMyWayNameObj(index: number, myWayName: string) {
+    const myWayNameObj = { index: index + 1, name: myWayName };
+    setCurrentMyWayNameObj(myWayNameObj);
+  }
   const ways = userDbSample.map((way) => {
     let wayName: string = way.WayName;
 
@@ -92,6 +86,7 @@ const MyWayList: React.FC<myWayDataResultandEventProps> = ({
             index={index + 1}
             mySavedWay={mySavedWay}
             onMyButtonClick={onMyButtonClick}
+            handleCurrentMyWayNameObj={handleCurrentMyWayNameObj}
           />
         ))}
       </div>
