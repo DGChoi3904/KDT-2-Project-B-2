@@ -223,7 +223,7 @@ const MyWayDetail: React.FC<naviDataResult> = ({
     switch (wayNames.traffic_state) {
       case 0:
         roadState = '#2DB400';
-        roadStateText = '정보없음';
+        roadStateText = '원활';
         break;
       case 1:
         roadState = '#C80000';
