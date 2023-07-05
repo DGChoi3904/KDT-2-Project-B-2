@@ -5,16 +5,14 @@ import globalVar from './Global';
 import SaveWayModal from './SaveWayModal';
 
 import { MyWayContext } from './MyWayContext';
+import MyWayDetail from './MyWayDetail';
+import MyWayList from './MyWayList';
 
 interface Place {
   id: string;
   name: string;
   x: number;
   y: number;
-}
-
-interface ShowDetail {
-  onButtonClicked: () => void;
 }
 
 const modalStyles: Styles = {
@@ -31,18 +29,18 @@ const modalStyles: Styles = {
     height: '200px',
     border: '1px solid black',
     backgroundColor: 'beige',
-    padding: '0'
+    padding: '0',
   },
 };
 
-const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
-
+const KakaoMap: React.FC = () => {
+  const [showDetail, setShowDetail] = useState(false);
   const handleButtonClick = () => {
     // 버튼이 클릭되었을 때, MyWayDetail을 보여주기 위해 상위 컴포넌트(MainPage)로 이벤트를 전달
-    onButtonClicked();
+    setShowDetail(!showDetail);
   };
 
-  const { showDetail, setShowDetail } = useContext(MyWayContext); //? 컨텍스트
+  // const { showDetail, setShowDetail } = useContext(MyWayContext); //? 컨텍스트
 
   const [keyword, setKeyword] = useState('');
   const [places, setPlaces] = useState<Place[]>([]);
@@ -55,6 +53,8 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
   const [wayCount, setWayCount] = useState<number>(0); //? 경유지 제한
   const [showPlaces, setShowPlaces] = useState(true); //? 길 리스트 숨김 처리
   const [waySaveBtn, setWaySaveBtn] = useState<boolean>(false); //? 길 저장 버튼 활성화/비활성화
+  const [naviDataResult, setNaviDataResult] = useState<Object>({});
+  const [myWayDataResult] = useState<Object>({});
 
   const [time, setTime] = useState<number[]>([]);
   const [hour, setHour] = useState<number>(0);
@@ -64,7 +64,8 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
 
   const mapRef = useRef<any>(null);
 
-  const [isModalOpen, setIsModalOpen] = useState(false);  //? 모달 상태 제어
+  const [isModalOpen, setIsModalOpen] = useState(false); //? 모달 상태 제어
+  const [naviSearchCounter, setNaviSearchCounter] = useState<number>(0); //? 길찾기 횟수 카운터
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -304,6 +305,7 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
       .then((jsonData) => {
         // 요청에 대한 처리
         console.log('응답 : ', jsonData);
+        setNaviDataResult(jsonData);
 
         // 응답 데이터에서 roads 데이터만 추출
         const roadData = jsonData['routes'][0]['sections'][0]['roads'];
@@ -390,8 +392,8 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
         setTime(timeData);
         setDistance(distanceData);
         setWaySaveBtn(true);
-        handleButtonClick()
-        console.log('값 전달', showDetail)
+        handleButtonClick();
+        console.log('값 전달', showDetail);
       })
       .catch((error) => {
         // 오류 처리
@@ -501,6 +503,10 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
     }
   };
 
+  const startNaviSearch = () => {
+    setNaviSearchCounter(naviSearchCounter + 1);
+  };
+
   return (
     <div>
       <div id="mapContainer" style={{ position: 'relative' }}>
@@ -522,7 +528,7 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
               display: 'flex',
               justifyContent: 'flex-end',
               margin: '0 auto',
-              transform: 'translateX(-5%)'
+              transform: 'translateX(-5%)',
             }}
           >
             <input
@@ -591,8 +597,19 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
             zIndex: '2',
           }}
         >
-          {waySaveBtn ? <button onClick={openModal} style={{padding: '5px'}}>경로 저장</button> : <div></div>}
-          <button onClick={handleNavi} style={{padding: '5px', marginLeft: '5px'}}>경로 안내</button>
+          {waySaveBtn ? (
+            <button onClick={openModal} style={{ padding: '5px' }}>
+              경로 저장
+            </button>
+          ) : (
+            <div></div>
+          )}
+          <button
+            onClick={handleNavi}
+            style={{ padding: '5px', marginLeft: '5px' }}
+          >
+            경로 안내
+          </button>
         </div>
       </div>
       <Modal
@@ -601,7 +618,7 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
         style={modalStyles}
         contentLabel="Login Modal"
       >
-        <SaveWayModal onClose = {closeModal}/>
+        <SaveWayModal onClose={closeModal} />
       </Modal>
       {minute !== 0 && second !== 0 ? (
         <div className="timer" style={{ zIndex: '2', marginTop: '10px' }}>
@@ -617,8 +634,16 @@ const KakaoMap:React.FC<ShowDetail> = ({onButtonClicked}) => {
         <div style={{ display: 'none' }}></div>
       )}
       <div id="result"></div>
+      {showDetail ? (
+        <MyWayDetail naviDataResult={naviDataResult} />
+      ) : (
+        <MyWayList
+          myWayDataResult={myWayDataResult}
+          onMyButtonClick={startNaviSearch}
+        />
+      )}
     </div>
   );
-}
+};
 
 export default KakaoMap;

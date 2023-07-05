@@ -9,8 +9,13 @@ interface wayInfo {
   stateText: string;
   duration: string;
 }
+type naviDataResult = any;
 
-const MyWayDetail: React.FC = () => {
+type naviDataResultProps = {
+  naviDataResult: naviDataResult;
+};
+
+const MyWayDetail: React.FC<naviDataResult> = ({ naviDataResult }) => {
   const [showSaveButton, setShowSaveButton] = useState<boolean>(false);
   const resultSample = {
     trans_id: '0188fbec0082724392ac52fe9e946e49',
@@ -185,12 +190,12 @@ const MyWayDetail: React.FC = () => {
     ],
   };
   // 길찾기 API 응답 결과값을 저장하는 상수. Props로 상속할시, WayResult에 추가할 것.
-  const wayResult = resultSample; // 샘플 값을 적용한 상수.
+  const wayResult: any = naviDataResult; // 샘플 값을 적용한 상수.
   // fetch로 받아온 길찾기 API 결과값에서 모든 roads의 값을 꺼내 저장할 배열. 데이터 타입이 string, number, number[]가 복합적으로 들어가기에 any[]타입으로 명시.
   const mergeRoads: any[] = [];
   // 모든 roads의 값을 꺼내 mergeRoads에 push한다.
-  wayResult.routes.forEach((route) => {
-    route.sections.forEach((section) => {
+  wayResult.routes.forEach((route: any) => {
+    route.sections.forEach((section: any) => {
       mergeRoads.push(...section.roads);
     });
   });

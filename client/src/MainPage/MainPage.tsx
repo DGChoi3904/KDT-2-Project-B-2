@@ -8,19 +8,13 @@ import MyWayDetail from './MyWayDetail';
 import './Main.css';
 
 function MainPage() {
-  const [showDetail, setShowDetail] = useState(false);
-
-  const toggleDetail = () => {
-    setShowDetail(true);
-  };
-
   return (
     <div className="MainWrap">
       <TopMenu />
       {/* 탑 */}
-      <KakaoMap onButtonClicked={toggleDetail} />
+      <KakaoMap />
       {/* 메인 */}
-      {showDetail ? <MyWayDetail /> : <MyWayList />}
+      {}
     </div>
   );
 }

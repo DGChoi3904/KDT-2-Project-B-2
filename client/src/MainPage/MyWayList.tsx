@@ -14,8 +14,17 @@ interface MyWay {
   end: string;
   __v: number;
 }
+type myWayDataResult = any;
 
-function MyWayList() {
+type myWayDataResultandEventProps = {
+  myWayDataResult: myWayDataResult;
+  onMyButtonClick: () => void;
+};
+
+const MyWayList: React.FC<myWayDataResultandEventProps> = ({
+  myWayDataResult,
+  onMyButtonClick,
+}) => {
   const userDbSample: MyWay[] = [
     {
       _id: {
@@ -82,11 +91,12 @@ function MyWayList() {
             key={index}
             index={index + 1}
             mySavedWay={mySavedWay}
+            onMyButtonClick={onMyButtonClick}
           />
         ))}
       </div>
     </div>
   );
-}
+};
 
 export default MyWayList;

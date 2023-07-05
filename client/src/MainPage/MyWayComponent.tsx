@@ -12,19 +12,21 @@ type MySavedWay = {
 interface MyWayComponentProps {
   mySavedWay: MySavedWay;
   index: number;
+  onMyButtonClick: () => void;
 }
 
 const MyWayComponent: React.FC<MyWayComponentProps> = ({
   mySavedWay,
   index,
+  onMyButtonClick,
 }) => {
-  function handleButtonClick() {
-    // 전역변수에 입력, 검색을 실행하려 하나, KakaoMap에서 인식하지 못함. 데이터 입력방법에 수정이 필요하다.
-    // globalVar.startPoint = mySavedWay.start;
-    // globalVar.endPoint = mySavedWay.end;
-    // globalVar.wayPoint = mySavedWay.wayPoints;
-    // globalVar.isSearchingSavedWay = !globalVar.isSearchingSavedWay;
-  }
+  // function handleButtonClick() {
+  //   // 전역변수에 입력, 검색을 실행하려 하나, KakaoMap에서 인식하지 못함. 데이터 입력방법에 수정이 필요하다.
+  //   // globalVar.startPoint = mySavedWay.start;
+  //   // globalVar.endPoint = mySavedWay.end;
+  //   // globalVar.wayPoint = mySavedWay.wayPoints;
+  //   // globalVar.isSearchingSavedWay = !globalVar.isSearchingSavedWay;
+  // }
   return (
     <div
       style={{
@@ -36,7 +38,7 @@ const MyWayComponent: React.FC<MyWayComponentProps> = ({
     >
       <p style={{ flexGrow: '1' }}>#{index}</p>
       <p style={{ flexGrow: '5' }}>{mySavedWay.WayName}</p>
-      <button style={{ flexGrow: '2' }} onClick={handleButtonClick}>
+      <button style={{ flexGrow: '2' }} onClick={onMyButtonClick}>
         보기
       </button>
     </div>
