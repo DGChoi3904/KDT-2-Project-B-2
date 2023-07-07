@@ -52,7 +52,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
 
   const [loginCheck, setLoginCheck] = useState(false);
 
-  const [keyword, setKeyword] = useState('');
+  const [keyword, setKeyword] = useState(''); // input
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
@@ -119,7 +119,10 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
       center: new window.kakao.maps.LatLng(36.35, 127.385),
       level: 3,
     };
-
+    //맵 클릭시 검색결과 사라지게 하기
+    const mapClick = () => {
+      setShowPlaces(false);
+    };
     const map = new window.kakao.maps.Map(Container, Options);
     // map을 Ref값에 등록
     mapRef.current = map;
@@ -139,6 +142,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
         }
       });
     };
+    window.kakao.maps.event.addListener(map, 'click', mapClick); //맵 클릭 리스트 숨김
   }, []);
 
   // 시간·거리 표시
@@ -603,6 +607,12 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               style={{ width: '40%' }}
+              onKeyDown={(e) => {
+                //Enter로 검색 가능
+                if (e.key === 'Enter') {
+                  handleSearch();
+                }
+              }}
             />
             <button onClick={handleSearch}>🔍</button>
           </div>
@@ -630,19 +640,28 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
                   </div>
                   <div style={{ display: 'flex' }}>
                     <button
-                      onClick={() => handleSelectPlace(place)}
+                      onClick={() => {
+                        handleSelectPlace(place);
+                        setKeyword(place.name);
+                      }}
                       style={{ color: 'blue' }}
                     >
                       출발지
                     </button>
                     <button
-                      onClick={() => handleSelectPlaceEnd(place)}
+                      onClick={() => {
+                        handleSelectPlaceEnd(place); //출발지의 장소
+                        setKeyword(place.name); //클릭한 장소의 이름이 input으로 전송
+                      }}
                       style={{ color: 'red' }}
                     >
                       목적지
                     </button>
                     <button
-                      onClick={() => handleSelectPlaceWay(place)}
+                      onClick={() => {
+                        handleSelectPlaceWay(place);
+                        setKeyword(place.name);
+                      }}
                       style={{ color: 'rgb(255, 164, 27)' }}
                     >
                       경유지
