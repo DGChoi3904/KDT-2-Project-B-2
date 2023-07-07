@@ -81,6 +81,10 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
     name: '',
   }); //? 현재 저장된 길 이름
 
+  const [mongoStart, setMongoStart] = useState('');
+  const [mongoWay, setMongoWay] = useState<string[]>([]);
+  const [mongoEnd, setMongoEnd] = useState('');
+
   const openModal = () => {
     setIsModalOpen(true);
   };
@@ -95,6 +99,18 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
     startInfowindow = new window.kakao.maps.InfoWindow({ zindex: 1 }); // 출발지에 대한 주소를 표시할 인포윈도우
   let endMarker = new window.kakao.maps.Marker(), // 목적지 위치를 표시할 마커.
     endInfowindow = new window.kakao.maps.InfoWindow({ zindex: 6 }); // 목적지에 대한 주소를 표시할 인포윈도우
+
+  useEffect(() => {
+    console.log(
+      '몽고스테이트 값 변경됨',
+      '출발 : ',
+      mongoStart,
+      ', 경유 : ',
+      mongoWay,
+      ', 도착 : ',
+      mongoEnd,
+    ); //값이 변할때 mongoState확인
+  }, [mongoStart, mongoWay, mongoEnd]);
 
   // 지도 생성
   useEffect(() => {
@@ -306,6 +322,11 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
       url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C${globalVar.endPoint[0]}&waypoints=${waypointsString}`;
       console.log('url2: ', url);
       setShowPlaces(false); //검색후 결과값, 버튼 숨김 처리
+      transferMongo(
+        globalVar.startPoint,
+        globalVar.wayPoint,
+        globalVar.endPoint,
+      );
     }
     const headers = {
       Authorization: 'KakaoAK 0ce7da7c92dd2a150bc0111177dfc283',
@@ -530,6 +551,29 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
     setCurrentMyWayNameObj({ index: 0, name: '' });
     handleNavi();
   }
+
+  const transferMongo = (start: number[], way: number[], end: number[]) => {
+    let strStart: string = '';
+    let strWay: string[] = [];
+    let strEnd: string = '';
+
+    strStart = start.map((str) => str.toString()).join(', ');
+
+    strWay = way.reduce((acc, num, idx) => {
+      const pos = Math.floor(idx / 2);
+      if (!acc[pos]) {
+        acc[pos] = '';
+      }
+      acc[pos] += idx % 2 !== 0 ? `, ${num.toString()}` : num.toString();
+      return acc;
+    }, [] as string[]);
+
+    strEnd = end.map((str) => str.toString()).join(', ');
+
+    setMongoStart(strStart);
+    setMongoWay(strWay);
+    setMongoEnd(strEnd);
+  };
   return (
     <div>
       <div id="mapContainer" style={{ position: 'relative' }}>
