@@ -310,7 +310,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
         globalVar.startPoint = [0, 0];
         globalVar.wayPoint = [];
         setWayCount(0);
-        setWayMarkers([]);
       })
       .catch((error) => {
         // 오류 처리
@@ -399,6 +398,12 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   const handleSelectPlaceWay = (place: Place) => {
     isPolyLineDrawn(); //polyline이 그려져있는지 확인
     //경유지 5개로 설정
+    if (wayCount === 0) {
+      wayMarkers.forEach((marker) => {
+        marker.marker.setMap(null);
+      });
+      setWayMarkers([]);
+    }
     if (wayCount < 5) {
       const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
       const markerWay = new window.kakao.maps.Marker({
