@@ -105,6 +105,8 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
     marker: new window.kakao.maps.Marker({}),
   });
   const [wayMarkers, setWayMarkers] = useState<Marker[]>([]);
+  const [polyLines, setPolyLines] = useState<any[]>([]);
+
   useEffect(() => {
     console.log(
       '몽고스테이트 값 변경됨',
@@ -294,6 +296,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
                   2
               ) {
                 polyline.setMap(mapRef.current);
+                polyLines.push(polyline);
               }
             }
           }
@@ -306,6 +309,8 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
         globalVar.endPoint = [0, 0];
         globalVar.startPoint = [0, 0];
         globalVar.wayPoint = [];
+        setWayCount(0);
+        setWayMarkers([]);
       })
       .catch((error) => {
         // 오류 처리
@@ -350,6 +355,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
 
   //출발지 마커
   function handleSelectPlace(place: Place) {
+    isPolyLineDrawn(); //polyline이 그려져있는지 확인
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
     if (!startMarker.marker.getMap()) {
       startMarker.marker.setPosition(markerPosition);
@@ -370,6 +376,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   }
   //도착지 마커
   const handleSelectPlaceEnd = (place: Place) => {
+    isPolyLineDrawn(); //polyline이 그려져있는지 확인
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
     if (!endMarker.marker.getMap()) {
       endMarker.marker.setPosition(markerPosition);
@@ -390,8 +397,9 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   };
   //경유지 마커
   const handleSelectPlaceWay = (place: Place) => {
+    isPolyLineDrawn(); //polyline이 그려져있는지 확인
     //경유지 5개로 설정
-    if (wayMarkers.length < 5) {
+    if (wayCount < 5) {
       const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
       const markerWay = new window.kakao.maps.Marker({
         position: markerPosition,
@@ -453,6 +461,16 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
     setMongoWay(strWay);
     setMongoEnd(strEnd);
   };
+
+  function isPolyLineDrawn() {
+    if (polyLines.length > 0) {
+      polyLines.forEach((polyLine) => {
+        polyLine.setMap(null);
+      });
+      setPolyLines([]);
+    }
+  }
+
   return (
     <div>
       <div id="mapContainer" style={{ position: 'relative' }}>
