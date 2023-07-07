@@ -7,6 +7,7 @@ import SaveWayModal from '../Modal/SaveWayModal';
 import { MyWayContext } from '../../util/MyWayContext';
 import MyWayDetail from '../Footer/MyWayDetail';
 import MyWayList from '../Footer/MyWayList';
+import MyWayReqLogin from '../Footer/MyWayReqLogin'
 
 interface Place {
   id: string;
@@ -745,25 +746,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
           setCurrentMyWayNameObj={setCurrentMyWayNameObj}
         />
       ) : (
-        <div>
-          <div className="MyWayListTitle">
-            <p>MyWay 목록</p>
-            <div>UI 숨기기</div>
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '195px',
-              backgroundColor: 'beige',
-            }}
-          >
-            {' '}
-            로그인 필요
-          </div>
-        </div>
+        <MyWayReqLogin />
       )}
     </div>
   );
