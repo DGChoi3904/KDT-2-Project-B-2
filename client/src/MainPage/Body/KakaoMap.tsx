@@ -92,13 +92,12 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-
-  let geocoder = new window.kakao.maps.services.Geocoder();
-
-  const startMarker = new window.kakao.maps.Marker(), // 출발지 위치를 표시할 마커.
-    startInfowindow = new window.kakao.maps.InfoWindow({ zindex: 1 }); // 출발지에 대한 주소를 표시할 인포윈도우
-  const endMarker = new window.kakao.maps.Marker(), // 목적지 위치를 표시할 마커.
-    endInfowindow = new window.kakao.maps.InfoWindow({ zindex: 6 }); // 목적지에 대한 주소를 표시할 인포윈도우
+  const [startMarker, setStartMarker] = useState<any>(
+    new window.kakao.maps.Marker({}),
+  );
+  const [endMarker, setEndMarker] = useState<any>(
+    new window.kakao.maps.Marker({}),
+  );
 
   useEffect(() => {
     console.log(
@@ -166,141 +165,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
     const seconds: number = timeSum % 60;
     setSecond(seconds);
   }, [time, distance, minute, second]);
-
-  function setClickEvents(mouseEvent: { latLng: any }) {
-    // 맵을 클릭시 해당 좌표에 출발지 마커를 찍고 위치정보를 인포윈도우에 저장하는 함수
-    function onClickSetStartPoint(mouseEvent: { latLng: any }) {
-      searchDetailAddrFromCoords(
-        mouseEvent.latLng,
-        function (result: any, status: any) {
-          if (status === window.kakao.maps.services.Status.OK) {
-            var detailAddr = !!result[0].road_address
-              ? '<div>도로명주소 : ' +
-                result[0].road_address.address_name +
-                '</div>'
-              : '';
-            detailAddr +=
-              '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
-
-            var content =
-              '<div style="padding:5px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;">' +
-              '<span class="title">출발지 주소 정보</span>' +
-              detailAddr +
-              '</div>';
-
-            // 마커를 클릭한 위치에 표시
-            startMarker.setPosition(mouseEvent.latLng);
-            startMarker.setMap(mapRef.current);
-
-            // 인포윈도우에 클릭한 위치에 대한 상세 주소정보를 표시
-            window.kakao.maps.event.addListener(
-              startMarker,
-              'click',
-              function () {
-                // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
-
-                startInfowindow.setContent(content);
-                if (startInfowindow.getMap() === null) {
-                  startInfowindow.open(mapRef.current, startMarker);
-                } else {
-                  startInfowindow.close();
-                }
-              },
-            );
-            globalVar.startPoint = [
-              mouseEvent.latLng.getLat(),
-              mouseEvent.latLng.getLng(),
-            ];
-            console.log(
-              `출발지 좌표 : ${globalVar.startPoint}, 목적지 좌표 ${globalVar.endPoint}`,
-            );
-
-            // 출발지 지정 이후, 전역변수를 false로 설정.
-            globalVar.isSearchingStart = false;
-          }
-        },
-      );
-    }
-
-    // 맵을 클릭시 해당 좌표에 목적지 마커를 찍고 위치정보를 인포윈도우에 저장하는 함수
-    function onClickSetEndPoint(mouseEvent: { latLng: any }) {
-      searchDetailAddrFromCoords(
-        mouseEvent.latLng,
-        function (result: any, status: any) {
-          if (status === window.kakao.maps.services.Status.OK) {
-            var detailAddr = !!result[0].road_address
-              ? '<div>도로명주소 : ' +
-                result[0].road_address.address_name +
-                '</div>'
-              : '';
-            detailAddr +=
-              '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
-
-            var content =
-              '<div style="padding:5px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;">' +
-              '<span class="title">목적지 주소 정보</span>' +
-              detailAddr +
-              '</div>';
-
-            // 마커를 클릭한 위치에 표시
-            endMarker.setPosition(mouseEvent.latLng);
-            endMarker.setMap(mapRef.current);
-
-            // 인포윈도우에 클릭한 위치에 대한 상세 주소정보를 표시
-            window.kakao.maps.event.addListener(
-              endMarker,
-              'click',
-              function () {
-                // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
-                endInfowindow.setContent(content);
-                if (endInfowindow.getMap() === null) {
-                  endInfowindow.open(mapRef.current, endMarker);
-                } else {
-                  endInfowindow.close();
-                }
-              },
-            );
-
-            globalVar.endPoint = [
-              mouseEvent.latLng.getLat(),
-              mouseEvent.latLng.getLng(),
-            ];
-            console.log(
-              `출발지 좌표 : ${globalVar.startPoint}, 목적지 좌표 ${globalVar.endPoint}`,
-            );
-
-            // 목적지 지정 이후, 전역변수를 false로 설정.
-            globalVar.isSearchingEnd = false;
-          }
-        },
-      );
-    }
-
-    // 좌표로 상세 주소 정보를 요청하는 콜백함수
-    function searchDetailAddrFromCoords(
-      coords: { getLng: any; getLat: any },
-      callback: Function,
-    ) {
-      // geocoder를 통해 좌표로 상세 주소 정보를 요청
-      geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
-    }
-
-    if (globalVar.isSearchingStart) {
-      // 맵에서 출발지 마커를 찍어주는 함수 실행.
-      onClickSetStartPoint(mouseEvent);
-    } else if (globalVar.isSearchingEnd) {
-      onClickSetEndPoint(mouseEvent);
-    }
-  }
-
-  // 클릭 이벤트 분리
-  useEffect(() => {
-    window.kakao.maps.event.addListener(
-      mapRef.current,
-      'click',
-      setClickEvents,
-    );
-  }, []);
 
   // 경로안내 버튼 클릭 시 지정된 출발지/도착지 정보를 가지고 최단거리 산출
   const handleNavi = () => {
@@ -479,7 +343,8 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   };
 
   //출발지 마커
-  const handleSelectPlace = (place: Place) => {
+  function handleSelectPlace(place: Place) {
+    console.log(startMarker.getMap());
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
     if (!startMarker.getMap()) {
       startMarker.setPosition(markerPosition);
@@ -497,13 +362,13 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
     console.log(
       `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
     );
-  };
+  }
   //도착지 마커
   const handleSelectPlaceEnd = (place: Place) => {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
     if (!endMarker.getMap()) {
       endMarker.setPosition(markerPosition);
-      endMarker.setImage(MarkerImgSet.setStartMarkerImg());
+      endMarker.setImage(MarkerImgSet.setEndMarkerImg());
       endMarker.setZIndex(6);
       endMarker.setMap(mapRef.current);
     } else {
