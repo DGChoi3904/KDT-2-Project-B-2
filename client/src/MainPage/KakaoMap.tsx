@@ -528,7 +528,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
     setCurrentMyWayNameObj({ index: 0, name: '' });
     handleNavi();
   }
-
   return (
     <div>
       <div id="mapContainer" style={{ position: 'relative' }}>
@@ -558,6 +557,12 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               style={{ width: '40%' }}
+              //Enter로 검색 가능
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') {
+                  handleSearch();
+                }
+              }}
             />
             <button onClick={handleSearch}>🔍</button>
           </div>
