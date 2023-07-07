@@ -81,9 +81,17 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
     name: '',
   }); //? 현재 저장된 길 이름
 
-  const [mongoStart, setMongoStart] = useState(''); //몽고 DB에 저장할 데이터들
-  const [mongoWay, setMongoWay] = useState<string[]>([]);
-  const [mongoEnd, setMongoEnd] = useState('');
+  const [mongoStart, setMongoStart] = useState<string>(''); //몽고 DB에 저장할 데이터들
+  const [mongoWay, setMongoWay] = useState<string[] | null>(null);
+  const [mongoEnd, setMongoEnd] = useState<string>('');
+  const [addWayPointDB, setAddWayPointDB] = useState<
+    | {
+        mongoStart: string | null;
+        mongoWay: string[] | null;
+        mongoEnd: string | null;
+      }
+    | undefined
+  >();
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -106,10 +114,12 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
       '출발 : ',
       mongoStart,
       ', 경유 : ',
-      mongoWay,
+      mongoWay ? mongoWay : `없음`,
       ', 도착 : ',
       mongoEnd,
     ); //값이 변할때 mongoState확인
+    const aSendObj = { mongoStart, mongoWay, mongoEnd };
+    setAddWayPointDB(aSendObj);
   }, [mongoStart, mongoWay, mongoEnd]);
 
   // 지도 생성
@@ -423,6 +433,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
                   .length -
                   2
               ) {
+                polyline.setMap(null);
                 polyline.setMap(mapRef.current);
               }
             }
@@ -468,12 +479,12 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   // 미리보기
   const handleSelectPlacePre = (place: Place) => {
     const SelectPosition = new window.kakao.maps.LatLng(place.y, place.x);
-    mapRef.current.setCenter(SelectPosition)
+    mapRef.current.setCenter(SelectPosition);
     console.log('미리보는 중!');
     console.log(
       `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
     );
-  }
+  };
 
   //출발지 마커
   const handleSelectPlace = (place: Place) => {
@@ -562,7 +573,9 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
     }
   }, [naviSearchCounter]);
   function handleDefaultSearch() {
+    //경로저장 버튼 클릭시 실행 할 메소드
     setCurrentMyWayNameObj({ index: 0, name: '' });
+
     handleNavi();
   }
 
@@ -588,6 +601,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
     setMongoWay(strWay);
     setMongoEnd(strEnd);
   };
+
   return (
     <div>
       <div id="mapContainer" style={{ position: 'relative' }}>
@@ -646,7 +660,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
                   }}
                 >
                   <div style={{ flex: '1' }}>
-                    <div style={{ textAlign: 'left'}}>{place.name}</div>
+                    <div style={{ textAlign: 'left' }}>{place.name}</div>
                   </div>
                   <div style={{ display: 'flex' }}>
                     <button
@@ -717,7 +731,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
         style={modalStyles}
         contentLabel="Login Modal"
       >
-        <SaveWayModal onClose={closeModal} />
+        <SaveWayModal addWayPointDB={addWayPointDB} onClose={closeModal} />
       </Modal>
       {minute !== 0 && second !== 0 ? (
         <div className="timer" style={{ zIndex: '2', marginTop: '10px' }}>
