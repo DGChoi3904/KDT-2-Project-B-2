@@ -433,6 +433,9 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
         setWaySaveBtn(true);
         handleButtonClick();
         console.log('값 전달', showDetail);
+        globalVar.endPoint = [0, 0];
+        globalVar.startPoint = [0, 0];
+        globalVar.wayPoint = [];
       })
       .catch((error) => {
         // 오류 처리
@@ -478,10 +481,14 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   //출발지 마커
   const handleSelectPlace = (place: Place) => {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
-    startMarker.setPosition(markerPosition);
-    startMarker.setImage(MarkerImgSet.setStartMarkerImg());
-    startMarker.setZIndex(1);
-    startMarker.setMap(mapRef.current);
+    if (!startMarker.getMap()) {
+      startMarker.setPosition(markerPosition);
+      startMarker.setImage(MarkerImgSet.setStartMarkerImg());
+      startMarker.setZIndex(1);
+      startMarker.setMap(mapRef.current);
+    } else {
+      startMarker.setPosition(markerPosition);
+    }
 
     mapRef.current.setCenter(markerPosition); //해당하는 좌표를 가지고 지도 중심으로 이동시킴
     setSelectedPlace(place);
@@ -494,19 +501,15 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   //도착지 마커
   const handleSelectPlaceEnd = (place: Place) => {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
-    let img = new window.kakao.maps.MarkerImage(
-      process.env.PUBLIC_URL + '/resource/marker/endpointMarker.png',
-      new window.kakao.maps.Size(20, 30),
-      {
-        offset: new window.kakao.maps.Point(10, 30),
-      },
-    );
-    const markerEnd = new window.kakao.maps.Marker({
-      position: markerPosition,
-      map: mapRef.current,
-      image: img,
-    });
-    markerEnd.setMap(mapRef.current);
+    if (!endMarker.getMap()) {
+      endMarker.setPosition(markerPosition);
+      endMarker.setImage(MarkerImgSet.setStartMarkerImg());
+      endMarker.setZIndex(6);
+      endMarker.setMap(mapRef.current);
+    } else {
+      endMarker.setPosition(markerPosition);
+    }
+
     mapRef.current.setCenter(markerPosition); //해당하는 좌표를 가지고 지도 중심으로 이동시킴
     setSelectedPlace(place);
     globalVar.endPoint = [Number(place.y), Number(place.x)];
