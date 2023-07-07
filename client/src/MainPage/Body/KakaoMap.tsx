@@ -465,6 +465,16 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
       }
     });
   };
+  // 미리보기
+  const handleSelectPlacePre = (place: Place) => {
+    const SelectPosition = new window.kakao.maps.LatLng(place.y, place.x);
+    mapRef.current.setCenter(SelectPosition)
+    console.log('미리보는 중!');
+    console.log(
+      `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
+    );
+  }
+
   //출발지 마커
   const handleSelectPlace = (place: Place) => {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
@@ -519,7 +529,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
     if (wayCount < 5) {
       const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
       let img = new window.kakao.maps.MarkerImage(
-        process.env.PUBLIC_URL + '/resource/marker/waypointMarker2.png',
+        process.env.PUBLIC_URL + '/resource/marker/waypointMarker.png',
         new window.kakao.maps.Size(20, 30),
         {
           offset: new window.kakao.maps.Point(10, 30),
@@ -636,14 +646,17 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
                   }}
                 >
                   <div style={{ flex: '1' }}>
-                    <div style={{ textAlign: 'left' }}>{place.name}</div>
+                    <div style={{ textAlign: 'left'}}>{place.name}</div>
                   </div>
                   <div style={{ display: 'flex' }}>
                     <button
-                      onClick={() => {
-                        handleSelectPlace(place);
-                        setKeyword(place.name);
-                      }}
+                      onClick={() => handleSelectPlacePre(place)}
+                      style={{ color: 'black' }}
+                    >
+                      미리보기
+                    </button>
+                    <button
+                      onClick={() => handleSelectPlace(place)}
                       style={{ color: 'blue' }}
                     >
                       출발지
