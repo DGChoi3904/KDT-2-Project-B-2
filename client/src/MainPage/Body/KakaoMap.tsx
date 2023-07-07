@@ -52,7 +52,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   };
 
   const [loginCheck, setLoginCheck] = useState(false);
-
   const [keyword, setKeyword] = useState(''); // input
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
@@ -96,13 +95,9 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
 
   let geocoder = new window.kakao.maps.services.Geocoder();
 
-  let startMarker = new window.kakao.maps.Marker({
-      image: MarkerImgSet.setStartMarkerImg(),
-    }), // 출발지 위치를 표시할 마커.
+  const startMarker = new window.kakao.maps.Marker(), // 출발지 위치를 표시할 마커.
     startInfowindow = new window.kakao.maps.InfoWindow({ zindex: 1 }); // 출발지에 대한 주소를 표시할 인포윈도우
-  let endMarker = new window.kakao.maps.Marker({
-      image: MarkerImgSet.setEndMarkerImg(),
-    }), // 목적지 위치를 표시할 마커.
+  const endMarker = new window.kakao.maps.Marker(), // 목적지 위치를 표시할 마커.
     endInfowindow = new window.kakao.maps.InfoWindow({ zindex: 6 }); // 목적지에 대한 주소를 표시할 인포윈도우
 
   useEffect(() => {
@@ -482,10 +477,12 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
 
   //출발지 마커
   const handleSelectPlace = (place: Place) => {
-    const markerPosition = window.kakao.maps.LatLng(place.y, place.x);
-
+    const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
     startMarker.setPosition(markerPosition);
+    startMarker.setImage(MarkerImgSet.setStartMarkerImg());
+    startMarker.setZIndex(1);
     startMarker.setMap(mapRef.current);
+
     mapRef.current.setCenter(markerPosition); //해당하는 좌표를 가지고 지도 중심으로 이동시킴
     setSelectedPlace(place);
     globalVar.startPoint = [Number(place.y), Number(place.x)];
