@@ -1,18 +1,24 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
 import Modal, { Styles } from 'react-modal';
-import './Main.css';
-import globalVar from './Global';
-import SaveWayModal from './SaveWayModal';
+import '../Main.css';
+import globalVar from '../../util/Global';
+import SaveWayModal from '../Modal/SaveWayModal';
 
-import { MyWayContext } from './MyWayContext';
-import MyWayDetail from './MyWayDetail';
-import MyWayList from './MyWayList';
+import { MyWayContext } from '../../util/MyWayContext';
+import MyWayDetail from '../Footer/MyWayDetail';
+import MyWayList from '../Footer/MyWayList';
 
 interface Place {
   id: string;
   name: string;
   x: number;
   y: number;
+}
+
+declare global {
+  interface Window {
+    kakao: any;
+  }
 }
 
 const modalStyles: Styles = {
@@ -442,10 +448,10 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   const handleSelectPlace = (place: Place) => {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
     let img = new window.kakao.maps.MarkerImage(
-      process.env.PUBLIC_URL + '/resource/startMarker.png',
-      new window.kakao.maps.Size(29, 50),
+      process.env.PUBLIC_URL + '/resource/marker/startpointMarker.png',
+      new window.kakao.maps.Size(20, 30),
       {
-        offset: new window.kakao.maps.Point(11, 11),
+        offset: new window.kakao.maps.Point(10, 30),
       },
     );
     const markerStart = new window.kakao.maps.Marker({
@@ -466,10 +472,10 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   const handleSelectPlaceEnd = (place: Place) => {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
     let img = new window.kakao.maps.MarkerImage(
-      process.env.PUBLIC_URL + '/resource/endMarker.png',
-      new window.kakao.maps.Size(29, 50),
+      process.env.PUBLIC_URL + '/resource/marker/endpointMarker.png',
+      new window.kakao.maps.Size(20, 30),
       {
-        offset: new window.kakao.maps.Point(11, 11),
+        offset: new window.kakao.maps.Point(10, 30),
       },
     );
     const markerEnd = new window.kakao.maps.Marker({
@@ -492,10 +498,10 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
     if (wayCount < 5) {
       const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
       let img = new window.kakao.maps.MarkerImage(
-        process.env.PUBLIC_URL + '/resource/mywayMarker.png',
-        new window.kakao.maps.Size(29, 50),
+        process.env.PUBLIC_URL + '/resource/marker/waypointMarker2.png',
+        new window.kakao.maps.Size(20, 30),
         {
-          offset: new window.kakao.maps.Point(11, 11),
+          offset: new window.kakao.maps.Point(10, 30),
         },
       );
       const markerWay = new window.kakao.maps.Marker({

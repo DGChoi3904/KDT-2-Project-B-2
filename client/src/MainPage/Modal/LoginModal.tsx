@@ -1,7 +1,7 @@
 import React, { FormEventHandler, useState } from 'react';
 import { Link } from 'react-router-dom';
-import './Main.css';
-import { setCookie } from '../util/cookies';
+import { setCookie } from '../../util/cookies';
+import './ModalCSS.css';
 
 interface LoginModalProps {
   setSignUpStatus: React.Dispatch<React.SetStateAction<boolean>>;

@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Modal, { Styles } from 'react-modal';
-import { setCookie, removeCookie } from '../util/cookies';
-import LoginModal from './LoginModal';
+import { setCookie, removeCookie } from '../../util/cookies';
+import LoginModal from '../Modal/LoginModal';
 import { useNavigate } from 'react-router-dom'; // 여기 추가
 
 const TopMenuStyle = {

@@ -1,5 +1,5 @@
 import React from 'react';
-import './Main.css';
+import './MyWayCSS.css';
 
 import MyWayComponent from './MyWayComponent';
 interface MyWay {

@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Main.css';
+import './MyWayCSS.css';
 
 // 페이지 작업용 검색 결과 json 값 추가.
 interface wayInfo {
