@@ -92,13 +92,19 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-  const [startMarker, setStartMarker] = useState<any>(
-    new window.kakao.maps.Marker({}),
-  );
-  const [endMarker, setEndMarker] = useState<any>(
-    new window.kakao.maps.Marker({}),
-  );
-
+  type Marker = {
+    name: string;
+    marker: any;
+  };
+  const [startMarker, setStartMarker] = useState<Marker>({
+    name: '',
+    marker: new window.kakao.maps.Marker({}),
+  });
+  const [endMarker, setEndMarker] = useState<Marker>({
+    name: '',
+    marker: new window.kakao.maps.Marker({}),
+  });
+  const [wayMarkers, setWayMarkers] = useState<Marker[]>([]);
   useEffect(() => {
     console.log(
       '몽고스테이트 값 변경됨',
@@ -344,15 +350,14 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
 
   //출발지 마커
   function handleSelectPlace(place: Place) {
-    console.log(startMarker.getMap());
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
-    if (!startMarker.getMap()) {
-      startMarker.setPosition(markerPosition);
-      startMarker.setImage(MarkerImgSet.setStartMarkerImg());
-      startMarker.setZIndex(1);
-      startMarker.setMap(mapRef.current);
+    if (!startMarker.marker.getMap()) {
+      startMarker.marker.setPosition(markerPosition);
+      startMarker.marker.setImage(MarkerImgSet.setStartMarkerImg());
+      startMarker.marker.setZIndex(1);
+      startMarker.marker.setMap(mapRef.current);
     } else {
-      startMarker.setPosition(markerPosition);
+      startMarker.marker.setPosition(markerPosition);
     }
 
     mapRef.current.setCenter(markerPosition); //해당하는 좌표를 가지고 지도 중심으로 이동시킴
@@ -366,13 +371,13 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   //도착지 마커
   const handleSelectPlaceEnd = (place: Place) => {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
-    if (!endMarker.getMap()) {
-      endMarker.setPosition(markerPosition);
-      endMarker.setImage(MarkerImgSet.setEndMarkerImg());
-      endMarker.setZIndex(6);
-      endMarker.setMap(mapRef.current);
+    if (!endMarker.marker.getMap()) {
+      endMarker.marker.setPosition(markerPosition);
+      endMarker.marker.setImage(MarkerImgSet.setEndMarkerImg());
+      endMarker.marker.setZIndex(6);
+      endMarker.marker.setMap(mapRef.current);
     } else {
-      endMarker.setPosition(markerPosition);
+      endMarker.marker.setPosition(markerPosition);
     }
 
     mapRef.current.setCenter(markerPosition); //해당하는 좌표를 가지고 지도 중심으로 이동시킴
@@ -386,20 +391,18 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   //경유지 마커
   const handleSelectPlaceWay = (place: Place) => {
     //경유지 5개로 설정
-    if (wayCount < 5) {
+    if (wayMarkers.length < 5) {
       const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
-      let img = new window.kakao.maps.MarkerImage(
-        process.env.PUBLIC_URL + '/resource/marker/waypointMarker.png',
-        new window.kakao.maps.Size(20, 30),
-        {
-          offset: new window.kakao.maps.Point(10, 30),
-        },
-      );
       const markerWay = new window.kakao.maps.Marker({
         position: markerPosition,
         map: mapRef.current,
-        image: img,
+        image: MarkerImgSet.setWaypointMarkerImg(),
       });
+      const markerWayObj = {
+        name: place.name,
+        marker: markerWay,
+      };
+      wayMarkers.push(markerWayObj);
       markerWay.setMap(mapRef.current);
       mapRef.current.setCenter(markerPosition);
       setSelectedPlace(place);
@@ -409,6 +412,8 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
         `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
       );
       setWayCount(wayCount + 1);
+    } else {
+      alert('경유지는 5개까지만 설정 가능합니다.');
     }
   };
 
