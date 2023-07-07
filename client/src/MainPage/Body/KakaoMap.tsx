@@ -97,12 +97,10 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   let geocoder = new window.kakao.maps.services.Geocoder();
 
   let startMarker = new window.kakao.maps.Marker({
-      map: mapRef.current,
       image: MarkerImgSet.setStartMarkerImg(),
     }), // 출발지 위치를 표시할 마커.
     startInfowindow = new window.kakao.maps.InfoWindow({ zindex: 1 }); // 출발지에 대한 주소를 표시할 인포윈도우
   let endMarker = new window.kakao.maps.Marker({
-      map: mapRef.current,
       image: MarkerImgSet.setEndMarkerImg(),
     }), // 목적지 위치를 표시할 마커.
     endInfowindow = new window.kakao.maps.InfoWindow({ zindex: 6 }); // 목적지에 대한 주소를 표시할 인포윈도우
