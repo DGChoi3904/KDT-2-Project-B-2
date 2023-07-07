@@ -1,5 +1,5 @@
 import React from 'react';
-import './Main.css';
+import './ModalCSS.css';
 
 interface SaveWayModalProps {
   onClose: () => void;

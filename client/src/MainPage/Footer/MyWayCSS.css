@@ -1,0 +1,21 @@
+/* Saria 웹 폰트 */
+@import url('https://fonts.googleapis.com/css2?family=Saira:ital,wght@0,500;0,600;1,400&display=swap');
+
+:root {
+  --color_orange: #ffa41b;
+  --color_lightOrange: #ffd18b;
+  --color_skyBlue: #9ac5f4;
+  --color_yellow: #fee500;
+  --color_green: #2db400;
+  --font_saria: 'Saira';
+}
+
+.MyWayListTitle {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0px 20px;
+  height: 60px;
+  background-color: var(--color_orange);
+  font-family: var(--font_saria);
+}
