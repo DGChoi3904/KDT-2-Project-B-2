@@ -46,7 +46,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
 
   const [loginCheck, setLoginCheck] = useState(false);
 
-  const [keyword, setKeyword] = useState('');
+  const [keyword, setKeyword] = useState(''); // input
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
@@ -557,8 +557,8 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               style={{ width: '40%' }}
-              //Enter로 검색 가능
               onKeyDown={(e) => {
+                //Enter로 검색 가능
                 if (e.key === 'Enter') {
                   handleSearch();
                 }
@@ -590,19 +590,28 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
                   </div>
                   <div style={{ display: 'flex' }}>
                     <button
-                      onClick={() => handleSelectPlace(place)}
+                      onClick={() => {
+                        handleSelectPlace(place);
+                        setKeyword(place.name);
+                      }}
                       style={{ color: 'blue' }}
                     >
                       출발지
                     </button>
                     <button
-                      onClick={() => handleSelectPlaceEnd(place)}
+                      onClick={() => {
+                        handleSelectPlaceEnd(place); //출발지의 장소
+                        setKeyword(place.name); //클릭한 장소의 이름이 input으로 전송
+                      }}
                       style={{ color: 'red' }}
                     >
                       목적지
                     </button>
                     <button
-                      onClick={() => handleSelectPlaceWay(place)}
+                      onClick={() => {
+                        handleSelectPlaceWay(place);
+                        setKeyword(place.name);
+                      }}
                       style={{ color: 'rgb(255, 164, 27)' }}
                     >
                       경유지
