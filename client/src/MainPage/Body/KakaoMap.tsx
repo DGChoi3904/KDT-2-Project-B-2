@@ -494,7 +494,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
     if (wayCount < 5) {
       const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
       let img = new window.kakao.maps.MarkerImage(
-        process.env.PUBLIC_URL + '/resource/marker/waypointMarker2.png',
+        process.env.PUBLIC_URL + '/resource/marker/waypointMarker.png',
         new window.kakao.maps.Size(20, 30),
         {
           offset: new window.kakao.maps.Point(10, 30),
