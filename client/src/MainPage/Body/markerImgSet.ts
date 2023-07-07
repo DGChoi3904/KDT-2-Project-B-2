@@ -52,7 +52,7 @@ type KakaoMapPoint = {
  * ```
  */
 type KakaoMapMarkerImage = {
-  src: String; // 이미지 주소
+  src: string; // 이미지 주소
   size: KakaoMapSize; // 마커의 크기
   options: {
     alt: string; // 마커 이미지의 alt 속성값을 정의한다.
@@ -94,3 +94,38 @@ function setEndMarkerImg(): KakaoMapMarkerImage {
   );
   return img;
 }
+/**
+ * 경유지 마커 이미지를 설정한다.
+ * @returns {KakaoMapMarkerImage} - 경유지 마커이미지를 가진 객체
+ * @see https://apis.map.kakao.com/web/documentation/#MarkerImage
+ */
+function setWaypointMarkerImg(): KakaoMapMarkerImage {
+  let img = new window.kakao.maps.MarkerImage(
+    process.env.PUBLIC_URL + '/resource/marker/waypointMarker.png',
+    new window.kakao.maps.Size(20, 30),
+    {
+      offset: new window.kakao.maps.Point(10, 30),
+    },
+  );
+  return img;
+}
+
+/**
+ * 마커 이미지를 설정하는 클래스
+ * @class
+ * @see https://apis.map.kakao.com/web/documentation/#MarkerImage
+ * @example
+ * ```ts
+ * const markerImgSet = new MarkerImgSet();
+ * const startMarkerImg = markerImgSet.setStartMarkerImg();
+ * const endMarkerImg = markerImgSet.setEndMarkerImg();
+ * const waypointMarkerImg = markerImgSet.setWaypointMarkerImg();
+ * ```
+ */
+class MarkerImgSet {
+  static setStartMarkerImg = setStartMarkerImg;
+  static setEndMarkerImg = setEndMarkerImg;
+  static setWaypointMarkerImg = setWaypointMarkerImg;
+}
+
+export default MarkerImgSet;
