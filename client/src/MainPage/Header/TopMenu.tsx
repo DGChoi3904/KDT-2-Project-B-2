@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Modal, { Styles } from 'react-modal';
-import { setCookie, removeCookie } from '../util/cookies';
-import LoginModal from './LoginModal';
+import { setCookie, removeCookie } from '../../util/cookies';
+import LoginModal from '../Modal/LoginModal';
 import { useNavigate } from 'react-router-dom'; // 여기 추가
 
 const TopMenuStyle = {
@@ -31,8 +31,11 @@ const modalStyles: Styles = {
     padding: '0',
   },
 };
+type TopMenuProps = {
+  setLogin : React.Dispatch<React.SetStateAction<boolean>>;
+}
 
-function TopMenu() {
+const TopMenu:React.FC<TopMenuProps> = ({setLogin}) => {
   const [signUpStatus, setSignUpStatus] = useState(false);
   const [nickname, setNickname] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -79,6 +82,7 @@ function TopMenu() {
             setSignUpStatus={setSignUpStatus}
             setNickname={setNickname}
             closeModal={closeModal} // closeModal 함수 전달
+            setLogin={setLogin}
           />
         </Modal>
       </div>

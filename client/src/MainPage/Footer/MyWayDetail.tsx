@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import './Main.css';
+import './MyWayCSS.css';
 
 // 페이지 작업용 검색 결과 json 값 추가.
 interface wayInfo {
@@ -9,8 +9,20 @@ interface wayInfo {
   stateText: string;
   duration: string;
 }
+type naviDataResult = any;
 
-const MyWayDetail: React.FC = () => {
+type naviDataResultProps = {
+  naviDataResult: naviDataResult;
+  currenyMyWayNameObj: {
+    index: number;
+    name: string;
+  };
+};
+
+const MyWayDetail: React.FC<naviDataResult> = ({
+  naviDataResult,
+  currentMyWayNameObj,
+}) => {
   const [showSaveButton, setShowSaveButton] = useState<boolean>(false);
   const resultSample = {
     trans_id: '0188fbec0082724392ac52fe9e946e49',
@@ -185,12 +197,12 @@ const MyWayDetail: React.FC = () => {
     ],
   };
   // 길찾기 API 응답 결과값을 저장하는 상수. Props로 상속할시, WayResult에 추가할 것.
-  const wayResult = resultSample; // 샘플 값을 적용한 상수.
+  const wayResult: any = naviDataResult; // 샘플 값을 적용한 상수.
   // fetch로 받아온 길찾기 API 결과값에서 모든 roads의 값을 꺼내 저장할 배열. 데이터 타입이 string, number, number[]가 복합적으로 들어가기에 any[]타입으로 명시.
   const mergeRoads: any[] = [];
   // 모든 roads의 값을 꺼내 mergeRoads에 push한다.
-  wayResult.routes.forEach((route) => {
-    route.sections.forEach((section) => {
+  wayResult.routes.forEach((route: any) => {
+    route.sections.forEach((section: any) => {
       mergeRoads.push(...section.roads);
     });
   });
@@ -211,7 +223,7 @@ const MyWayDetail: React.FC = () => {
     switch (wayNames.traffic_state) {
       case 0:
         roadState = '#2DB400';
-        roadStateText = '정보없음';
+        roadStateText = '원활';
         break;
       case 1:
         roadState = '#C80000';
@@ -276,23 +288,24 @@ const MyWayDetail: React.FC = () => {
   return (
     <div>
       <div className="MyWayListTitle">
-        {showSaveButton ? (
+        {currentMyWayNameObj.index === 0 ? (
           <>
             <p>검색 결과</p>
-            <button type="button" className="MyWayDetail-SaveButton">
+            <p></p>
+            {/* <button type="button" className="MyWayDetail-SaveButton">
               저장하기
-            </button>
+            </button> */}
           </>
         ) : (
           <>
             <p>
-              #{MyWayName.index} {MyWayName.name}
+              #{currentMyWayNameObj.index} {currentMyWayNameObj.name}
             </p>
             <p></p>
           </>
         )}
       </div>
-      <div style={{ height: '195px', backgroundColor: 'beige' }}>
+      <div style={{ minHeight: '195px', backgroundColor: 'beige' }}>
         <div
           style={{
             display: 'flex',
@@ -354,9 +367,9 @@ const MyWayDetail: React.FC = () => {
           </div>
         ))}
       </div>
-      <button type="button" onClick={changeMyWayDetailTitleType}>
+      {/* <button type="button" onClick={changeMyWayDetailTitleType}>
         뷰 변경 스위치
-      </button>
+      </button> */}
     </div>
   );
 };

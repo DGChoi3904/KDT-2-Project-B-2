@@ -5,6 +5,7 @@ type global = {
   startPoint: [number, number];
   endPoint: [number, number];
   wayPoint: number[];
+  loginCheck: boolean;
 };
 
 const globalVar: global = {
@@ -14,6 +15,7 @@ const globalVar: global = {
   startPoint: [0, 0],
   endPoint: [0, 0],
   wayPoint: [],
+  loginCheck: false,
 };
 
 export default globalVar;

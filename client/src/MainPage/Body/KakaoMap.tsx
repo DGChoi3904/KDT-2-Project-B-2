@@ -1,11 +1,12 @@
 import React, { useEffect, useState, useRef, useContext } from 'react';
 import Modal, { Styles } from 'react-modal';
-import './Main.css';
-import globalVar from './Global';
-import SaveWayModal from './SaveWayModal';
+import '../Main.css';
+import globalVar from '../../util/Global';
+import SaveWayModal from '../Modal/SaveWayModal';
 
-import { MyWayContext } from './MyWayContext';
-import { json } from 'stream/consumers';
+import { MyWayContext } from '../../util/MyWayContext';
+import MyWayDetail from '../Footer/MyWayDetail';
+import MyWayList from '../Footer/MyWayList';
 
 interface Place {
   id: string;
@@ -14,8 +15,10 @@ interface Place {
   y: number;
 }
 
-interface ShowDetail {
-  onButtonClicked: () => void;
+declare global {
+  interface Window {
+    kakao: any;
+  }
 }
 
 const modalStyles: Styles = {
@@ -36,15 +39,20 @@ const modalStyles: Styles = {
   },
 };
 
-const KakaoMap: React.FC<ShowDetail> = ({ onButtonClicked }) => {
+type KakaoMapPros = {
+  login: boolean;
+};
+
+const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
+  const [showDetail, setShowDetail] = useState(false);
   const handleButtonClick = () => {
     // 버튼이 클릭되었을 때, MyWayDetail을 보여주기 위해 상위 컴포넌트(MainPage)로 이벤트를 전달
-    onButtonClicked();
+    setShowDetail(!showDetail);
   };
 
-  const { showDetail, setShowDetail } = useContext(MyWayContext); //? 컨텍스트
+  const [loginCheck, setLoginCheck] = useState(false);
 
-  const [keyword, setKeyword] = useState('');
+  const [keyword, setKeyword] = useState(''); // input
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
@@ -55,6 +63,8 @@ const KakaoMap: React.FC<ShowDetail> = ({ onButtonClicked }) => {
   const [wayCount, setWayCount] = useState<number>(0); //? 경유지 제한
   const [showPlaces, setShowPlaces] = useState(true); //? 길 리스트 숨김 처리
   const [waySaveBtn, setWaySaveBtn] = useState<boolean>(false); //? 길 저장 버튼 활성화/비활성화
+  const [naviDataResult, setNaviDataResult] = useState<Object>({});
+  const [myWayDataResult] = useState<Object>({});
 
   const [time, setTime] = useState<number[]>([]);
   const [hour, setHour] = useState<number>(0);
@@ -65,9 +75,16 @@ const KakaoMap: React.FC<ShowDetail> = ({ onButtonClicked }) => {
   const mapRef = useRef<any>(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false); //? 모달 상태 제어
-  const [mongoStart, setMongoStart] = useState<string>('');
+  const [naviSearchCounter, setNaviSearchCounter] = useState<number>(0); //? 길찾기 횟수 카운터
+  const [currentMyWayNameObj, setCurrentMyWayNameObj] = useState<Object>({
+    index: 0,
+    name: '',
+  }); //? 현재 저장된 길 이름
+
+  const [mongoStart, setMongoStart] = useState('');
   const [mongoWay, setMongoWay] = useState<string[]>([]);
-  const [mongoEnd, setMongoEnd] = useState<string>('');
+  const [mongoEnd, setMongoEnd] = useState('');
+
   const openModal = () => {
     setIsModalOpen(true);
   };
@@ -76,23 +93,24 @@ const KakaoMap: React.FC<ShowDetail> = ({ onButtonClicked }) => {
     setIsModalOpen(false);
   };
 
-  const transferMongo = (start: number[], way: number[], end: number[]) => {
-    let strStart: string = '';
-    let strWay: string[] = [];
-    let strEnd: string = '';
-
-    strStart = start.map((str) => str.toString()).join(', ');
-
-    setMongoStart(strStart);
-    setMongoWay(strWay);
-    setMongoEnd(strEnd);
-  };
   let geocoder = new window.kakao.maps.services.Geocoder();
 
   let startMarker = new window.kakao.maps.Marker(), // 출발지 위치를 표시할 마커.
     startInfowindow = new window.kakao.maps.InfoWindow({ zindex: 1 }); // 출발지에 대한 주소를 표시할 인포윈도우
   let endMarker = new window.kakao.maps.Marker(), // 목적지 위치를 표시할 마커.
     endInfowindow = new window.kakao.maps.InfoWindow({ zindex: 6 }); // 목적지에 대한 주소를 표시할 인포윈도우
+
+  useEffect(() => {
+    console.log(
+      '몽고스테이트 값 변경됨',
+      '출발 : ',
+      mongoStart,
+      ', 경유 : ',
+      mongoWay,
+      ', 도착 : ',
+      mongoEnd,
+    ); //값이 변할때 mongoState확인
+  }, [mongoStart, mongoWay, mongoEnd]);
 
   // 지도 생성
   useEffect(() => {
@@ -101,7 +119,10 @@ const KakaoMap: React.FC<ShowDetail> = ({ onButtonClicked }) => {
       center: new window.kakao.maps.LatLng(36.35, 127.385),
       level: 3,
     };
-
+    //맵 클릭시 검색결과 사라지게 하기
+    const mapClick = () => {
+      setShowPlaces(false);
+    };
     const map = new window.kakao.maps.Map(Container, Options);
     // map을 Ref값에 등록
     mapRef.current = map;
@@ -121,6 +142,7 @@ const KakaoMap: React.FC<ShowDetail> = ({ onButtonClicked }) => {
         }
       });
     };
+    window.kakao.maps.event.addListener(map, 'click', mapClick); //맵 클릭 리스트 숨김
   }, []);
 
   // 시간·거리 표시
@@ -303,12 +325,12 @@ const KakaoMap: React.FC<ShowDetail> = ({ onButtonClicked }) => {
         .join('%7C');
       url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C${globalVar.endPoint[0]}&waypoints=${waypointsString}`;
       console.log('url2: ', url);
+      setShowPlaces(false); //검색후 결과값, 버튼 숨김 처리
       transferMongo(
         globalVar.startPoint,
         globalVar.wayPoint,
         globalVar.endPoint,
-      ); // 경로 안내 버튼 실행시 start, way, end포인트를 useState에 저장함.
-      setShowPlaces(false); //검색후 결과값, 버튼 숨김 처리
+      );
     }
     const headers = {
       Authorization: 'KakaoAK 0ce7da7c92dd2a150bc0111177dfc283',
@@ -322,6 +344,7 @@ const KakaoMap: React.FC<ShowDetail> = ({ onButtonClicked }) => {
       .then((jsonData) => {
         // 요청에 대한 처리
         console.log('응답 : ', jsonData);
+        setNaviDataResult(jsonData);
 
         // 응답 데이터에서 roads 데이터만 추출
         const roadData = jsonData['routes'][0]['sections'][0]['roads'];
@@ -446,10 +469,10 @@ const KakaoMap: React.FC<ShowDetail> = ({ onButtonClicked }) => {
   const handleSelectPlace = (place: Place) => {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
     let img = new window.kakao.maps.MarkerImage(
-      process.env.PUBLIC_URL + '/resource/startMarker.png',
-      new window.kakao.maps.Size(29, 50),
+      process.env.PUBLIC_URL + '/resource/marker/startpointMarker.png',
+      new window.kakao.maps.Size(20, 30),
       {
-        offset: new window.kakao.maps.Point(11, 11),
+        offset: new window.kakao.maps.Point(10, 30),
       },
     );
     const markerStart = new window.kakao.maps.Marker({
@@ -470,10 +493,10 @@ const KakaoMap: React.FC<ShowDetail> = ({ onButtonClicked }) => {
   const handleSelectPlaceEnd = (place: Place) => {
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
     let img = new window.kakao.maps.MarkerImage(
-      process.env.PUBLIC_URL + '/resource/endMarker.png',
-      new window.kakao.maps.Size(29, 50),
+      process.env.PUBLIC_URL + '/resource/marker/endpointMarker.png',
+      new window.kakao.maps.Size(20, 30),
       {
-        offset: new window.kakao.maps.Point(11, 11),
+        offset: new window.kakao.maps.Point(10, 30),
       },
     );
     const markerEnd = new window.kakao.maps.Marker({
@@ -496,10 +519,10 @@ const KakaoMap: React.FC<ShowDetail> = ({ onButtonClicked }) => {
     if (wayCount < 5) {
       const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
       let img = new window.kakao.maps.MarkerImage(
-        process.env.PUBLIC_URL + '/resource/mywayMarker.png',
-        new window.kakao.maps.Size(29, 50),
+        process.env.PUBLIC_URL + '/resource/marker/waypointMarker2.png',
+        new window.kakao.maps.Size(20, 30),
         {
-          offset: new window.kakao.maps.Point(11, 11),
+          offset: new window.kakao.maps.Point(10, 30),
         },
       );
       const markerWay = new window.kakao.maps.Marker({
@@ -519,6 +542,42 @@ const KakaoMap: React.FC<ShowDetail> = ({ onButtonClicked }) => {
     }
   };
 
+  const startNaviSearch = () => {
+    setNaviSearchCounter(naviSearchCounter + 1);
+    console.log(naviSearchCounter);
+  };
+  useEffect(() => {
+    if (naviSearchCounter > 0) {
+      handleNavi();
+    }
+  }, [naviSearchCounter]);
+  function handleDefaultSearch() {
+    setCurrentMyWayNameObj({ index: 0, name: '' });
+    handleNavi();
+  }
+
+  const transferMongo = (start: number[], way: number[], end: number[]) => {
+    let strStart: string = '';
+    let strWay: string[] = [];
+    let strEnd: string = '';
+
+    strStart = start.map((str) => str.toString()).join(', ');
+
+    strWay = way.reduce((acc, num, idx) => {
+      const pos = Math.floor(idx / 2);
+      if (!acc[pos]) {
+        acc[pos] = '';
+      }
+      acc[pos] += idx % 2 !== 0 ? `, ${num.toString()}` : num.toString();
+      return acc;
+    }, [] as string[]);
+
+    strEnd = end.map((str) => str.toString()).join(', ');
+
+    setMongoStart(strStart);
+    setMongoWay(strWay);
+    setMongoEnd(strEnd);
+  };
   return (
     <div>
       <div id="mapContainer" style={{ position: 'relative' }}>
@@ -548,6 +607,12 @@ const KakaoMap: React.FC<ShowDetail> = ({ onButtonClicked }) => {
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
               style={{ width: '40%' }}
+              onKeyDown={(e) => {
+                //Enter로 검색 가능
+                if (e.key === 'Enter') {
+                  handleSearch();
+                }
+              }}
             />
             <button onClick={handleSearch}>🔍</button>
           </div>
@@ -558,7 +623,7 @@ const KakaoMap: React.FC<ShowDetail> = ({ onButtonClicked }) => {
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'stretch',
-                backgroundColor: 'rgba(255, 255, 255, 0.8)',
+                backgroundColor: 'rgba(255, 255, 255, 0.2)',
               }}
             >
               {places.map((place) => (
@@ -575,19 +640,28 @@ const KakaoMap: React.FC<ShowDetail> = ({ onButtonClicked }) => {
                   </div>
                   <div style={{ display: 'flex' }}>
                     <button
-                      onClick={() => handleSelectPlace(place)}
+                      onClick={() => {
+                        handleSelectPlace(place);
+                        setKeyword(place.name);
+                      }}
                       style={{ color: 'blue' }}
                     >
                       출발지
                     </button>
                     <button
-                      onClick={() => handleSelectPlaceEnd(place)}
+                      onClick={() => {
+                        handleSelectPlaceEnd(place); //출발지의 장소
+                        setKeyword(place.name); //클릭한 장소의 이름이 input으로 전송
+                      }}
                       style={{ color: 'red' }}
                     >
                       목적지
                     </button>
                     <button
-                      onClick={() => handleSelectPlaceWay(place)}
+                      onClick={() => {
+                        handleSelectPlaceWay(place);
+                        setKeyword(place.name);
+                      }}
                       style={{ color: 'rgb(255, 164, 27)' }}
                     >
                       경유지
@@ -617,7 +691,7 @@ const KakaoMap: React.FC<ShowDetail> = ({ onButtonClicked }) => {
             <div></div>
           )}
           <button
-            onClick={handleNavi}
+            onClick={handleDefaultSearch}
             style={{ padding: '5px', marginLeft: '5px' }}
           >
             경로 안내
@@ -646,6 +720,38 @@ const KakaoMap: React.FC<ShowDetail> = ({ onButtonClicked }) => {
         <div style={{ display: 'none' }}></div>
       )}
       <div id="result"></div>
+      {showDetail ? (
+        <MyWayDetail
+          naviDataResult={naviDataResult}
+          currentMyWayNameObj={currentMyWayNameObj}
+        />
+      ) : login ? (
+        <MyWayList
+          myWayDataResult={myWayDataResult}
+          onMyButtonClick={startNaviSearch}
+          setCurrentMyWayNameObj={setCurrentMyWayNameObj}
+        />
+      ) : (
+        <div>
+          <div className="MyWayListTitle">
+            <p>MyWay 목록</p>
+            <div>UI 숨기기</div>
+          </div>
+          <div
+            style={{
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'center',
+              alignItems: 'center',
+              height: '195px',
+              backgroundColor: 'beige',
+            }}
+          >
+            {' '}
+            로그인 필요
+          </div>
+        </div>
+      )}
     </div>
   );
 };
