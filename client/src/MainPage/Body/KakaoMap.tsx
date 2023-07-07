@@ -582,9 +582,15 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
                   }}
                 >
                   <div style={{ flex: '1' }}>
-                    <div style={{ textAlign: 'left' }}>{place.name}</div>
+                    <div style={{ textAlign: 'left', border: '1px solid red', height: '50px' }}>{place.name}</div>
                   </div>
                   <div style={{ display: 'flex' }}>
+                    <button
+                      onClick={() => handleSelectPlace(place)}
+                      style={{ color: 'black' }}
+                    >
+                      미
+                    </button>
                     <button
                       onClick={() => handleSelectPlace(place)}
                       style={{ color: 'blue' }}
