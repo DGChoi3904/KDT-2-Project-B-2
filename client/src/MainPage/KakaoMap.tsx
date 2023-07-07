@@ -97,7 +97,10 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
       center: new window.kakao.maps.LatLng(36.35, 127.385),
       level: 3,
     };
-
+    //맵 클릭시 검색결과 사라지게 하기
+    const mapClick = () => {
+      setShowPlaces(false);
+    };
     const map = new window.kakao.maps.Map(Container, Options);
     // map을 Ref값에 등록
     mapRef.current = map;
@@ -117,6 +120,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
         }
       });
     };
+    window.kakao.maps.event.addListener(map, 'click', mapClick); //맵 클릭 리스트 숨김
   }, []);
 
   // 시간·거리 표시
@@ -524,6 +528,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
     setCurrentMyWayNameObj({ index: 0, name: '' });
     handleNavi();
   }
+
   return (
     <div>
       <div id="mapContainer" style={{ position: 'relative' }}>
