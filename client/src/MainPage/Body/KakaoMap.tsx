@@ -81,7 +81,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
     name: '',
   }); //? 현재 저장된 길 이름
 
-  const [mongoStart, setMongoStart] = useState('');
+  const [mongoStart, setMongoStart] = useState(''); //몽고 DB에 저장할 데이터들
   const [mongoWay, setMongoWay] = useState<string[]>([]);
   const [mongoEnd, setMongoEnd] = useState('');
 
