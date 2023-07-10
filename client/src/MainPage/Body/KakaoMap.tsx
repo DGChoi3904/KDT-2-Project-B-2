@@ -5,8 +5,9 @@ import globalVar from '../../util/Global';
 import SaveWayModal from '../Modal/SaveWayModal';
 
 import { MyWayContext } from '../../util/MyWayContext';
-import MyWayDetail from '../Footer/MyWayDetail';
-import MyWayList from '../Footer/MyWayList';
+import MyWayDetail from '../Footer/MyWayContents/MyWayDetail';
+import MyWayList from '../Footer/MyWayContents/MyWayList';
+import MyWayReqLogin from '../Footer/MyWayContents/MyWayReqLogin'
 import MarkerImgSet from './markerImgSet';
 
 interface Place {
@@ -42,9 +43,10 @@ const modalStyles: Styles = {
 
 type KakaoMapPros = {
   login: boolean;
+  setDetail : React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
+const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
   const [showDetail, setShowDetail] = useState(false);
   const handleButtonClick = () => {
     // 버튼이 클릭되었을 때, MyWayDetail을 보여주기 위해 상위 컴포넌트(MainPage)로 이벤트를 전달
@@ -217,12 +219,17 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
         // 요청에 대한 처리
         console.log('응답 : ', jsonData);
         setNaviDataResult(jsonData);
+        globalVar.startPoint = [0, 0];
+        globalVar.endPoint = [0, 0];
+        globalVar.wayPoint = [];
 
         // 응답 데이터에서 roads 데이터만 추출
         const roadData = jsonData['routes'][0]['sections'][0]['roads'];
         const timeData: number[] = [];
         const distanceData: number[] = [];
         console.log('roadData : ', roadData);
+        console.log('timeData : ', timeData);
+        console.log('distanceData : ', distanceData);
 
         // roads 데이터에서 반복문을 통해 Node 좌표 추출
         for (let a = 0; a < jsonData['routes'][0]['sections'].length; a++) {
@@ -288,7 +295,9 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
                 strokeOpacity: 1,
                 strokeStyle: 'solid',
               });
-
+              console.log('폴리라인')
+              console.dir(polyline)
+              console.log(traffic)
               if (
                 j ===
                 jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes']
@@ -621,38 +630,14 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
         <div style={{ display: 'none' }}></div>
       )}
       <div id="result"></div>
-      {showDetail ? (
-        <MyWayDetail
+      {/* {login ? (showDetail ? <MyWayDetail
           naviDataResult={naviDataResult}
           currentMyWayNameObj={currentMyWayNameObj}
-        />
-      ) : login ? (
-        <MyWayList
+        /> : <MyWayList
           myWayDataResult={myWayDataResult}
           onMyButtonClick={startNaviSearch}
           setCurrentMyWayNameObj={setCurrentMyWayNameObj}
-        />
-      ) : (
-        <div>
-          <div className="MyWayListTitle">
-            <p>MyWay 목록</p>
-            <div>UI 숨기기</div>
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '195px',
-              backgroundColor: 'beige',
-            }}
-          >
-            {' '}
-            로그인 필요
-          </div>
-        </div>
-      )}
+        />) : <MyWayReqLogin />} */}
     </div>
   );
 };
