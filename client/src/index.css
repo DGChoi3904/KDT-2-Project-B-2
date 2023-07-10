@@ -17,6 +17,7 @@ code {
 }
 .MainWrap {
   width: 430px;
-  height: 932px;
+  height: 100vh;
   position: relative;
+  overflow-y: hidden;
 }
