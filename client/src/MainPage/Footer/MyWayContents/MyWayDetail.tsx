@@ -287,7 +287,7 @@ const MyWayDetail: React.FC<naviDataResultProps> = ({
 
   return (
     <div>
-      <div style={{ minHeight: '195px', backgroundColor: 'beige' }}>
+      <div style={{ height: '195px', backgroundColor: 'beige', overflowY: "auto" }}>
         <div
           style={{
             display: 'flex',
