@@ -42,16 +42,28 @@ const modalStyles: Styles = {
 };
 
 type KakaoMapPros = {
-  login: boolean;
   setDetail: React.Dispatch<React.SetStateAction<boolean>>;
+  naviSearchCounter: number;
+  setNaviSearchCounter: React.Dispatch<React.SetStateAction<number>>;
+  startNaviSearch: () => void;
+  setCurrentMyWayNameObj: (myWayNameObj: {
+    index: number;
+    name: string;
+  }) => void;
 };
 
-const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
+const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNaviSearchCounter, startNaviSearch, setCurrentMyWayNameObj }) => {
   const [showDetail, setShowDetail] = useState(false);
   const handleButtonClick = () => {
     // 버튼이 클릭되었을 때, MyWayDetail을 보여주기 위해 상위 컴포넌트(MainPage)로 이벤트를 전달
     setShowDetail(!showDetail);
   };
+
+  useEffect(() => {
+    if(showDetail) {
+      setDetail(true);
+    }
+  }, [showDetail])
 
   const [loginCheck, setLoginCheck] = useState(false);
   const [keyword, setKeyword] = useState(''); // input
@@ -66,7 +78,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
   const [showPlaces, setShowPlaces] = useState(true); //? 길 리스트 숨김 처리
   const [waySaveBtn, setWaySaveBtn] = useState<boolean>(false); //? 길 저장 버튼 활성화/비활성화
   const [naviDataResult, setNaviDataResult] = useState<Object>({});
-  const [myWayDataResult] = useState<Object>({});
 
   const [time, setTime] = useState<number[]>([]);
   const [hour, setHour] = useState<number>(0);
@@ -78,11 +89,11 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
   const mapRef = useRef<any>(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false); //? 모달 상태 제어
-  const [naviSearchCounter, setNaviSearchCounter] = useState<number>(0); //? 길찾기 횟수 카운터
-  const [currentMyWayNameObj, setCurrentMyWayNameObj] = useState<Object>({
-    index: 0,
-    name: '',
-  }); //? 현재 저장된 길 이름
+  // const [naviSearchCounter, setNaviSearchCounter] = useState<number>(0); //? 길찾기 횟수 카운터
+  // const [currentMyWayNameObj, setCurrentMyWayNameObj] = useState<Object>({
+  //   index: 0,
+  //   name: '',
+  // }); //? 현재 저장된 길 이름
 
   const [mongoStart, setMongoStart] = useState<string>(''); //몽고 DB에 저장할 데이터들
   const [mongoWay, setMongoWay] = useState<string[] | null>(null);
@@ -454,15 +465,19 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
     }
   };
 
-  const startNaviSearch = () => {
-    setNaviSearchCounter(naviSearchCounter + 1);
-    console.log(naviSearchCounter);
-  };
-  useEffect(() => {
-    if (naviSearchCounter > 0) {
-      handleNavi();
-    }
-  }, [naviSearchCounter]);
+  // const startNaviSearch = () => {
+  //   setNaviSearchCounter(naviSearchCounter + 1);
+  //   console.log(naviSearchCounter);
+  // };
+
+  // startNaviSearch();
+
+  // useEffect(() => {
+  //   if (naviSearchCounter > 0) {
+  //     handleNavi();
+  //   }
+  // }, [naviSearchCounter]);
+
   function handleDefaultSearch() {
     //경로저장 버튼 클릭시 실행 할 메소드
     setCurrentMyWayNameObj({ index: 0, name: '' });
@@ -710,6 +725,14 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
         <div style={{ display: 'none' }}></div>
       )}
       <div id="result"></div>
+      {/* {login ? (showDetail ? <MyWayDetail
+          naviDataResult={naviDataResult}
+          currentMyWayNameObj={currentMyWayNameObj}
+        /> : <MyWayList
+          myWayDataResult={myWayDataResult}
+          onMyButtonClick={startNaviSearch}
+          setCurrentMyWayNameObj={setCurrentMyWayNameObj}
+        />) : <MyWayReqLogin />} */}
     </div>
   );
 };
