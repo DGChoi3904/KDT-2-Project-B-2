@@ -73,6 +73,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
   const [minute, setMinute] = useState<number>(0);
   const [second, setSecond] = useState<number>(0);
   const [distance, setDistance] = useState<number[]>([]);
+  const [searchPlaces, setSearchPlaces] = useState(1); //? 검색 리스트
 
   const mapRef = useRef<any>(null);
 
@@ -471,8 +472,37 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
   function handleDefaultSearch() {
     //경로저장 버튼 클릭시 실행 할 메소드
     setCurrentMyWayNameObj({ index: 0, name: '' });
-
     handleNavi();
+
+    //경로 안내버튼 클릭하면 모든 마커가 보이게 지도 설정
+    const bounds = new window.kakao.maps.LatLngBounds(); //LatLngBounds 객체 생성
+    // 출발지 마커 bounds에 추가
+    if (globalVar.startPoint.length === 2) {
+      const startLatLng = new window.kakao.maps.LatLng(
+        globalVar.startPoint[0], //위도, 경도 이므로 2개
+        globalVar.startPoint[1],
+      );
+      bounds.extend(startLatLng);
+    }
+    // 경유지 마커 bounds에 추가 (경유지가 있는 경우)
+    if (globalVar.wayPoint.length > 0) {
+      for (let i = 0; i < globalVar.wayPoint.length; i += 2) {
+        const wayLatLng = new window.kakao.maps.LatLng(
+          globalVar.wayPoint[i], //경유지가 n개 이므로(위도, 경도가 n개)
+          globalVar.wayPoint[i + 1],
+        );
+        bounds.extend(wayLatLng);
+      }
+    }
+    // 목적지 마커 위치 bounds에 추가
+    if (globalVar.endPoint.length === 2) {
+      const endLatLng = new window.kakao.maps.LatLng(
+        globalVar.endPoint[0], //위도, 경도 이므로 2개
+        globalVar.endPoint[1],
+      );
+      bounds.extend(endLatLng);
+    }
+    mapRef.current.setBounds(bounds); // 출발지, 목적지,(경유지)마커 보이게 지도 범위 설정
   }
 
   const transferMongo = (start: number[], way: number[], end: number[]) => {
@@ -497,6 +527,21 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
     setMongoWay(strWay);
     setMongoEnd(strEnd);
   };
+  // 검색 목록 6곳 제한
+  const listLimit = 6; // 6곳만 보이게 설정
+  //검색 결과를 나눔
+  const getPaginatedPlaces = () => {
+    const startIndex = (searchPlaces - 1) * listLimit;
+    const endIndex = startIndex + listLimit;
+    return places.slice(startIndex, endIndex);
+  };
+  // 전체 목록 수
+  const totalList = Math.ceil(places.length / listLimit);
+  //목록 번호
+  const numberList = (pageNumber: number) => {
+    setSearchPlaces(pageNumber);
+  };
+
   return (
     <div>
       <div id="mapContainer" style={{ position: 'relative' }}>
@@ -545,7 +590,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
                 backgroundColor: 'rgba(255, 255, 255, 0.2)',
               }}
             >
-              {places.map((place) => (
+              {getPaginatedPlaces().map((place, index) => (
                 <div
                   key={place.id}
                   style={{
@@ -565,15 +610,18 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
                       미리보기
                     </button>
                     <button
-                      onClick={() => handleSelectPlace(place)}
+                      onClick={() => {
+                        handleSelectPlace(place); //출발지의 장소
+                        setKeyword(place.name); //클릭한 장소의 이름이 input으로 전송
+                      }}
                       style={{ color: 'blue' }}
                     >
                       출발지
                     </button>
                     <button
                       onClick={() => {
-                        handleSelectPlaceEnd(place); //출발지의 장소
-                        setKeyword(place.name); //클릭한 장소의 이름이 input으로 전송
+                        handleSelectPlaceEnd(place);
+                        setKeyword(place.name);
                       }}
                       style={{ color: 'red' }}
                     >
@@ -591,6 +639,32 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
                   </div>
                 </div>
               ))}
+              <div
+                style={{
+                  display: 'flex',
+                  justifyContent: 'center',
+                  marginTop: '10px',
+                }}
+              >
+                {Array.from({ length: totalList }, (_, index) => index + 1).map(
+                  (pageNumber) => (
+                    <button
+                      key={pageNumber}
+                      onClick={() => numberList(pageNumber)}
+                      style={{
+                        marginRight: '5px',
+                        backgroundColor: '#FFA41B',
+                        borderStyle: 'thin',
+                        borderRadius: '5px',
+                        margin: '0 2px',
+                        width: '20px',
+                      }}
+                    >
+                      {pageNumber}
+                    </button>
+                  ),
+                )}
+              </div>
             </div>
           )}
         </div>
