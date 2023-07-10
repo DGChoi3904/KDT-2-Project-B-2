@@ -372,6 +372,15 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
     );
   };
 
+  function isPolyLineDrawn() {
+    if (polyLines.length > 0) {
+      polyLines.forEach((polyLine) => {
+        polyLine.setMap(null);
+      });
+      setPolyLines([]);
+    }
+  }
+
   //출발지 마커
   function handleSelectPlace(place: Place) {
     isPolyLineDrawn(); //polyline이 그려져있는지 확인
