@@ -630,14 +630,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
         <div style={{ display: 'none' }}></div>
       )}
       <div id="result"></div>
-      {/* {login ? (showDetail ? <MyWayDetail
-          naviDataResult={naviDataResult}
-          currentMyWayNameObj={currentMyWayNameObj}
-        /> : <MyWayList
-          myWayDataResult={myWayDataResult}
-          onMyButtonClick={startNaviSearch}
-          setCurrentMyWayNameObj={setCurrentMyWayNameObj}
-        />) : <MyWayReqLogin />} */}
     </div>
   );
 };
