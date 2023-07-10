@@ -18,7 +18,7 @@ export class MyWayPoint {
   @Prop()
   end: string; // string 도착지. `String`
 
-  @Prop({ type: mongoose.Schema.Types.ObjectId, ref: 'userData' }) // 수정된 부분
+  @Prop() // 수정된 부분
   userId: string;
 }
 

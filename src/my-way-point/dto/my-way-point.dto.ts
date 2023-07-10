@@ -1,3 +1,4 @@
+import * as mongoose from 'mongoose';
 export class MyWayPointDTO {
   //유저 생성할때 사용되는 데이터전송객체(DTO)
 
