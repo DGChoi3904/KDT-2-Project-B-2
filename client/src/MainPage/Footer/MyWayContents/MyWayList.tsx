@@ -1,5 +1,5 @@
 import React from 'react';
-import './MyWayCSS.css';
+import '../MyWayCSS.css';
 
 import MyWayComponent from './MyWayComponent';
 interface MyWay {
@@ -71,10 +71,6 @@ const MyWayList: React.FC<myWayDataResultandEventProps> = ({
   });
   return (
     <div>
-      <div className="MyWayListTitle">
-        <p>MyWay 목록</p>
-        <div>UI 숨기기</div>
-      </div>
       <div style={{ minHeight: '195px', backgroundColor: 'beige' }}>
         {ways.map((mySavedWay, index) => (
           <MyWayComponent

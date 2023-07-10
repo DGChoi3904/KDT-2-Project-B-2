@@ -5,8 +5,10 @@ import globalVar from '../../util/Global';
 import SaveWayModal from '../Modal/SaveWayModal';
 
 import { MyWayContext } from '../../util/MyWayContext';
-import MyWayDetail from '../Footer/MyWayDetail';
-import MyWayList from '../Footer/MyWayList';
+import MyWayDetail from '../Footer/MyWayContents/MyWayDetail';
+import MyWayList from '../Footer/MyWayContents/MyWayList';
+import MyWayReqLogin from '../Footer/MyWayContents/MyWayReqLogin';
+import MarkerImgSet from './markerImgSet';
 
 interface Place {
   id: string;
@@ -41,9 +43,10 @@ const modalStyles: Styles = {
 
 type KakaoMapPros = {
   login: boolean;
+  setDetail: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
+const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
   const [showDetail, setShowDetail] = useState(false);
   const handleButtonClick = () => {
     // 버튼이 클릭되었을 때, MyWayDetail을 보여주기 위해 상위 컴포넌트(MainPage)로 이벤트를 전달
@@ -51,7 +54,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   };
 
   const [loginCheck, setLoginCheck] = useState(false);
-
   const [keyword, setKeyword] = useState(''); // input
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
@@ -100,13 +102,20 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   const closeModal = () => {
     setIsModalOpen(false);
   };
-
-  let geocoder = new window.kakao.maps.services.Geocoder();
-
-  let startMarker = new window.kakao.maps.Marker(), // 출발지 위치를 표시할 마커.
-    startInfowindow = new window.kakao.maps.InfoWindow({ zindex: 1 }); // 출발지에 대한 주소를 표시할 인포윈도우
-  let endMarker = new window.kakao.maps.Marker(), // 목적지 위치를 표시할 마커.
-    endInfowindow = new window.kakao.maps.InfoWindow({ zindex: 6 }); // 목적지에 대한 주소를 표시할 인포윈도우
+  type Marker = {
+    name: string;
+    marker: any;
+  };
+  const [startMarker, setStartMarker] = useState<Marker>({
+    name: '',
+    marker: new window.kakao.maps.Marker({}),
+  });
+  const [endMarker, setEndMarker] = useState<Marker>({
+    name: '',
+    marker: new window.kakao.maps.Marker({}),
+  });
+  const [wayMarkers, setWayMarkers] = useState<Marker[]>([]);
+  const [polyLines, setPolyLines] = useState<any[]>([]);
 
   useEffect(() => {
     console.log(
@@ -177,141 +186,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
     setSecond(seconds);
   }, [time, distance, minute, second]);
 
-  function setClickEvents(mouseEvent: { latLng: any }) {
-    // 맵을 클릭시 해당 좌표에 출발지 마커를 찍고 위치정보를 인포윈도우에 저장하는 함수
-    function onClickSetStartPoint(mouseEvent: { latLng: any }) {
-      searchDetailAddrFromCoords(
-        mouseEvent.latLng,
-        function (result: any, status: any) {
-          if (status === window.kakao.maps.services.Status.OK) {
-            var detailAddr = !!result[0].road_address
-              ? '<div>도로명주소 : ' +
-                result[0].road_address.address_name +
-                '</div>'
-              : '';
-            detailAddr +=
-              '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
-
-            var content =
-              '<div style="padding:5px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;">' +
-              '<span class="title">출발지 주소 정보</span>' +
-              detailAddr +
-              '</div>';
-
-            // 마커를 클릭한 위치에 표시
-            startMarker.setPosition(mouseEvent.latLng);
-            startMarker.setMap(mapRef.current);
-
-            // 인포윈도우에 클릭한 위치에 대한 상세 주소정보를 표시
-            window.kakao.maps.event.addListener(
-              startMarker,
-              'click',
-              function () {
-                // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
-
-                startInfowindow.setContent(content);
-                if (startInfowindow.getMap() === null) {
-                  startInfowindow.open(mapRef.current, startMarker);
-                } else {
-                  startInfowindow.close();
-                }
-              },
-            );
-            globalVar.startPoint = [
-              mouseEvent.latLng.getLat(),
-              mouseEvent.latLng.getLng(),
-            ];
-            console.log(
-              `출발지 좌표 : ${globalVar.startPoint}, 목적지 좌표 ${globalVar.endPoint}`,
-            );
-
-            // 출발지 지정 이후, 전역변수를 false로 설정.
-            globalVar.isSearchingStart = false;
-          }
-        },
-      );
-    }
-
-    // 맵을 클릭시 해당 좌표에 목적지 마커를 찍고 위치정보를 인포윈도우에 저장하는 함수
-    function onClickSetEndPoint(mouseEvent: { latLng: any }) {
-      searchDetailAddrFromCoords(
-        mouseEvent.latLng,
-        function (result: any, status: any) {
-          if (status === window.kakao.maps.services.Status.OK) {
-            var detailAddr = !!result[0].road_address
-              ? '<div>도로명주소 : ' +
-                result[0].road_address.address_name +
-                '</div>'
-              : '';
-            detailAddr +=
-              '<div>지번 주소 : ' + result[0].address.address_name + '</div>';
-
-            var content =
-              '<div style="padding:5px;text-overflow: ellipsis;overflow: hidden;white-space: nowrap;">' +
-              '<span class="title">목적지 주소 정보</span>' +
-              detailAddr +
-              '</div>';
-
-            // 마커를 클릭한 위치에 표시
-            endMarker.setPosition(mouseEvent.latLng);
-            endMarker.setMap(mapRef.current);
-
-            // 인포윈도우에 클릭한 위치에 대한 상세 주소정보를 표시
-            window.kakao.maps.event.addListener(
-              endMarker,
-              'click',
-              function () {
-                // 마커를 클릭하면 장소명이 인포윈도우에 표출됩니다
-                endInfowindow.setContent(content);
-                if (endInfowindow.getMap() === null) {
-                  endInfowindow.open(mapRef.current, endMarker);
-                } else {
-                  endInfowindow.close();
-                }
-              },
-            );
-
-            globalVar.endPoint = [
-              mouseEvent.latLng.getLat(),
-              mouseEvent.latLng.getLng(),
-            ];
-            console.log(
-              `출발지 좌표 : ${globalVar.startPoint}, 목적지 좌표 ${globalVar.endPoint}`,
-            );
-
-            // 목적지 지정 이후, 전역변수를 false로 설정.
-            globalVar.isSearchingEnd = false;
-          }
-        },
-      );
-    }
-
-    // 좌표로 상세 주소 정보를 요청하는 콜백함수
-    function searchDetailAddrFromCoords(
-      coords: { getLng: any; getLat: any },
-      callback: Function,
-    ) {
-      // geocoder를 통해 좌표로 상세 주소 정보를 요청
-      geocoder.coord2Address(coords.getLng(), coords.getLat(), callback);
-    }
-
-    if (globalVar.isSearchingStart) {
-      // 맵에서 출발지 마커를 찍어주는 함수 실행.
-      onClickSetStartPoint(mouseEvent);
-    } else if (globalVar.isSearchingEnd) {
-      onClickSetEndPoint(mouseEvent);
-    }
-  }
-
-  // 클릭 이벤트 분리
-  useEffect(() => {
-    window.kakao.maps.event.addListener(
-      mapRef.current,
-      'click',
-      setClickEvents,
-    );
-  }, []);
-
   // 경로안내 버튼 클릭 시 지정된 출발지/도착지 정보를 가지고 최단거리 산출
   const handleNavi = () => {
     let url;
@@ -355,12 +229,17 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
         // 요청에 대한 처리
         console.log('응답 : ', jsonData);
         setNaviDataResult(jsonData);
+        globalVar.startPoint = [0, 0];
+        globalVar.endPoint = [0, 0];
+        globalVar.wayPoint = [];
 
         // 응답 데이터에서 roads 데이터만 추출
         const roadData = jsonData['routes'][0]['sections'][0]['roads'];
         const timeData: number[] = [];
         const distanceData: number[] = [];
         console.log('roadData : ', roadData);
+        console.log('timeData : ', timeData);
+        console.log('distanceData : ', distanceData);
 
         // roads 데이터에서 반복문을 통해 Node 좌표 추출
         for (let a = 0; a < jsonData['routes'][0]['sections'].length; a++) {
@@ -426,7 +305,9 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
                 strokeOpacity: 1,
                 strokeStyle: 'solid',
               });
-
+              console.log('폴리라인');
+              console.dir(polyline);
+              console.log(traffic);
               if (
                 j ===
                 jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes']
@@ -435,6 +316,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
               ) {
                 polyline.setMap(null);
                 polyline.setMap(mapRef.current);
+                polyLines.push(polyline);
               }
             }
           }
@@ -444,6 +326,10 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
         setWaySaveBtn(true);
         handleButtonClick();
         console.log('값 전달', showDetail);
+        globalVar.endPoint = [0, 0];
+        globalVar.startPoint = [0, 0];
+        globalVar.wayPoint = [];
+        setWayCount(0);
       })
       .catch((error) => {
         // 오류 처리
@@ -487,21 +373,18 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   };
 
   //출발지 마커
-  const handleSelectPlace = (place: Place) => {
+  function handleSelectPlace(place: Place) {
+    isPolyLineDrawn(); //polyline이 그려져있는지 확인
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
-    let img = new window.kakao.maps.MarkerImage(
-      process.env.PUBLIC_URL + '/resource/marker/startpointMarker.png',
-      new window.kakao.maps.Size(20, 30),
-      {
-        offset: new window.kakao.maps.Point(10, 30),
-      },
-    );
-    const markerStart = new window.kakao.maps.Marker({
-      position: markerPosition,
-      map: mapRef.current,
-      image: img,
-    });
-    markerStart.setMap(mapRef.current);
+    if (!startMarker.marker.getMap()) {
+      startMarker.marker.setPosition(markerPosition);
+      startMarker.marker.setImage(MarkerImgSet.setStartMarkerImg());
+      startMarker.marker.setZIndex(1);
+      startMarker.marker.setMap(mapRef.current);
+    } else {
+      startMarker.marker.setPosition(markerPosition);
+    }
+
     mapRef.current.setCenter(markerPosition); //해당하는 좌표를 가지고 지도 중심으로 이동시킴
     setSelectedPlace(place);
     globalVar.startPoint = [Number(place.y), Number(place.x)];
@@ -509,23 +392,20 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
     console.log(
       `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
     );
-  };
+  }
   //도착지 마커
   const handleSelectPlaceEnd = (place: Place) => {
+    isPolyLineDrawn(); //polyline이 그려져있는지 확인
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
-    let img = new window.kakao.maps.MarkerImage(
-      process.env.PUBLIC_URL + '/resource/marker/endpointMarker.png',
-      new window.kakao.maps.Size(20, 30),
-      {
-        offset: new window.kakao.maps.Point(10, 30),
-      },
-    );
-    const markerEnd = new window.kakao.maps.Marker({
-      position: markerPosition,
-      map: mapRef.current,
-      image: img,
-    });
-    markerEnd.setMap(mapRef.current);
+    if (!endMarker.marker.getMap()) {
+      endMarker.marker.setPosition(markerPosition);
+      endMarker.marker.setImage(MarkerImgSet.setEndMarkerImg());
+      endMarker.marker.setZIndex(6);
+      endMarker.marker.setMap(mapRef.current);
+    } else {
+      endMarker.marker.setPosition(markerPosition);
+    }
+
     mapRef.current.setCenter(markerPosition); //해당하는 좌표를 가지고 지도 중심으로 이동시킴
     setSelectedPlace(place);
     globalVar.endPoint = [Number(place.y), Number(place.x)];
@@ -536,21 +416,26 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   };
   //경유지 마커
   const handleSelectPlaceWay = (place: Place) => {
+    isPolyLineDrawn(); //polyline이 그려져있는지 확인
     //경유지 5개로 설정
+    if (wayCount === 0) {
+      wayMarkers.forEach((marker) => {
+        marker.marker.setMap(null);
+      });
+      setWayMarkers([]);
+    }
     if (wayCount < 5) {
       const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
-      let img = new window.kakao.maps.MarkerImage(
-        process.env.PUBLIC_URL + '/resource/marker/waypointMarker.png',
-        new window.kakao.maps.Size(20, 30),
-        {
-          offset: new window.kakao.maps.Point(10, 30),
-        },
-      );
       const markerWay = new window.kakao.maps.Marker({
         position: markerPosition,
         map: mapRef.current,
-        image: img,
+        image: MarkerImgSet.setWaypointMarkerImg(),
       });
+      const markerWayObj = {
+        name: place.name,
+        marker: markerWay,
+      };
+      wayMarkers.push(markerWayObj);
       markerWay.setMap(mapRef.current);
       mapRef.current.setCenter(markerPosition);
       setSelectedPlace(place);
@@ -560,6 +445,8 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
         `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
       );
       setWayCount(wayCount + 1);
+    } else {
+      alert('경유지는 5개까지만 설정 가능합니다.');
     }
   };
 
@@ -601,7 +488,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
     setMongoWay(strWay);
     setMongoEnd(strEnd);
   };
-
   return (
     <div>
       <div id="mapContainer" style={{ position: 'relative' }}>
@@ -747,38 +633,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
         <div style={{ display: 'none' }}></div>
       )}
       <div id="result"></div>
-      {showDetail ? (
-        <MyWayDetail
-          naviDataResult={naviDataResult}
-          currentMyWayNameObj={currentMyWayNameObj}
-        />
-      ) : login ? (
-        <MyWayList
-          myWayDataResult={myWayDataResult}
-          onMyButtonClick={startNaviSearch}
-          setCurrentMyWayNameObj={setCurrentMyWayNameObj}
-        />
-      ) : (
-        <div>
-          <div className="MyWayListTitle">
-            <p>MyWay 목록</p>
-            <div>UI 숨기기</div>
-          </div>
-          <div
-            style={{
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'center',
-              alignItems: 'center',
-              height: '195px',
-              backgroundColor: 'beige',
-            }}
-          >
-            {' '}
-            로그인 필요
-          </div>
-        </div>
-      )}
     </div>
   );
 };
