@@ -42,16 +42,23 @@ const modalStyles: Styles = {
 };
 
 type KakaoMapPros = {
-  login: boolean;
   setDetail: React.Dispatch<React.SetStateAction<boolean>>;
+  naviSearchCounter: number;
+  setNaviSearchCounter: React.Dispatch<React.SetStateAction<number>>;
 };
 
-const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
+const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNaviSearchCounter }) => {
   const [showDetail, setShowDetail] = useState(false);
   const handleButtonClick = () => {
     // 버튼이 클릭되었을 때, MyWayDetail을 보여주기 위해 상위 컴포넌트(MainPage)로 이벤트를 전달
     setShowDetail(!showDetail);
   };
+
+  useEffect(() => {
+    if(showDetail) {
+      setDetail(true);
+    }
+  }, [showDetail])
 
   const [loginCheck, setLoginCheck] = useState(false);
   const [keyword, setKeyword] = useState(''); // input
@@ -66,7 +73,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
   const [showPlaces, setShowPlaces] = useState(true); //? 길 리스트 숨김 처리
   const [waySaveBtn, setWaySaveBtn] = useState<boolean>(false); //? 길 저장 버튼 활성화/비활성화
   const [naviDataResult, setNaviDataResult] = useState<Object>({});
-  const [myWayDataResult] = useState<Object>({});
 
   const [time, setTime] = useState<number[]>([]);
   const [hour, setHour] = useState<number>(0);
@@ -77,7 +83,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
   const mapRef = useRef<any>(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false); //? 모달 상태 제어
-  const [naviSearchCounter, setNaviSearchCounter] = useState<number>(0); //? 길찾기 횟수 카운터
+  // const [naviSearchCounter, setNaviSearchCounter] = useState<number>(0); //? 길찾기 횟수 카운터
   const [currentMyWayNameObj, setCurrentMyWayNameObj] = useState<Object>({
     index: 0,
     name: '',
@@ -457,6 +463,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
     setNaviSearchCounter(naviSearchCounter + 1);
     console.log(naviSearchCounter);
   };
+
   useEffect(() => {
     if (naviSearchCounter > 0) {
       handleNavi();
@@ -636,6 +643,14 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
         <div style={{ display: 'none' }}></div>
       )}
       <div id="result"></div>
+      {/* {login ? (showDetail ? <MyWayDetail
+          naviDataResult={naviDataResult}
+          currentMyWayNameObj={currentMyWayNameObj}
+        /> : <MyWayList
+          myWayDataResult={myWayDataResult}
+          onMyButtonClick={startNaviSearch}
+          setCurrentMyWayNameObj={setCurrentMyWayNameObj}
+        />) : <MyWayReqLogin />} */}
     </div>
   );
 };

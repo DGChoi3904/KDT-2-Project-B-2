@@ -15,7 +15,7 @@ function MainPage() {
       {/* Header */}
       <TopMenu setLogin={setLogin} />
       {/* Body */}
-      <KakaoMap login={login} setDetail={setDetail}/>
+      <KakaoMap setDetail={setDetail}/>
       {/* Footer */}
       <Footer detail={detail}/>
     </div>
