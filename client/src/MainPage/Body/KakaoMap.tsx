@@ -51,6 +51,7 @@ type KakaoMapPros = {
     name: string;
   }) => void;
   setNaviDataResult: any;
+  myWayUI: boolean;
 };
 
 type WayMarkerObj = {
@@ -73,7 +74,7 @@ const wayMarkerInitialState: WayMarkersState = {
   wayMarkers: [],
 };
 
-const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNaviSearchCounter, startNaviSearch, setCurrentMyWayNameObj, setNaviDataResult }) => {
+const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNaviSearchCounter, startNaviSearch, setCurrentMyWayNameObj, setNaviDataResult, myWayUI }) => {
   const [showDetail, setShowDetail] = useState(false);
   const handleButtonClick = () => {
     // 버튼이 클릭되었을 때, MyWayDetail을 보여주기 위해 상위 컴포넌트(MainPage)로 이벤트를 전달
@@ -635,7 +636,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNav
   return (
     <div>
       <div id="mapContainer" style={{ position: 'relative' }}>
-        <div id="map" className="MapNormalSize"></div>
+        <div id="map" className={myWayUI ? "MapNormalSize" : "MapLongSize"}></div>
         <div
           style={{
             position: 'absolute',

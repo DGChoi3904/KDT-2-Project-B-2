@@ -21,9 +21,11 @@ type MyWayBoxProps = {
     name: string;
   }) => void;
   naviDataResult: any;
+  myWayUI: boolean;
+  setMyWayUI: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-const MyWayBox: React.FC<MyWayBoxProps> = ({ detail, login, myWayDataResult, startNaviSearch, currentMyWayNameObj, setCurrentMyWayNameObj, naviDataResult }) => {
+const MyWayBox: React.FC<MyWayBoxProps> = ({ detail, login, myWayDataResult, startNaviSearch, currentMyWayNameObj, setCurrentMyWayNameObj, naviDataResult, myWayUI, setMyWayUI }) => {
   const [loginState, setLoginState] = useState(false);
   useEffect(() => {
     const nickname = getCookie('nickname');
@@ -36,7 +38,10 @@ const MyWayBox: React.FC<MyWayBoxProps> = ({ detail, login, myWayDataResult, sta
   console.log('login: ', login);
   return (
     <div>
-      <MyWayTitle />
+      <MyWayTitle
+      myWayUI={myWayUI}
+      setMyWayUI={setMyWayUI}
+      />
       {(login||loginState) ? (detail ? <MyWayDetail
       naviDataResult={naviDataResult}
       currentMyWayNameObj={currentMyWayNameObj}
