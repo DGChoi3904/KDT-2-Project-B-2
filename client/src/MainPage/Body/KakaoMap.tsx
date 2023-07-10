@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext } from 'react';
+import React, { useEffect, useState, useRef, useReducer } from 'react';
 import Modal, { Styles } from 'react-modal';
 import '../Main.css';
 import globalVar from '../../util/Global';
@@ -52,6 +52,26 @@ type KakaoMapPros = {
   }) => void;
 };
 
+type WayMarkerObj = {
+  name: string;
+  marker: any;
+};
+
+type WayMarkersState = {
+  wayCount: number;
+  wayMarkers: WayMarkerObj[];
+};
+
+type WayMarkersAction = {
+  type: string;
+  payload?: any;
+};
+
+const wayMarkerInitialState: WayMarkersState = {
+  wayCount: 0,
+  wayMarkers: [],
+};
+
 const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNaviSearchCounter, startNaviSearch, setCurrentMyWayNameObj }) => {
   const [showDetail, setShowDetail] = useState(false);
   const handleButtonClick = () => {
@@ -74,10 +94,10 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNav
   // const [endPath, setEndPath] = useState<string[]>([]);
   // const [wayPath, setWayPath] = useState<string[]>([]); //? 경유지
   // const [roadPath, setRoadPath] = useState<number[]>([]);
-  const [wayCount, setWayCount] = useState<number>(0); //? 경유지 제한
   const [showPlaces, setShowPlaces] = useState(true); //? 길 리스트 숨김 처리
   const [waySaveBtn, setWaySaveBtn] = useState<boolean>(false); //? 길 저장 버튼 활성화/비활성화
   const [naviDataResult, setNaviDataResult] = useState<Object>({});
+  const [myWayDataResult] = useState<Object>({});
 
   const [time, setTime] = useState<number[]>([]);
   const [hour, setHour] = useState<number>(0);
@@ -126,8 +146,50 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNav
     name: '',
     marker: new window.kakao.maps.Marker({}),
   });
-  const [wayMarkers, setWayMarkers] = useState<Marker[]>([]);
+
+  const [wayMarkerState, wayMarkerDispatch] = useReducer(
+    wayMarkerReducer,
+    wayMarkerInitialState,
+  );
   const [polyLines, setPolyLines] = useState<any[]>([]);
+
+  function wayMarkerReducer(state: WayMarkersState, action: WayMarkersAction) {
+    switch (action.type) {
+      case 'RESET_WAY_MARKERS':
+        state.wayMarkers.forEach((markerObj) => {
+          markerObj.marker.setMap(null);
+        });
+        return { ...state, wayCount: 0, wayMarkers: [] };
+      case 'ADD_WAY_MARKER':
+        const markerPosition = new window.kakao.maps.LatLng(
+          action.payload.y,
+          action.payload.x,
+        );
+        const markerWay = new window.kakao.maps.Marker({
+          position: markerPosition,
+          map: mapRef.current!,
+          image: MarkerImgSet.setWaypointMarkerImg(),
+        });
+        const markerWayObj: WayMarkerObj = {
+          name: action.payload.name,
+          marker: markerWay,
+        };
+        markerWay.setMap(mapRef.current);
+        mapRef.current.setCenter(markerPosition);
+        return {
+          ...state,
+          wayMarkers: [...state.wayMarkers, markerWayObj],
+          wayCount: state.wayCount + 1,
+        };
+      case 'RESET_WAY_COUNT':
+        return {
+          ...state,
+          wayCount: 0,
+        };
+      default:
+        return state;
+    }
+  }
 
   useEffect(() => {
     console.log('몽고스테이트 값 변경됨', '출발 : ', mongoStart);
@@ -335,7 +397,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNav
         globalVar.endPoint = [0, 0];
         globalVar.startPoint = [0, 0];
         globalVar.wayPoint = [];
-        setWayCount(0);
+        wayMarkerDispatch({ type: 'RESET_WAY_COUNT' });
       })
       .catch((error) => {
         // 오류 처리
@@ -344,6 +406,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNav
   };
 
   const handleSearch = () => {
+    isNewSearch(); //새로운 검색인지 확인
     const placesService = new window.kakao.maps.services.Places();
     placesService.keywordSearch(keyword, (result: any, status: any) => {
       if (status === window.kakao.maps.services.Status.OK) {
@@ -433,36 +496,21 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNav
   const handleSelectPlaceWay = (place: Place) => {
     isPolyLineDrawn(); //polyline이 그려져있는지 확인
     //경유지 5개로 설정
-    if (wayCount === 0) {
-      wayMarkers.forEach((marker) => {
-        marker.marker.setMap(null);
-      });
-      setWayMarkers([]);
+    if (wayMarkerState.wayCount === 0) {
+      wayMarkerDispatch({ type: 'RESET_WAY_MARKERS' });
     }
-    if (wayCount < 5) {
-      const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
-      const markerWay = new window.kakao.maps.Marker({
-        position: markerPosition,
-        map: mapRef.current,
-        image: MarkerImgSet.setWaypointMarkerImg(),
-      });
-      const markerWayObj = {
-        name: place.name,
-        marker: markerWay,
-      };
-      wayMarkers.push(markerWayObj);
-      markerWay.setMap(mapRef.current);
-      mapRef.current.setCenter(markerPosition);
+
+    if (wayMarkerState.wayCount < 5) {
+      wayMarkerDispatch({ type: 'ADD_WAY_MARKER', payload: place });
       setSelectedPlace(place);
       globalVar.wayPoint.push(Number(place.y));
       globalVar.wayPoint.push(Number(place.x));
-      console.log(
-        `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
-      );
-      setWayCount(wayCount + 1);
     } else {
       alert('경유지는 5개까지만 설정 가능합니다.');
     }
+    console.log(
+      `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
+    );
   };
 
   // const startNaviSearch = () => {
@@ -477,6 +525,19 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNav
   //     handleNavi();
   //   }
   // }, [naviSearchCounter]);
+
+  function isStartorEndMarkerDrawn(point: string) {
+    if (point === 'start' && startMarker.marker.getMap()) {
+      if (globalVar.endPoint[0] === 0 && globalVar.endPoint[1] === 0) {
+        startMarker.marker.setMap(null);
+      }
+    }
+    if (point === 'end' && endMarker.marker.getMap()) {
+      if (globalVar.endPoint[0] === 0 && globalVar.endPoint[1] === 0) {
+        endMarker.marker.setMap(null);
+      }
+    }
+  }
 
   function handleDefaultSearch() {
     //경로저장 버튼 클릭시 실행 할 메소드
@@ -550,6 +611,25 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNav
   const numberList = (pageNumber: number) => {
     setSearchPlaces(pageNumber);
   };
+
+
+  function isNewSearch() {
+    if (
+      globalVar.startPoint[0] === 0 &&
+      globalVar.startPoint[1] === 0 &&
+      globalVar.endPoint[0] === 0 &&
+      globalVar.endPoint[1] === 0 &&
+      globalVar.wayPoint.length === 0
+    ) {
+      isPolyLineDrawn(); //polyline이 그려져있는지 확인
+      isStartorEndMarkerDrawn('start'); //시작 마커가 그려져있는지 확인
+      isStartorEndMarkerDrawn('end'); //도착 마커가 그려져있는지 확인
+      wayMarkerDispatch({ type: 'RESET_WAY_MARKERS' }); //경유지 마커가 그려져있는지 확인
+      setHour(0); //시간 초기화
+      setMinute(0); //분 초기화
+      setSecond(0); //초 초기화
+    }
+  }
 
   return (
     <div>
