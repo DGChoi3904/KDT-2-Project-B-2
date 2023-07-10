@@ -7,7 +7,7 @@ import SaveWayModal from '../Modal/SaveWayModal';
 import { MyWayContext } from '../../util/MyWayContext';
 import MyWayDetail from '../Footer/MyWayContents/MyWayDetail';
 import MyWayList from '../Footer/MyWayContents/MyWayList';
-import MyWayReqLogin from '../Footer/MyWayContents/MyWayReqLogin'
+import MyWayReqLogin from '../Footer/MyWayContents/MyWayReqLogin';
 import MarkerImgSet from './markerImgSet';
 
 interface Place {
@@ -43,7 +43,7 @@ const modalStyles: Styles = {
 
 type KakaoMapPros = {
   login: boolean;
-  setDetail : React.Dispatch<React.SetStateAction<boolean>>;
+  setDetail: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
@@ -305,9 +305,9 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
                 strokeOpacity: 1,
                 strokeStyle: 'solid',
               });
-              console.log('폴리라인')
-              console.dir(polyline)
-              console.log(traffic)
+              console.log('폴리라인');
+              console.dir(polyline);
+              console.log(traffic);
               if (
                 j ===
                 jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes']
@@ -489,8 +489,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
     setMongoEnd(strEnd);
   };
 
-<<<<<<< HEAD
-=======
   function isPolyLineDrawn() {
     if (polyLines.length > 0) {
       polyLines.forEach((polyLine) => {
@@ -500,7 +498,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
     }
   }
 
->>>>>>> origin/main
   return (
     <div>
       <div id="mapContainer" style={{ position: 'relative' }}>
