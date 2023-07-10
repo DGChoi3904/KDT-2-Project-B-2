@@ -461,8 +461,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
     //경유지 5개로 설정
     if (wayMarkerState.wayCount === 0) {
       wayMarkerDispatch({ type: 'RESET_WAY_MARKERS' });
-      console.log('wayMarkers 초기화');
-      console.log(wayMarkerState.wayMarkers);
     }
 
     if (wayMarkerState.wayCount < 5) {
@@ -473,7 +471,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
     } else {
       alert('경유지는 5개까지만 설정 가능합니다.');
     }
-
     console.log(
       `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
     );
