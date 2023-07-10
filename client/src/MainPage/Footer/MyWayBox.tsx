@@ -32,10 +32,10 @@ const MyWayBox: React.FC<MyWayBoxProps> = ({detail, login, myWayDataResult, star
   return (
     <div>
       <MyWayTitle />
-      {(login||loginState) ? <MyWayList
+      {(login||loginState) ? (detail ? <MyWayDetail/> : <MyWayList
       myWayDataResult={myWayDataResult}
       onMyButtonClick={startNaviSearch}
-      setCurrentMyWayNameObj={setCurrentMyWayNameObj} /> : <MyWayReqLogin />}
+      setCurrentMyWayNameObj={setCurrentMyWayNameObj} />) : <MyWayReqLogin />}
     </div>
   );
 };
