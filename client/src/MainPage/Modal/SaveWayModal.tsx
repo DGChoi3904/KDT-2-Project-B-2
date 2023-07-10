@@ -18,7 +18,7 @@ const SaveWayModal: React.FC<SaveWayModalProps> = ({
 }) => {
   const [sendObj, setSendObj] = useState<SaveWayModalProps>();
   const [wayName, setWayName] = useState('');
-  const coocieUserId = getCookie('userId');
+  const cookieUserId = getCookie('userId');
 
   const wayNameAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
     setWayName(e.target.value);
@@ -26,8 +26,10 @@ const SaveWayModal: React.FC<SaveWayModalProps> = ({
 
   const objAddWayName = () => {
     if (!addWayPointDB) return;
+    if (!cookieUserId) return console.log('로그인 후 사용해 주십시오');
     const tmpObj = { ...addWayPointDB };
     tmpObj.mongoWayName = `${wayName}`;
+    tmpObj.mongoUserId = `${cookieUserId}`;
     console.log(tmpObj);
   };
   return (

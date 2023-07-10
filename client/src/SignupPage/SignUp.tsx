@@ -1,12 +1,14 @@
 import React, { FormEvent, useEffect, useState } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import './SignUp.css';
+import e from 'express';
 
 function SignUp() {
   const [id, setId] = useState<string>('');
   const [pwd, setPwd] = useState<string>('');
   const [pwdCheck, setPwdCheck] = useState<string>('');
   const [nickName, setNickName] = useState<string>('');
+  const [errMsg, setErrMsg] = useState<string>('');
   // 커서가 버튼위에 Hover되었는지 확인하는 구문.
   const [isHovered, setIsHovered] = useState<boolean>(false);
   const navigate = useNavigate(); //회원가입 완료시 페이지 이동
@@ -35,6 +37,9 @@ function SignUp() {
   const handleMouseLeave = (): void => {
     setIsHovered(false);
   };
+  const backPage = () => {
+    navigate('/main');
+  };
 
   //? SING UP 누를 경우 /main으로 이동
   // const handleOnPress = (): void => {
@@ -57,11 +62,13 @@ function SignUp() {
           nickname: nickName,
         }),
       });
-      if (response.ok) {
+      const result = await response.json();
+      if (result.success) {
         navigate('/main');
         console.log('회원가입 데이터 전송 성공');
       } else {
-        console.log('회원가입 에러');
+        console.log(result.message);
+        setErrMsg(result.message);
       }
     } catch (error) {
       console.log('try 에러 발생', error);
@@ -69,6 +76,9 @@ function SignUp() {
   };
   return (
     <div id="signup" className="signup">
+      <div id="escButton" onClick={backPage}>
+        <div>X</div>
+      </div>
       <form method="POST" className="flex-column-center" onSubmit={createUser}>
         <h2 className="title-style">회원가입</h2>
         <label htmlFor="id" className="signup-label-size flex-row-center">
@@ -81,6 +91,7 @@ function SignUp() {
               value={id}
               className="signup-input"
               placeholder="6자리 이상 입력해주세요."
+              required={true}
             />
           </div>
         </label>
@@ -93,6 +104,7 @@ function SignUp() {
               onChange={handlePwdChange}
               value={pwd}
               className="signup-input"
+              required={true}
               placeholder="8자리 이상 입력해주세요."
             />
           </div>
@@ -110,6 +122,7 @@ function SignUp() {
               onChange={handlePwdCheckChange}
               value={pwdCheck}
               className="signup-input"
+              required={true}
               placeholder="비밀번호를 다시 입력하세요."
             />
           </div>
@@ -123,10 +136,12 @@ function SignUp() {
               onChange={handleNameChange}
               value={nickName}
               className="signup-input"
+              required={true}
               placeholder="20자 이하로 입력해주세요."
             />
           </div>
         </label>
+        <h2>{errMsg}</h2>
         <div className="flex-column-center signup-button-box">
           <button
             type="submit"

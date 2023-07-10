@@ -15,6 +15,10 @@ export class SignupService {
     return createdUser;
   }
 
+  async findUserById(userId: string): Promise<User | null> {
+    return this.userModel.findOne({ userId }).exec();
+  }
+
   async findUser(createUserDto: CreateUserDto): Promise<User | null> {
     const { userId, password } = createUserDto;
     const user = await this.userModel.findOne({ userId, password }).exec();
