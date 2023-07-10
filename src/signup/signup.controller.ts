@@ -13,7 +13,19 @@ export class SignupController {
 
   @Post('signup')
   async create(@Body() createUserDto: CreateUserDto) {
-    await this.signupService.create(createUserDto);
+    // 중복 여부 검사
+    const existingUser = await this.signupService.findUserById(
+      createUserDto.userId,
+    );
+
+    if (!existingUser) {
+      // 중복이 아닌 경우에만 회원가입 진행
+      await this.signupService.create(createUserDto);
+      return { success: true };
+    } else {
+      // 중복된 userId인 경우
+      return { success: false, message: '이미 존재하는 ID입니다.' };
+    }
   }
 
   @Post('login')
