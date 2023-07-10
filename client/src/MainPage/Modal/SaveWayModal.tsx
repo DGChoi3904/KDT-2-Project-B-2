@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { getCookie } from '../../util/cookies';
 import './ModalCSS.css';
 
 interface SaveWayModalProps {
