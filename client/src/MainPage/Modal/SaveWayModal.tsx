@@ -18,6 +18,7 @@ const SaveWayModal: React.FC<SaveWayModalProps> = ({
 }) => {
   const [sendObj, setSendObj] = useState<SaveWayModalProps>();
   const [wayName, setWayName] = useState('');
+  const coocieUserId = getCookie('userId');
 
   const wayNameAdd = (e: React.ChangeEvent<HTMLInputElement>) => {
     setWayName(e.target.value);
