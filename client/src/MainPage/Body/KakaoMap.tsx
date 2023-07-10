@@ -4,10 +4,10 @@ import '../Main.css';
 import globalVar from '../../util/Global';
 import SaveWayModal from '../Modal/SaveWayModal';
 
-import { MyWayContext } from '../../util/MyWayContext';
-import MyWayDetail from '../Footer/MyWayContents/MyWayDetail';
-import MyWayList from '../Footer/MyWayContents/MyWayList';
-import MyWayReqLogin from '../Footer/MyWayContents/MyWayReqLogin';
+// import { MyWayContext } from '../../util/MyWayContext';
+// import MyWayDetail from '../Footer/MyWayContents/MyWayDetail';
+// import MyWayList from '../Footer/MyWayContents/MyWayList';
+// import MyWayReqLogin from '../Footer/MyWayContents/MyWayReqLogin';
 import MarkerImgSet from './markerImgSet';
 
 interface Place {
@@ -50,6 +50,7 @@ type KakaoMapPros = {
     index: number;
     name: string;
   }) => void;
+  setNaviDataResult: any;
 };
 
 type WayMarkerObj = {
@@ -72,7 +73,7 @@ const wayMarkerInitialState: WayMarkersState = {
   wayMarkers: [],
 };
 
-const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNaviSearchCounter, startNaviSearch, setCurrentMyWayNameObj }) => {
+const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNaviSearchCounter, startNaviSearch, setCurrentMyWayNameObj, setNaviDataResult }) => {
   const [showDetail, setShowDetail] = useState(false);
   const handleButtonClick = () => {
     // 버튼이 클릭되었을 때, MyWayDetail을 보여주기 위해 상위 컴포넌트(MainPage)로 이벤트를 전달
@@ -85,7 +86,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNav
     }
   }, [showDetail])
 
-  const [loginCheck, setLoginCheck] = useState(false);
+  // const [loginCheck, setLoginCheck] = useState(false);
   const [keyword, setKeyword] = useState(''); // input
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
@@ -96,8 +97,8 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNav
   // const [roadPath, setRoadPath] = useState<number[]>([]);
   const [showPlaces, setShowPlaces] = useState(true); //? 길 리스트 숨김 처리
   const [waySaveBtn, setWaySaveBtn] = useState<boolean>(false); //? 길 저장 버튼 활성화/비활성화
-  const [naviDataResult, setNaviDataResult] = useState<Object>({});
-  const [myWayDataResult] = useState<Object>({});
+  // const [naviDataResult, setNaviDataResult] = useState<Object>({});
+  // const [myWayDataResult] = useState<Object>({});
 
   const [time, setTime] = useState<number[]>([]);
   const [hour, setHour] = useState<number>(0);

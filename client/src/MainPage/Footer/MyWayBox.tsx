@@ -12,13 +12,18 @@ type MyWayBoxProps = {
   myWayDataResult: any;
   setNaviSearchCounter: React.Dispatch<React.SetStateAction<number>>;
   startNaviSearch: () => void;
+  currentMyWayNameObj: {
+    index: number;
+    name: string;
+  };
   setCurrentMyWayNameObj: (myWayNameObj: {
     index: number;
     name: string;
   }) => void;
+  naviDataResult: any;
 }
 
-const MyWayBox: React.FC<MyWayBoxProps> = ({detail, login, myWayDataResult, startNaviSearch, setCurrentMyWayNameObj}) => {
+const MyWayBox: React.FC<MyWayBoxProps> = ({ detail, login, myWayDataResult, startNaviSearch, currentMyWayNameObj, setCurrentMyWayNameObj, naviDataResult }) => {
   const [loginState, setLoginState] = useState(false);
   useEffect(() => {
     const nickname = getCookie('nickname');
@@ -32,7 +37,10 @@ const MyWayBox: React.FC<MyWayBoxProps> = ({detail, login, myWayDataResult, star
   return (
     <div>
       <MyWayTitle />
-      {(login||loginState) ? (detail ? <MyWayDetail/> : <MyWayList
+      {(login||loginState) ? (detail ? <MyWayDetail
+      naviDataResult={naviDataResult}
+      currentMyWayNameObj={currentMyWayNameObj}
+      /> : <MyWayList
       myWayDataResult={myWayDataResult}
       onMyButtonClick={startNaviSearch}
       setCurrentMyWayNameObj={setCurrentMyWayNameObj} />) : <MyWayReqLogin />}

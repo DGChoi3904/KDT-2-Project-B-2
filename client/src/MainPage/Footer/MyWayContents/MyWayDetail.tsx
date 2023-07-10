@@ -13,13 +13,13 @@ type naviDataResult = any;
 
 type naviDataResultProps = {
   naviDataResult: naviDataResult;
-  currenyMyWayNameObj: {
+  currentMyWayNameObj: {
     index: number;
     name: string;
   };
 };
 
-const MyWayDetail: React.FC<naviDataResult> = ({
+const MyWayDetail: React.FC<naviDataResultProps> = ({
   naviDataResult,
   currentMyWayNameObj,
 }) => {
@@ -287,24 +287,6 @@ const MyWayDetail: React.FC<naviDataResult> = ({
 
   return (
     <div>
-      <div className="MyWayListTitle">
-        {currentMyWayNameObj.index === 0 ? (
-          <>
-            <p>검색 결과</p>
-            <p></p>
-            {/* <button type="button" className="MyWayDetail-SaveButton">
-              저장하기
-            </button> */}
-          </>
-        ) : (
-          <>
-            <p>
-              #{currentMyWayNameObj.index} {currentMyWayNameObj.name}
-            </p>
-            <p></p>
-          </>
-        )}
-      </div>
       <div style={{ minHeight: '195px', backgroundColor: 'beige' }}>
         <div
           style={{
