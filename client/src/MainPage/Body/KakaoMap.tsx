@@ -420,12 +420,15 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
   //경유지 마커
   const handleSelectPlaceWay = (place: Place) => {
     isPolyLineDrawn(); //polyline이 그려져있는지 확인
+    console.dir(wayMarkers);
     //경유지 5개로 설정
     if (wayCount === 0) {
-      wayMarkers.forEach((marker) => {
-        marker.marker.setMap(null);
-      });
+      for (let index = 0; index < wayMarkers.length; index++) {
+        wayMarkers[index].marker.setMap(null);
+      }
       setWayMarkers([]);
+      console.log('wayMarkers 초기화');
+      console.log(wayMarkers);
     }
     if (wayCount < 5) {
       const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
