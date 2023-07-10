@@ -1,6 +1,6 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Modal, { Styles } from 'react-modal';
-import { setCookie, removeCookie } from '../../util/cookies';
+import { setCookie, removeCookie, getCookie } from '../../util/cookies';
 import LoginModal from '../Modal/LoginModal';
 import { useNavigate } from 'react-router-dom'; // 여기 추가
 
@@ -53,9 +53,19 @@ const TopMenu: React.FC<TopMenuProps> = ({ setLogin }) => {
     removeCookie('userId'); // removeCookie 함수를 사용하여 쿠키를 삭제합니다.
     navigate('/'); // 메인 페이지로 이동합니다.
   };
-  const logIn = () => {
-    setSignUpStatus(true);
+  const logInStatus = () => {
+    if (nickname) {
+      setSignUpStatus(true);
+    }
   };
+
+  useEffect(() => {
+    const nickname = getCookie('nickname');
+    if (nickname) {
+      setNickname(nickname);
+      setSignUpStatus(true);
+    }
+  }, []);
   return (
     <div style={TopMenuStyle}>
       <img
