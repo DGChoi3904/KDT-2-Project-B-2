@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useRef, useContext } from 'react';
+import React, { useEffect, useState, useRef, useReducer } from 'react';
 import Modal, { Styles } from 'react-modal';
 import '../Main.css';
 import globalVar from '../../util/Global';
@@ -44,6 +44,26 @@ type KakaoMapPros = {
   login: boolean;
 };
 
+type WayMarkerObj = {
+  name: string;
+  marker: any;
+};
+
+type WayMarkersState = {
+  wayCount: number;
+  wayMarkers: WayMarkerObj[];
+};
+
+type WayMarkersAction = {
+  type: string;
+  payload?: any;
+};
+
+const wayMarkerInitialState: WayMarkersState = {
+  wayCount: 0,
+  wayMarkers: [],
+};
+
 const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   const [showDetail, setShowDetail] = useState(false);
   const handleButtonClick = () => {
@@ -60,7 +80,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   // const [endPath, setEndPath] = useState<string[]>([]);
   // const [wayPath, setWayPath] = useState<string[]>([]); //? 경유지
   // const [roadPath, setRoadPath] = useState<number[]>([]);
-  const [wayCount, setWayCount] = useState<number>(0); //? 경유지 제한
   const [showPlaces, setShowPlaces] = useState(true); //? 길 리스트 숨김 처리
   const [waySaveBtn, setWaySaveBtn] = useState<boolean>(false); //? 길 저장 버튼 활성화/비활성화
   const [naviDataResult, setNaviDataResult] = useState<Object>({});
@@ -104,8 +123,50 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
     name: '',
     marker: new window.kakao.maps.Marker({}),
   });
-  const [wayMarkers, setWayMarkers] = useState<Marker[]>([]);
+
+  const [wayMarkerState, wayMarkerDispatch] = useReducer(
+    wayMarkerReducer,
+    wayMarkerInitialState,
+  );
   const [polyLines, setPolyLines] = useState<any[]>([]);
+
+  function wayMarkerReducer(state: WayMarkersState, action: WayMarkersAction) {
+    switch (action.type) {
+      case 'RESET_WAY_MARKERS':
+        state.wayMarkers.forEach((markerObj) => {
+          markerObj.marker.setMap(null);
+        });
+        return { ...state, wayCount: 0, wayMarkers: [] };
+      case 'ADD_WAY_MARKER':
+        const markerPosition = new window.kakao.maps.LatLng(
+          action.payload.y,
+          action.payload.x,
+        );
+        const markerWay = new window.kakao.maps.Marker({
+          position: markerPosition,
+          map: mapRef.current!,
+          image: MarkerImgSet.setWaypointMarkerImg(),
+        });
+        const markerWayObj: WayMarkerObj = {
+          name: action.payload.name,
+          marker: markerWay,
+        };
+        markerWay.setMap(mapRef.current);
+        mapRef.current.setCenter(markerPosition);
+        return {
+          ...state,
+          wayMarkers: [...state.wayMarkers, markerWayObj],
+          wayCount: state.wayCount + 1,
+        };
+      case 'RESET_WAY_COUNT':
+        return {
+          ...state,
+          wayCount: 0,
+        };
+      default:
+        return state;
+    }
+  }
 
   useEffect(() => {
     console.log(
@@ -309,7 +370,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
         globalVar.endPoint = [0, 0];
         globalVar.startPoint = [0, 0];
         globalVar.wayPoint = [];
-        setWayCount(0);
+        wayMarkerDispatch({ type: 'RESET_WAY_COUNT' });
       })
       .catch((error) => {
         // 오류 처리
@@ -397,40 +458,25 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login }) => {
   //경유지 마커
   const handleSelectPlaceWay = (place: Place) => {
     isPolyLineDrawn(); //polyline이 그려져있는지 확인
-    console.dir(wayMarkers);
     //경유지 5개로 설정
-    if (wayCount === 0) {
-      for (let index = 0; index < wayMarkers.length; index++) {
-        wayMarkers[index].marker.setMap(null);
-      }
-      setWayMarkers([]);
+    if (wayMarkerState.wayCount === 0) {
+      wayMarkerDispatch({ type: 'RESET_WAY_MARKERS' });
       console.log('wayMarkers 초기화');
-      console.log(wayMarkers);
+      console.log(wayMarkerState.wayMarkers);
     }
-    if (wayCount < 5) {
-      const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
-      const markerWay = new window.kakao.maps.Marker({
-        position: markerPosition,
-        map: mapRef.current,
-        image: MarkerImgSet.setWaypointMarkerImg(),
-      });
-      const markerWayObj = {
-        name: place.name,
-        marker: markerWay,
-      };
-      wayMarkers.push(markerWayObj);
-      markerWay.setMap(mapRef.current);
-      mapRef.current.setCenter(markerPosition);
+
+    if (wayMarkerState.wayCount < 5) {
+      wayMarkerDispatch({ type: 'ADD_WAY_MARKER', payload: place });
       setSelectedPlace(place);
       globalVar.wayPoint.push(Number(place.y));
       globalVar.wayPoint.push(Number(place.x));
-      console.log(
-        `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
-      );
-      setWayCount(wayCount + 1);
     } else {
       alert('경유지는 5개까지만 설정 가능합니다.');
     }
+
+    console.log(
+      `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
+    );
   };
 
   const startNaviSearch = () => {
