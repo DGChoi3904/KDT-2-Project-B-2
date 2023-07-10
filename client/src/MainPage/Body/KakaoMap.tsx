@@ -393,6 +393,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
   };
 
   const handleSearch = () => {
+    isNewSearch(); //새로운 검색인지 확인
     const placesService = new window.kakao.maps.services.Places();
     placesService.keywordSearch(keyword, (result: any, status: any) => {
       if (status === window.kakao.maps.services.Status.OK) {
@@ -498,16 +499,18 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
       `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
     );
   };
-
-  const startNaviSearch = () => {
-    setNaviSearchCounter(naviSearchCounter + 1);
-    console.log(naviSearchCounter);
-  };
-  useEffect(() => {
-    if (naviSearchCounter > 0) {
-      handleNavi();
+  function isStartorEndMarkerDrawn(point: string) {
+    if (point === 'start' && startMarker.marker.getMap()) {
+      if (globalVar.endPoint[0] === 0 && globalVar.endPoint[1] === 0) {
+        startMarker.marker.setMap(null);
+      }
     }
-  }, [naviSearchCounter]);
+    if (point === 'end' && endMarker.marker.getMap()) {
+      if (globalVar.endPoint[0] === 0 && globalVar.endPoint[1] === 0) {
+        endMarker.marker.setMap(null);
+      }
+    }
+  }
   function handleDefaultSearch() {
     //경로저장 버튼 클릭시 실행 할 메소드
     setCurrentMyWayNameObj({ index: 0, name: '' });
@@ -537,6 +540,25 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
     setMongoWay(strWay);
     setMongoEnd(strEnd);
   };
+
+  function isNewSearch() {
+    if (
+      globalVar.startPoint[0] === 0 &&
+      globalVar.startPoint[1] === 0 &&
+      globalVar.endPoint[0] === 0 &&
+      globalVar.endPoint[1] === 0 &&
+      globalVar.wayPoint.length === 0
+    ) {
+      isPolyLineDrawn(); //polyline이 그려져있는지 확인
+      isStartorEndMarkerDrawn('start'); //시작 마커가 그려져있는지 확인
+      isStartorEndMarkerDrawn('end'); //도착 마커가 그려져있는지 확인
+      wayMarkerDispatch({ type: 'RESET_WAY_MARKERS' }); //경유지 마커가 그려져있는지 확인
+      setHour(0); //시간 초기화
+      setMinute(0); //분 초기화
+      setSecond(0); //초 초기화
+    }
+  }
+
   return (
     <div>
       <div id="mapContainer" style={{ position: 'relative' }}>
