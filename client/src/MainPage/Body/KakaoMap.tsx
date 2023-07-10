@@ -7,7 +7,7 @@ import SaveWayModal from '../Modal/SaveWayModal';
 import { MyWayContext } from '../../util/MyWayContext';
 import MyWayDetail from '../Footer/MyWayContents/MyWayDetail';
 import MyWayList from '../Footer/MyWayContents/MyWayList';
-import MyWayReqLogin from '../Footer/MyWayContents/MyWayReqLogin'
+import MyWayReqLogin from '../Footer/MyWayContents/MyWayReqLogin';
 import MarkerImgSet from './markerImgSet';
 
 interface Place {
@@ -43,7 +43,7 @@ const modalStyles: Styles = {
 
 type KakaoMapPros = {
   login: boolean;
-  setDetail : React.Dispatch<React.SetStateAction<boolean>>;
+  setDetail: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
@@ -83,9 +83,17 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
     name: '',
   }); //? 현재 저장된 길 이름
 
-  const [mongoStart, setMongoStart] = useState('');
-  const [mongoWay, setMongoWay] = useState<string[]>([]);
-  const [mongoEnd, setMongoEnd] = useState('');
+  const [mongoStart, setMongoStart] = useState<string>(''); //몽고 DB에 저장할 데이터들
+  const [mongoWay, setMongoWay] = useState<string[] | null>(null);
+  const [mongoEnd, setMongoEnd] = useState<string>('');
+  const [addWayPointDB, setAddWayPointDB] = useState<
+    | {
+        mongoStart: string | null;
+        mongoWay: string[] | null;
+        mongoEnd: string | null;
+      }
+    | undefined
+  >();
 
   const openModal = () => {
     setIsModalOpen(true);
@@ -115,10 +123,12 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
       '출발 : ',
       mongoStart,
       ', 경유 : ',
-      mongoWay,
+      mongoWay ? mongoWay : `없음`,
       ', 도착 : ',
       mongoEnd,
     ); //값이 변할때 mongoState확인
+    const aSendObj = { mongoStart, mongoWay, mongoEnd };
+    setAddWayPointDB(aSendObj);
   }, [mongoStart, mongoWay, mongoEnd]);
 
   // 지도 생성
@@ -295,15 +305,16 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
                 strokeOpacity: 1,
                 strokeStyle: 'solid',
               });
-              console.log('폴리라인')
-              console.dir(polyline)
-              console.log(traffic)
+              console.log('폴리라인');
+              console.dir(polyline);
+              console.log(traffic);
               if (
                 j ===
                 jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes']
                   .length -
                   2
               ) {
+                polyline.setMap(null);
                 polyline.setMap(mapRef.current);
                 polyLines.push(polyline);
               }
@@ -449,7 +460,9 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
     }
   }, [naviSearchCounter]);
   function handleDefaultSearch() {
+    //경로저장 버튼 클릭시 실행 할 메소드
     setCurrentMyWayNameObj({ index: 0, name: '' });
+
     handleNavi();
   }
 
@@ -475,16 +488,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
     setMongoWay(strWay);
     setMongoEnd(strEnd);
   };
-
-  function isPolyLineDrawn() {
-    if (polyLines.length > 0) {
-      polyLines.forEach((polyLine) => {
-        polyLine.setMap(null);
-      });
-      setPolyLines([]);
-    }
-  }
-
   return (
     <div>
       <div id="mapContainer" style={{ position: 'relative' }}>
@@ -614,7 +617,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
         style={modalStyles}
         contentLabel="Login Modal"
       >
-        <SaveWayModal onClose={closeModal} />
+        <SaveWayModal addWayPointDB={addWayPointDB} onClose={closeModal} />
       </Modal>
       {minute !== 0 && second !== 0 ? (
         <div className="timer" style={{ zIndex: '2', marginTop: '10px' }}>
