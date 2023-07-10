@@ -10,7 +10,6 @@ interface LoginModalProps {
   setLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
-
 const LoginModal: React.FC<LoginModalProps> = ({
   setSignUpStatus,
   setNickname,
@@ -47,31 +46,36 @@ const LoginModal: React.FC<LoginModalProps> = ({
   };
   // *로그인 로직
   const logInLogic = async () => {
-    try {
-      const response = await fetch(`/login`, {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          userId: inputIdValue,
-          password: inputPwValue,
-        }),
-      });
-      const result = await response.json(); // 서버로부터 JSON 결과 받음
-      if (result.success) {
-        console.log('로그인 성공');
-        console.log(result);
-        setLogin(true);
-        setCookie('nickname', result.nickname); // 로그인 성공 시, 쿠키에 user 정보 저장
-        setSignUpStatus(true); // 로그인 상태 변경
-        setNickname(result.nickname); // 사용자 이름 변경
-        closeModal();
-      } else {
-        console.log('로그인 실패');
+    if (inputIdValue && inputPwValue) {
+      try {
+        const response = await fetch(`/login`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            userId: inputIdValue,
+            password: inputPwValue,
+          }),
+        });
+        const result = await response.json(); // 서버로부터 JSON 결과 받음
+        if (result.success) {
+          console.log('로그인 성공');
+          console.log(result);
+          setLogin(true);
+          setCookie('nickname', result.nickname); // 로그인 성공 시, 쿠키에 user 정보 저장
+          setCookie('userId', result.userId); // 로그인 성공 시, 쿠키에 user 정보 저장
+          setSignUpStatus(true); // 로그인 상태 변경
+          setNickname(result.nickname); // 사용자 이름 변경
+          closeModal();
+        } else {
+          console.log('로그인 실패');
+        }
+      } catch (error) {
+        console.log('try 에러 발생', error);
       }
-    } catch (error) {
-      console.log('try 에러 발생', error);
+    } else {
+      console.log('id와 pw를 입력하세요');
     }
   };
   return (
@@ -81,6 +85,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
         placeholder="ID"
         style={{ width: '80%' }}
         value={inputIdValue}
+        required={true}
         onChange={handleIdChange}
       />
       <input
@@ -88,6 +93,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
         placeholder="PW"
         style={{ width: '80%' }}
         value={inputPwValue}
+        required={true}
         onChange={handlePwChange}
       />
 

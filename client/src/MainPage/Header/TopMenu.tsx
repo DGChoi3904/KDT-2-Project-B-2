@@ -32,10 +32,10 @@ const modalStyles: Styles = {
   },
 };
 type TopMenuProps = {
-  setLogin : React.Dispatch<React.SetStateAction<boolean>>;
-}
+  setLogin: React.Dispatch<React.SetStateAction<boolean>>;
+};
 
-const TopMenu:React.FC<TopMenuProps> = ({setLogin}) => {
+const TopMenu: React.FC<TopMenuProps> = ({ setLogin }) => {
   const [signUpStatus, setSignUpStatus] = useState(false);
   const [nickname, setNickname] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -50,6 +50,7 @@ const TopMenu:React.FC<TopMenuProps> = ({setLogin}) => {
   const logOut = () => {
     setSignUpStatus(false);
     removeCookie('nickname'); // removeCookie 함수를 사용하여 쿠키를 삭제합니다.
+    removeCookie('userId'); // removeCookie 함수를 사용하여 쿠키를 삭제합니다.
     navigate('/'); // 메인 페이지로 이동합니다.
   };
   const logIn = () => {
@@ -88,6 +89,6 @@ const TopMenu:React.FC<TopMenuProps> = ({setLogin}) => {
       </div>
     </div>
   );
-}
+};
 
 export default TopMenu;

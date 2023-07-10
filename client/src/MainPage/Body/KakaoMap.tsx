@@ -118,15 +118,9 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
   const [polyLines, setPolyLines] = useState<any[]>([]);
 
   useEffect(() => {
-    console.log(
-      '몽고스테이트 값 변경됨',
-      '출발 : ',
-      mongoStart,
-      ', 경유 : ',
-      mongoWay ? mongoWay : `없음`,
-      ', 도착 : ',
-      mongoEnd,
-    ); //값이 변할때 mongoState확인
+    console.log('몽고스테이트 값 변경됨', '출발 : ', mongoStart);
+    console.log('경유 : ', mongoWay ? mongoWay : `없음`);
+    console.log('도착 : ', mongoEnd); //값이 변할때 mongoState확인
     const aSendObj = { mongoStart, mongoWay, mongoEnd };
     setAddWayPointDB(aSendObj);
   }, [mongoStart, mongoWay, mongoEnd]);
@@ -305,9 +299,9 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ login, setDetail }) => {
                 strokeOpacity: 1,
                 strokeStyle: 'solid',
               });
-              console.log('폴리라인');
-              console.dir(polyline);
-              console.log(traffic);
+              // console.log('폴리라인');
+              // console.dir(polyline);
+              // console.log(traffic);
               if (
                 j ===
                 jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes']

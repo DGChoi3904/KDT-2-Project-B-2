@@ -21,7 +21,7 @@ export class SignupController {
     const user = await this.signupService.findUser(createUserDto);
     if (user) {
       console.log(user);
-      return { success: true, nickname: user.nickname };
+      return { success: true, nickname: user.nickname, userId: user.userId };
     } else {
       return { success: false };
     }
