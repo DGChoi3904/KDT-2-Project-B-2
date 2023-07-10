@@ -9,9 +9,15 @@ type MyWayBoxProps = {
   detail: boolean;
   login: boolean;
   myWayDataResult: any;
+  setNaviSearchCounter: React.Dispatch<React.SetStateAction<number>>;
+  startNaviSearch: () => void;
+  setCurrentMyWayNameObj: (myWayNameObj: {
+    index: number;
+    name: string;
+  }) => void;
 }
 
-const MyWayBox: React.FC<MyWayBoxProps> = ({detail, login, myWayDataResult}) => {
+const MyWayBox: React.FC<MyWayBoxProps> = ({detail, login, myWayDataResult, startNaviSearch, setCurrentMyWayNameObj}) => {
   return (
     <div>
       <MyWayTitle />
