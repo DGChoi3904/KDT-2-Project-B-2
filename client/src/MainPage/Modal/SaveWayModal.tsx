@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { getCookie } from '../../util/cookies';
 import './ModalCSS.css';
 import { createWayPoint } from '../../util/saveWayObj';
+import { loadWayPoint } from '../../util/loadWayObj';
 
 interface SaveWayModalProps {
   onClose: () => void;
@@ -46,11 +47,18 @@ const SaveWayModal: React.FC<SaveWayModalProps> = ({
     const result = await createWayPoint(tmpObj);
     console.log(result);
   };
+
   useEffect(() => {
     if (sendObj) {
       console.log(sendObj);
     }
   }, [sendObj]);
+
+  const loadTest = () => {
+    const loadDataResult = loadWayPoint(cookieUserId);
+    console.log('loadResult: ', loadDataResult);
+  }
+
   return (
     <div className="Modal">
       <p>경로 명을 입력하세요</p>
@@ -76,6 +84,7 @@ const SaveWayModal: React.FC<SaveWayModalProps> = ({
       >
         <button onClick={objAddWayName}>저장</button>
         <button onClick={onClose}>취소</button>
+        <button onClick={loadTest}>READ TEST</button>
       </div>
     </div>
   );

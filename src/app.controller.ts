@@ -7,10 +7,20 @@ import { join } from 'path';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
-  @Get('*')
-  fallback(@Res() res: any) {
+  @Get('main')
+  mainPage(@Res() res: Response) {
     res.sendFile(this.appService.getBuildPath());
   }
+
+  @Get('signup')
+  signupPage(@Res() res: Response) {
+    res.sendFile(this.appService.getBuildPath());
+  }
+
+  // @Get('*')
+  // fallback(@Res() res: any) {
+  //   res.sendFile(this.appService.getBuildPath());
+  // }
 
   // @Get('*')
   // serveFile(@Req() req: Request, @Res() res: Response) {
