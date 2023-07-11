@@ -1,3 +1,4 @@
+//! 사용 안하는 파일
 import React, { createContext, useState } from 'react';
 
 interface MyWayContextProps {
