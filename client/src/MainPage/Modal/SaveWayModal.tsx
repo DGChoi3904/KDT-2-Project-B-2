@@ -46,6 +46,7 @@ const SaveWayModal: React.FC<SaveWayModalProps> = ({
     setSendObj(tmpObj);
     const result = await createWayPoint(tmpObj);
     console.log(result);
+    onClose();
   };
 
   useEffect(() => {
