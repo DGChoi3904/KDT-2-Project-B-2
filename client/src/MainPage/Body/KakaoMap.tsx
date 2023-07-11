@@ -74,7 +74,15 @@ const wayMarkerInitialState: WayMarkersState = {
   wayMarkers: [],
 };
 
-const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNaviSearchCounter, startNaviSearch, setCurrentMyWayNameObj, setNaviDataResult, myWayUI }) => {
+const KakaoMap: React.FC<KakaoMapPros> = ({
+  setDetail,
+  naviSearchCounter,
+  setNaviSearchCounter,
+  startNaviSearch,
+  setCurrentMyWayNameObj,
+  setNaviDataResult,
+  myWayUI,
+}) => {
   const [showDetail, setShowDetail] = useState(false);
   const handleButtonClick = () => {
     // 버튼이 클릭되었을 때, MyWayDetail을 보여주기 위해 상위 컴포넌트(MainPage)로 이벤트를 전달
@@ -82,10 +90,10 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNav
   };
 
   useEffect(() => {
-    if(showDetail) {
+    if (showDetail) {
       setDetail(true);
     }
-  }, [showDetail])
+  }, [showDetail]);
 
   // const [loginCheck, setLoginCheck] = useState(false);
   const [keyword, setKeyword] = useState(''); // input
@@ -522,11 +530,11 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNav
 
   // startNaviSearch();
 
-  // useEffect(() => {
-  //   if (naviSearchCounter > 0) {
-  //     handleNavi();
-  //   }
-  // }, [naviSearchCounter]);
+  useEffect(() => {
+    if (naviSearchCounter > 0) {
+      handleNavi();
+    }
+  }, [naviSearchCounter]);
 
   function isStartorEndMarkerDrawn(point: string) {
     if (point === 'start' && startMarker.marker.getMap()) {
@@ -614,7 +622,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNav
     setSearchPlaces(pageNumber);
   };
 
-
   function isNewSearch() {
     if (
       globalVar.startPoint[0] === 0 &&
@@ -636,7 +643,10 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNav
   return (
     <div>
       <div id="mapContainer" style={{ position: 'relative' }}>
-        <div id="map" className={myWayUI ? "MapNormalSize" : "MapLongSize"}></div>
+        <div
+          id="map"
+          className={myWayUI ? 'MapNormalSize' : 'MapLongSize'}
+        ></div>
         <div
           style={{
             position: 'absolute',
