@@ -55,11 +55,6 @@ const SaveWayModal: React.FC<SaveWayModalProps> = ({
     }
   }, [sendObj]);
 
-  const loadTest = () => {
-    const loadDataResult = loadWayPoint(cookieUserId);
-    console.log('loadResult: ', loadDataResult);
-  }
-
   return (
     <div className="Modal">
       <p>경로 명을 입력하세요</p>
@@ -85,7 +80,6 @@ const SaveWayModal: React.FC<SaveWayModalProps> = ({
       >
         <button onClick={objAddWayName}>저장</button>
         <button onClick={onClose}>취소</button>
-        <button onClick={loadTest}>READ TEST</button>
       </div>
     </div>
   );
