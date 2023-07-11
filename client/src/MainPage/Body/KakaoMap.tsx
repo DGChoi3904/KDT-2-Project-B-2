@@ -693,6 +693,10 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
       setHour(0); //시간 초기화
       setMinute(0); //분 초기화
       setSecond(0); //초 초기화
+
+      setMongoStart(''); //DB에 저장될 출발지 좌표 초기화
+      setMongoWay([]); //DB에 저장될 경유지 좌표 초기화
+      setMongoEnd(''); //DB에 저장될 목적지 좌표 초기화
     }
   }
 
