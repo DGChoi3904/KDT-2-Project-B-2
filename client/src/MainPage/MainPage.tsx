@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState } from 'react';
 
 import TopMenu from './Header/TopMenu';
 import KakaoMap from './Body/KakaoMap';
