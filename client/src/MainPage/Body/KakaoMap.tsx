@@ -532,9 +532,12 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
 
   useEffect(() => {
     if (naviSearchCounter > 0) {
+      loadMyWayMarkers();
       handleNavi();
     }
   }, [naviSearchCounter]);
+
+  function loadMyWayMarkers() {}
 
   function isStartorEndMarkerDrawn(point: string) {
     if (point === 'start' && startMarker.marker.getMap()) {
