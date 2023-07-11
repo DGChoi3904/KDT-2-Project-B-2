@@ -602,39 +602,43 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
   }
 
   function handleDefaultSearch() {
-    //경로저장 버튼 클릭시 실행 할 메소드
-    setCurrentMyWayNameObj({ index: 0, name: '' });
-    handleNavi();
-
-    //경로 안내버튼 클릭하면 모든 마커가 보이게 지도 설정
-    const bounds = new window.kakao.maps.LatLngBounds(); //LatLngBounds 객체 생성
-    // 출발지 마커 bounds에 추가
-    if (globalVar.startPoint.length === 2) {
-      const startLatLng = new window.kakao.maps.LatLng(
-        globalVar.startPoint[0], //위도, 경도 이므로 2개
-        globalVar.startPoint[1],
-      );
-      bounds.extend(startLatLng);
-    }
-    // 경유지 마커 bounds에 추가 (경유지가 있는 경우)
-    if (globalVar.wayPoint.length > 0) {
-      for (let i = 0; i < globalVar.wayPoint.length; i += 2) {
-        const wayLatLng = new window.kakao.maps.LatLng(
-          globalVar.wayPoint[i], //경유지가 n개 이므로(위도, 경도가 n개)
-          globalVar.wayPoint[i + 1],
+    if((globalVar.startPoint[0] !== 0 && globalVar.startPoint[1] !== 0) && (globalVar.endPoint[0] !== 0 && globalVar.endPoint[1] !== 0)) {
+      //경로저장 버튼 클릭시 실행 할 메소드
+      setCurrentMyWayNameObj({ index: 0, name: '' });
+      handleNavi();
+  
+      //경로 안내버튼 클릭하면 모든 마커가 보이게 지도 설정
+      const bounds = new window.kakao.maps.LatLngBounds(); //LatLngBounds 객체 생성
+      // 출발지 마커 bounds에 추가
+      if (globalVar.startPoint.length === 2) {
+        const startLatLng = new window.kakao.maps.LatLng(
+          globalVar.startPoint[0], //위도, 경도 이므로 2개
+          globalVar.startPoint[1],
         );
-        bounds.extend(wayLatLng);
+        bounds.extend(startLatLng);
       }
+      // 경유지 마커 bounds에 추가 (경유지가 있는 경우)
+      if (globalVar.wayPoint.length > 0) {
+        for (let i = 0; i < globalVar.wayPoint.length; i += 2) {
+          const wayLatLng = new window.kakao.maps.LatLng(
+            globalVar.wayPoint[i], //경유지가 n개 이므로(위도, 경도가 n개)
+            globalVar.wayPoint[i + 1],
+          );
+          bounds.extend(wayLatLng);
+        }
+      }
+      // 목적지 마커 위치 bounds에 추가
+      if (globalVar.endPoint.length === 2) {
+        const endLatLng = new window.kakao.maps.LatLng(
+          globalVar.endPoint[0], //위도, 경도 이므로 2개
+          globalVar.endPoint[1],
+        );
+        bounds.extend(endLatLng);
+      }
+      mapRef.current.setBounds(bounds); // 출발지, 목적지,(경유지)마커 보이게 지도 범위 설정
+    } else {
+      console.log('출발지와 도착지 미설정')
     }
-    // 목적지 마커 위치 bounds에 추가
-    if (globalVar.endPoint.length === 2) {
-      const endLatLng = new window.kakao.maps.LatLng(
-        globalVar.endPoint[0], //위도, 경도 이므로 2개
-        globalVar.endPoint[1],
-      );
-      bounds.extend(endLatLng);
-    }
-    mapRef.current.setBounds(bounds); // 출발지, 목적지,(경유지)마커 보이게 지도 범위 설정
   }
 
   const transferMongo = (start: number[], way: number[], end: number[]) => {
