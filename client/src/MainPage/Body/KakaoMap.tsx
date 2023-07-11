@@ -74,7 +74,15 @@ const wayMarkerInitialState: WayMarkersState = {
   wayMarkers: [],
 };
 
-const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNaviSearchCounter, startNaviSearch, setCurrentMyWayNameObj, setNaviDataResult, myWayUI }) => {
+const KakaoMap: React.FC<KakaoMapPros> = ({
+  setDetail,
+  naviSearchCounter,
+  setNaviSearchCounter,
+  startNaviSearch,
+  setCurrentMyWayNameObj,
+  setNaviDataResult,
+  myWayUI,
+}) => {
   const [showDetail, setShowDetail] = useState(false);
   const handleButtonClick = () => {
     // 버튼이 클릭되었을 때, MyWayDetail을 보여주기 위해 상위 컴포넌트(MainPage)로 이벤트를 전달
@@ -82,10 +90,10 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNav
   };
 
   useEffect(() => {
-    if(showDetail) {
+    if (showDetail) {
       setDetail(true);
     }
-  }, [showDetail])
+  }, [showDetail]);
 
   // const [loginCheck, setLoginCheck] = useState(false);
   const [keyword, setKeyword] = useState(''); // input
@@ -140,13 +148,19 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNav
     name: string;
     marker: any;
   };
-  const [startMarker, setStartMarker] = useState<Marker>({
+  const [startMarker] = useState<Marker>({
     name: '',
-    marker: new window.kakao.maps.Marker({}),
+    marker: new window.kakao.maps.Marker({
+      image: MarkerImgSet.setStartMarkerImg(),
+      zIndex: 3,
+    }),
   });
-  const [endMarker, setEndMarker] = useState<Marker>({
+  const [endMarker] = useState<Marker>({
     name: '',
-    marker: new window.kakao.maps.Marker({}),
+    marker: new window.kakao.maps.Marker({
+      image: MarkerImgSet.setEndMarkerImg(),
+      zIndex: 3,
+    }),
   });
 
   const [wayMarkerState, wayMarkerDispatch] = useReducer(
@@ -458,8 +472,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNav
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
     if (!startMarker.marker.getMap()) {
       startMarker.marker.setPosition(markerPosition);
-      startMarker.marker.setImage(MarkerImgSet.setStartMarkerImg());
-      startMarker.marker.setZIndex(1);
       startMarker.marker.setMap(mapRef.current);
     } else {
       startMarker.marker.setPosition(markerPosition);
@@ -479,8 +491,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNav
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
     if (!endMarker.marker.getMap()) {
       endMarker.marker.setPosition(markerPosition);
-      endMarker.marker.setImage(MarkerImgSet.setEndMarkerImg());
-      endMarker.marker.setZIndex(6);
       endMarker.marker.setMap(mapRef.current);
     } else {
       endMarker.marker.setPosition(markerPosition);
@@ -522,11 +532,61 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNav
 
   // startNaviSearch();
 
-  // useEffect(() => {
-  //   if (naviSearchCounter > 0) {
-  //     handleNavi();
-  //   }
-  // }, [naviSearchCounter]);
+  useEffect(() => {
+    if (naviSearchCounter > 0) {
+      loadMyWayMarkers();
+      handleNavi();
+    }
+  }, [naviSearchCounter]);
+
+  function loadMyWayMarkers() {
+    //폴리 라인이 그려져 있으면 지도에서 삭제
+    isPolyLineDrawn();
+    //마커가 그려져있으면 지도에서 삭제
+    if (startMarker.marker.getMap()) {
+      startMarker.marker.setMap(null);
+    }
+    if (endMarker.marker.getMap()) {
+      endMarker.marker.setMap(null);
+    }
+    if (wayMarkerState.wayMarkers.length > 0) {
+      wayMarkerDispatch({ type: 'RESET_WAY_MARKERS' });
+    }
+    //마커가 그려져있지 않으면 지도에 마커 그리기
+    //출발지 마커
+    if (globalVar.startPoint[0] !== 0 && globalVar.startPoint[1] !== 0) {
+      startMarker.marker.setPosition(
+        new window.kakao.maps.LatLng(
+          globalVar.startPoint[0],
+          globalVar.startPoint[1],
+        ),
+      );
+      startMarker.marker.setMap(mapRef.current);
+    }
+    //도착지 마커
+    if (globalVar.endPoint[0] !== 0 && globalVar.endPoint[1] !== 0) {
+      endMarker.marker.setPosition(
+        new window.kakao.maps.LatLng(
+          globalVar.endPoint[0],
+          globalVar.endPoint[1],
+        ),
+      );
+      endMarker.marker.setMap(mapRef.current);
+    }
+    //경유지 마커
+    if (globalVar.wayPoint.length > 0) {
+      for (let i = 0; i < globalVar.wayPoint.length; i += 2) {
+        wayMarkerDispatch({
+          type: 'ADD_WAY_MARKER',
+          payload: {
+            x: globalVar.wayPoint[i + 1],
+            y: globalVar.wayPoint[i],
+            place_name: `경유지 #${i / 2 + 1}`,
+          },
+        });
+      }
+    }
+  }
 
   function isStartorEndMarkerDrawn(point: string) {
     if (point === 'start' && startMarker.marker.getMap()) {
@@ -614,7 +674,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNav
     setSearchPlaces(pageNumber);
   };
 
-
   function isNewSearch() {
     if (
       globalVar.startPoint[0] === 0 &&
@@ -636,7 +695,10 @@ const KakaoMap: React.FC<KakaoMapPros> = ({ setDetail, naviSearchCounter, setNav
   return (
     <div>
       <div id="mapContainer" style={{ position: 'relative' }}>
-        <div id="map" className={myWayUI ? "MapNormalSize" : "MapLongSize"}></div>
+        <div
+          id="map"
+          className={myWayUI ? 'MapNormalSize' : 'MapLongSize'}
+        ></div>
         <div
           style={{
             position: 'absolute',
