@@ -537,7 +537,20 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     }
   }, [naviSearchCounter]);
 
-  function loadMyWayMarkers() {}
+  function loadMyWayMarkers() {
+    //폴리 라인이 그려져 있으면 지도에서 삭제
+    isPolyLineDrawn();
+    //마커가 그려져있으면 지도에서 삭제
+    if (startMarker.marker.getMap()) {
+      startMarker.marker.setMap(null);
+    }
+    if (endMarker.marker.getMap()) {
+      endMarker.marker.setMap(null);
+    }
+    if (wayMarkerState.wayMarkers.length > 0) {
+      wayMarkerDispatch({ type: 'RESET_WAY_MARKERS' });
+    }
+  }
 
   function isStartorEndMarkerDrawn(point: string) {
     if (point === 'start' && startMarker.marker.getMap()) {
