@@ -552,6 +552,40 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     if (wayMarkerState.wayMarkers.length > 0) {
       wayMarkerDispatch({ type: 'RESET_WAY_MARKERS' });
     }
+    //마커가 그려져있지 않으면 지도에 마커 그리기
+    //출발지 마커
+    if (globalVar.startPoint[0] !== 0 && globalVar.startPoint[1] !== 0) {
+      startMarker.marker.setPosition(
+        new window.kakao.maps.LatLng(
+          globalVar.startPoint[0],
+          globalVar.startPoint[1],
+        ),
+      );
+      startMarker.marker.setMap(mapRef.current);
+    }
+    //도착지 마커
+    if (globalVar.endPoint[0] !== 0 && globalVar.endPoint[1] !== 0) {
+      endMarker.marker.setPosition(
+        new window.kakao.maps.LatLng(
+          globalVar.endPoint[0],
+          globalVar.endPoint[1],
+        ),
+      );
+      endMarker.marker.setMap(mapRef.current);
+    }
+    //경유지 마커
+    if (globalVar.wayPoint.length > 0) {
+      for (let i = 0; i < globalVar.wayPoint.length; i += 2) {
+        wayMarkerDispatch({
+          type: 'ADD_WAY_MARKER',
+          payload: {
+            x: globalVar.wayPoint[i + 1],
+            y: globalVar.wayPoint[i],
+            place_name: `경유지 #${i / 2 + 1}`,
+          },
+        });
+      }
+    }
   }
 
   function isStartorEndMarkerDrawn(point: string) {
