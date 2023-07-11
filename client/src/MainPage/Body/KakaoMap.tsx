@@ -148,14 +148,14 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     name: string;
     marker: any;
   };
-  const [startMarker, setStartMarker] = useState<Marker>({
+  const [startMarker] = useState<Marker>({
     name: '',
     marker: new window.kakao.maps.Marker({
       image: MarkerImgSet.setStartMarkerImg(),
       zIndex: 3,
     }),
   });
-  const [endMarker, setEndMarker] = useState<Marker>({
+  const [endMarker] = useState<Marker>({
     name: '',
     marker: new window.kakao.maps.Marker({
       image: MarkerImgSet.setEndMarkerImg(),
