@@ -274,11 +274,12 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
   const handleNavi = () => {
     let url;
     mapRef.current.setLevel(5); // 경로 안내 클릭시 지도 범위 변경
+    //! 경유지가 없을 경우
     if (globalVar.wayPoint.length === 0) {
       url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C${globalVar.endPoint[0]}`;
       console.log('url1: ', url);
       setShowPlaces(false);
-    } else {
+    } else {  //! 경유지가 있을 경우
       const waypointsString = globalVar.wayPoint
         .map((point, index) => {
           if (index % 2 === 0) {
@@ -294,12 +295,15 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
       url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C${globalVar.endPoint[0]}&waypoints=${waypointsString}`;
       console.log('url2: ', url);
       setShowPlaces(false); //검색후 결과값, 버튼 숨김 처리
-      transferMongo(
-        globalVar.startPoint,
-        globalVar.wayPoint,
-        globalVar.endPoint,
-      );
     }
+
+    // MongoDB에 저장하기 위해 변환 함수 실행
+    transferMongo(
+      globalVar.startPoint,
+      globalVar.wayPoint,
+      globalVar.endPoint,
+    );
+
     const headers = {
       Authorization: 'KakaoAK 0ce7da7c92dd2a150bc0111177dfc283',
     };

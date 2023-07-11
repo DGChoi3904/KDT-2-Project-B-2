@@ -2,7 +2,6 @@ import React, { useState, useEffect } from 'react';
 import { getCookie } from '../../util/cookies';
 import './ModalCSS.css';
 import { createWayPoint } from '../../util/saveWayObj';
-import { loadWayPoint } from '../../util/loadWayObj';
 
 interface SaveWayModalProps {
   onClose: () => void;
@@ -29,7 +28,7 @@ const SaveWayModal: React.FC<SaveWayModalProps> = ({
   };
 
   const objAddWayName = async () => {
-    if (!addWayPointDB) return;
+    if (!addWayPointDB) return console.log('데이터가 없습니다');
     if (!cookieUserId) return console.log('로그인 후 사용해 주십시오');
     const tmpObj: {
       [key: string]: string | string[] | number | number[] | undefined | null;
