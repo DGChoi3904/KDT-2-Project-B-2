@@ -150,11 +150,17 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
   };
   const [startMarker, setStartMarker] = useState<Marker>({
     name: '',
-    marker: new window.kakao.maps.Marker({}),
+    marker: new window.kakao.maps.Marker({
+      image: MarkerImgSet.setStartMarkerImg(),
+      zIndex: 3,
+    }),
   });
   const [endMarker, setEndMarker] = useState<Marker>({
     name: '',
-    marker: new window.kakao.maps.Marker({}),
+    marker: new window.kakao.maps.Marker({
+      image: MarkerImgSet.setEndMarkerImg(),
+      zIndex: 3,
+    }),
   });
 
   const [wayMarkerState, wayMarkerDispatch] = useReducer(
@@ -466,8 +472,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
     if (!startMarker.marker.getMap()) {
       startMarker.marker.setPosition(markerPosition);
-      startMarker.marker.setImage(MarkerImgSet.setStartMarkerImg());
-      startMarker.marker.setZIndex(1);
       startMarker.marker.setMap(mapRef.current);
     } else {
       startMarker.marker.setPosition(markerPosition);
@@ -487,8 +491,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     const markerPosition = new window.kakao.maps.LatLng(place.y, place.x);
     if (!endMarker.marker.getMap()) {
       endMarker.marker.setPosition(markerPosition);
-      endMarker.marker.setImage(MarkerImgSet.setEndMarkerImg());
-      endMarker.marker.setZIndex(6);
       endMarker.marker.setMap(mapRef.current);
     } else {
       endMarker.marker.setPosition(markerPosition);
