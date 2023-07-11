@@ -46,6 +46,7 @@ const SaveWayModal: React.FC<SaveWayModalProps> = ({
     setSendObj(tmpObj);
     const result = await createWayPoint(tmpObj);
     console.log(result);
+    onClose();
   };
 
   useEffect(() => {
@@ -53,11 +54,6 @@ const SaveWayModal: React.FC<SaveWayModalProps> = ({
       console.log(sendObj);
     }
   }, [sendObj]);
-
-  const loadTest = () => {
-    const loadDataResult = loadWayPoint(cookieUserId);
-    console.log('loadResult: ', loadDataResult);
-  }
 
   return (
     <div className="Modal">
@@ -84,7 +80,6 @@ const SaveWayModal: React.FC<SaveWayModalProps> = ({
       >
         <button onClick={objAddWayName}>저장</button>
         <button onClick={onClose}>취소</button>
-        <button onClick={loadTest}>READ TEST</button>
       </div>
     </div>
   );
