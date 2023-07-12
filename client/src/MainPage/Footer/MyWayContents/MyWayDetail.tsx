@@ -287,7 +287,7 @@ const MyWayDetail: React.FC<naviDataResultProps> = ({
 
   return (
     <div>
-      <div className="myway-detail-contentsbox">
+      <div className="myway-contentsbox">
         <div className="myway-detail-contentsbox-title">
           <p className="myway-detail-contentsbox-title-index">#</p>
           <p className="myway-detail-contentsbox-title-wayname">길 이름</p>
