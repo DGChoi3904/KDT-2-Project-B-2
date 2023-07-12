@@ -38,7 +38,6 @@ const MyWayList: React.FC<myWayDataResultandEventProps> = ({
   onMyButtonClick,
   setCurrentMyWayNameObj,
 }) => {
-
   const [userData, setUserData] = useState<MyWayData[]>([]);
   const [wayData, setWayData] = useState<boolean>(false);
 
@@ -49,22 +48,22 @@ const MyWayList: React.FC<myWayDataResultandEventProps> = ({
   const userDBData = async () => {
     try {
       const loadDataResult = loadWayPoint(cookieUserId);
-      console.log(await loadDataResult)
-      setUserData(await loadDataResult as MyWayData[])
+      console.log(await loadDataResult);
+      setUserData((await loadDataResult) as MyWayData[]);
     } catch (error) {
-      console.error('데이터 가져오기 실패', error)
+      console.error('데이터 가져오기 실패', error);
     }
-  }
+  };
 
   // 최초 렌더링시 userDBData 함수 실행
   useEffect(() => {
     userDBData();
-  }, [])
+  }, []);
 
   // test용 useEffect
   useEffect(() => {
-    console.log('userData값: ', userData)
-  }, [userData])
+    console.log('userData값: ', userData);
+  }, [userData]);
 
   // const userDbSample: MyWayData[] = userData;
 
@@ -103,20 +102,23 @@ const MyWayList: React.FC<myWayDataResultandEventProps> = ({
 
   // if (userData !== null) {
   // }
-  
 
   return (
     <div>
-      <div style={{ minHeight: '195px', backgroundColor: 'beige' }}>
-        {(userData.length === 0) ? <div>저장된 경로가 없습니다</div> : ways.map((mySavedWay, index) => (
-          <MyWayComponent
-            key={index}
-            index={index + 1}
-            mySavedWay={mySavedWay}
-            onMyButtonClick={onMyButtonClick}
-            handleCurrentMyWayNameObj={handleCurrentMyWayNameObj}
-          />
-        ))}
+      <div className="myway-contentsbox">
+        {userData.length === 0 ? (
+          <div>저장된 경로가 없습니다</div>
+        ) : (
+          ways.map((mySavedWay, index) => (
+            <MyWayComponent
+              key={index}
+              index={index + 1}
+              mySavedWay={mySavedWay}
+              onMyButtonClick={onMyButtonClick}
+              handleCurrentMyWayNameObj={handleCurrentMyWayNameObj}
+            />
+          ))
+        )}
         {/* {ways.map((mySavedWay, index) => (
           <MyWayComponent
             key={index}
