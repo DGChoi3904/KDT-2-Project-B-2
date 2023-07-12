@@ -35,6 +35,11 @@
   align-items: center;
 }
 
+.myway-title-text {
+  text-align: center;
+  font-weight: bolder;
+}
+
 .myway-contentsbox {
   height: 195px;
   background-color: beige;
