@@ -30,17 +30,13 @@ const MyWayComponent: React.FC<MyWayComponentProps> = ({
     onMyButtonClick();
   }
   return (
-    <div
-      style={{
-        display: 'flex',
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-      }}
-    >
-      <p style={{ flexGrow: '1' }}>#{index}</p>
-      <p style={{ flexGrow: '5' }}>{mySavedWay.WayName}</p>
-      <button style={{ flexGrow: '2' }} onClick={handleButtonClick}>
+    <div className="flex-row justify-space-between align-center">
+      <p className="myway-component-conetents-index">#{index}</p>
+      <p className="myway-component-conetents-wayname">{mySavedWay.WayName}</p>
+      <button
+        className="myway-component-conetents-button"
+        onClick={handleButtonClick}
+      >
         보기
       </button>
     </div>
