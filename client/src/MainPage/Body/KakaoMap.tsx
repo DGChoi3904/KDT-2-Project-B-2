@@ -83,17 +83,19 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
   setNaviDataResult,
   myWayUI,
 }) => {
-  const [showDetail, setShowDetail] = useState(false);
-  const handleButtonClick = () => {
-    // 버튼이 클릭되었을 때, MyWayDetail을 보여주기 위해 상위 컴포넌트(MainPage)로 이벤트를 전달
-    setShowDetail(!showDetail);
-  };
+  // const [showDetail, setShowDetail] = useState(false);
+  // const handleButtonClick = () => {
+  //   // 버튼이 클릭되었을 때, MyWayDetail을 보여주기 위해 상위 컴포넌트(MainPage)로 이벤트를 전달
+  //   setShowDetail(!showDetail);
+  // };
 
-  useEffect(() => {
-    if (showDetail) {
-      setDetail(true);
-    }
-  }, [showDetail]);
+  // useEffect(() => {
+  //   if (showDetail) {
+  //     setDetail(true);
+  //   } else {
+  //     setDetail(false);
+  //   }
+  // }, [showDetail]);
 
   // const [loginCheck, setLoginCheck] = useState(false);
   const [keyword, setKeyword] = useState(''); // input
@@ -279,7 +281,8 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
       url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C${globalVar.endPoint[0]}`;
       console.log('url1: ', url);
       setShowPlaces(false);
-    } else {  //! 경유지가 있을 경우
+    } else {
+      //! 경유지가 있을 경우
       const waypointsString = globalVar.wayPoint
         .map((point, index) => {
           if (index % 2 === 0) {
@@ -298,11 +301,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     }
 
     // MongoDB에 저장하기 위해 변환 함수 실행
-    transferMongo(
-      globalVar.startPoint,
-      globalVar.wayPoint,
-      globalVar.endPoint,
-    );
+    transferMongo(globalVar.startPoint, globalVar.wayPoint, globalVar.endPoint);
 
     const headers = {
       Authorization: 'KakaoAK 0ce7da7c92dd2a150bc0111177dfc283',
@@ -412,7 +411,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
         setTime(timeData);
         setDistance(distanceData);
         setWaySaveBtn(true);
-        handleButtonClick();
+        setDetail(true);
         console.log('값 전달', showDetail);
         globalVar.endPoint = [0, 0];
         globalVar.startPoint = [0, 0];
@@ -606,11 +605,16 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
   }
 
   function handleDefaultSearch() {
-    if((globalVar.startPoint[0] !== 0 && globalVar.startPoint[1] !== 0) && (globalVar.endPoint[0] !== 0 && globalVar.endPoint[1] !== 0)) {
+    if (
+      globalVar.startPoint[0] !== 0 &&
+      globalVar.startPoint[1] !== 0 &&
+      globalVar.endPoint[0] !== 0 &&
+      globalVar.endPoint[1] !== 0
+    ) {
       //경로저장 버튼 클릭시 실행 할 메소드
       setCurrentMyWayNameObj({ index: 0, name: '' });
       handleNavi();
-  
+
       //경로 안내버튼 클릭하면 모든 마커가 보이게 지도 설정
       const bounds = new window.kakao.maps.LatLngBounds(); //LatLngBounds 객체 생성
       // 출발지 마커 bounds에 추가
@@ -641,7 +645,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
       }
       mapRef.current.setBounds(bounds); // 출발지, 목적지,(경유지)마커 보이게 지도 범위 설정
     } else {
-      console.log('출발지와 도착지 미설정')
+      console.log('출발지와 도착지 미설정');
     }
   }
 
