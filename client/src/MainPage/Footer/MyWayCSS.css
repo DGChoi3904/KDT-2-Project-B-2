@@ -80,7 +80,12 @@
 
 .myway-detail-contentsbox-contents-traffic {
   width: 20%;
-  text-shadow: 1px 1px #000;
+  color: #FFF;
+  text-shadow: 1px 1px #000, -1px -1px #000, 1px -1px #000, -1px 1px #000, 0px -1px #000, 0px 1px #000, 1px 0px #000, -1px 0px #000;
+  border-radius: 999px;
+  border-color:#FFF;
+  border-style: solid;
+  border-width: 1px;
 }
 
 .myway-detail-contentsbox-contents-duration {

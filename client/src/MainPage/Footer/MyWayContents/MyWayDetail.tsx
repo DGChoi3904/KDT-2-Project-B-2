@@ -316,7 +316,7 @@ const MyWayDetail: React.FC<naviDataResultProps> = ({
             <p
               className="myway-detail-contentsbox-contents-traffic myway-title-text"
               style={{
-                color: way.state,
+                backgroundColor: way.state,
               }}
             >
               {way.stateText}
