@@ -288,11 +288,19 @@ const MyWayDetail: React.FC<naviDataResultProps> = ({
   return (
     <div>
       <div className="myway-contentsbox">
-        <div className="myway-detail-contentsbox-title">
-          <p className="myway-detail-contentsbox-title-index">#</p>
-          <p className="myway-detail-contentsbox-title-wayname">길 이름</p>
-          <p className="myway-detail-contentsbox-title-traffic">교통 상황</p>
-          <p className="myway-detail-contentsbox-title-duration">소요 시간</p>
+        <div className="myway-detail-contentsbox-title flex-row justify-center align-center">
+          <p className="myway-detail-contentsbox-title-index myway-title-text">
+            #
+          </p>
+          <p className="myway-detail-contentsbox-title-wayname myway-title-text">
+            길 이름
+          </p>
+          <p className="myway-detail-contentsbox-title-traffic myway-title-text">
+            교통 상황
+          </p>
+          <p className="myway-detail-contentsbox-title-duration myway-title-text">
+            소요 시간
+          </p>
         </div>
         {wayInfo.map((way: wayInfo, index: number) => (
           <div key={index} className="myway-detail-contentsbox-contents">
