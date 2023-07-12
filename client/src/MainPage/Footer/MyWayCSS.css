@@ -8,6 +8,7 @@
   --color_yellow: #fee500;
   --color_green: #2db400;
   --font_saria: Saira;
+  --color_beige: #f5f5dc;
 }
 
 .MyWayListTitle {
@@ -45,7 +46,7 @@
 
 .myway-contentsbox {
   height: 195px;
-  background-color: beige;
+  background-color: var(--color_beige);
   overflow-y: auto;
 }
 
