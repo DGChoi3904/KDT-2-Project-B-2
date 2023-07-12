@@ -71,7 +71,7 @@ const MyWayList: React.FC<myWayDataResultandEventProps> = ({
   });
   return (
     <div>
-      <div style={{ minHeight: '195px', backgroundColor: 'beige' }}>
+      <div className="myway-contentsbox">
         {ways.map((mySavedWay, index) => (
           <MyWayComponent
             key={index}
