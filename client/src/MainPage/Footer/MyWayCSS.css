@@ -93,3 +93,13 @@
   text-align: right;
   padding-right: 10px;
 }
+
+.myway-component-contents-index{
+  width: 12.5%;
+}
+.myway-component-contents-wayname{
+  width: 62.5%;
+}
+.myway-component-contents-button{
+  width: 25%;
+}
