@@ -20,7 +20,7 @@
   font-family: var(--font_saria);
 }
 
-.myway-detail-contentsbox {
+.myway-contentsbox {
   height: 195px;
   background-color: beige;
   overflow-y: auto;
