@@ -8,12 +8,14 @@ type MyWayTitleProps = {
     index: number;
     name: string;
   };
+  detail: boolean;
 };
 
 const MyWayTitle: React.FC<MyWayTitleProps> = ({
   myWayUI,
   setMyWayUI,
   currentMyWayNameObj,
+  detail,
 }) => {
   const handleUIHidden = () => {
     setMyWayUI(false);
@@ -28,7 +30,17 @@ const MyWayTitle: React.FC<MyWayTitleProps> = ({
 
   return (
     <div className="MyWayListTitle">
-      <p>MyWay 목록</p>
+      {detail ? (
+        currentMyWayNameObj.index === 0 ? (
+          <p>검색 결과</p>
+        ) : (
+          <p>
+            #{currentMyWayNameObj.index - 1}-{currentMyWayNameObj.name}
+          </p>
+        )
+      ) : (
+        <p>MyWay 목록</p>
+      )}
       {myWayUI ? (
         <button onClick={handleUIHidden}>UI 숨기기</button>
       ) : (

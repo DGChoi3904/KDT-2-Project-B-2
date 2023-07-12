@@ -52,6 +52,7 @@ const MyWayBox: React.FC<MyWayBoxProps> = ({
         myWayUI={myWayUI}
         currentMyWayNameObj={currentMyWayNameObj}
         setMyWayUI={setMyWayUI}
+        detail={detail}
       />
       {login || loginState ? (
         detail ? (
