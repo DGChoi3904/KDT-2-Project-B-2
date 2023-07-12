@@ -32,10 +32,10 @@ const MyWayComponent: React.FC<MyWayComponentProps> = ({
   }
   return (
     <div className="flex-row justify-space-between align-center">
-      <p className="myway-component-conetents-index">#{index}</p>
-      <p className="myway-component-conetents-wayname">{mySavedWay.WayName}</p>
+      <p className="myway-component-contents-index">#{index}</p>
+      <p className="myway-component-contents-wayname">{mySavedWay.WayName}</p>
       <button
-        className="myway-component-conetents-button"
+        className="myway-component-contents-button"
         onClick={handleButtonClick}
       >
         보기
