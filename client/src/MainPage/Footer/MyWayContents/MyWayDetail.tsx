@@ -303,7 +303,10 @@ const MyWayDetail: React.FC<naviDataResultProps> = ({
           </p>
         </div>
         {wayInfo.map((way: wayInfo, index: number) => (
-          <div key={index} className="myway-detail-contentsbox-contents">
+          <div
+            key={index}
+            className="flex-row justify-space-between align-center"
+          >
             <p className="myway-detail-contentsbox-contents-index">
               #{index + 1}
             </p>
@@ -311,7 +314,7 @@ const MyWayDetail: React.FC<naviDataResultProps> = ({
               {way.name}
             </p>
             <p
-              className="myway-detail-contentsbox-contents-traffic"
+              className="myway-detail-contentsbox-contents-traffic myway-title-text"
               style={{
                 color: way.state,
               }}

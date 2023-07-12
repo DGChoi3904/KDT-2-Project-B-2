@@ -69,13 +69,6 @@
   width: 30%;
 }
 
-.myway-detail-contentsbox-contents {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  align-items: center;
-}
-
 .myway-detail-contentsbox-contents-index {
   width: 10%;
   padding-left: 10px;
