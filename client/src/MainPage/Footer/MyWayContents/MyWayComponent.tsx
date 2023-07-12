@@ -1,5 +1,6 @@
 import React from 'react';
 import globalVar from '../../../util/Global';
+import '../MyWayCSS.css';
 
 type MySavedWay = {
   WayName: string;
