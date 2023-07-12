@@ -20,6 +20,13 @@
   font-family: var(--font_saria);
 }
 
+.flex-row-center {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+}
+
 .myway-contentsbox {
   height: 195px;
   background-color: beige;
