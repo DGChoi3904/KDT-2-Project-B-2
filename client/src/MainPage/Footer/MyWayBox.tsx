@@ -23,6 +23,7 @@ type MyWayBoxProps = {
   naviDataResult: any;
   myWayUI: boolean;
   setMyWayUI: React.Dispatch<React.SetStateAction<boolean>>;
+  setDetail: React.Dispatch<React.SetStateAction<boolean>>; //? 현재 저장된 길 이름
 };
 
 const MyWayBox: React.FC<MyWayBoxProps> = ({
@@ -35,6 +36,7 @@ const MyWayBox: React.FC<MyWayBoxProps> = ({
   naviDataResult,
   myWayUI,
   setMyWayUI,
+  setDetail,
 }) => {
   const [loginState, setLoginState] = useState(false);
   useEffect(() => {
@@ -53,6 +55,7 @@ const MyWayBox: React.FC<MyWayBoxProps> = ({
         currentMyWayNameObj={currentMyWayNameObj}
         setMyWayUI={setMyWayUI}
         detail={detail}
+        setDetail={setDetail}
       />
       {login || loginState ? (
         detail ? (

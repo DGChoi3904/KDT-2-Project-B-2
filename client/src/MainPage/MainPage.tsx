@@ -19,7 +19,6 @@ function MainPage() {
   const [naviDataResult, setNaviDataResult] = useState<Object>({});
   const [myWayUI, setMyWayUI] = useState<boolean>(true);
 
-
   const startNaviSearch = () => {
     setNaviSearchCounter(naviSearchCounter + 1);
     console.log(naviSearchCounter);
@@ -28,7 +27,6 @@ function MainPage() {
     index: 0,
     name: '',
   }); //? 현재 저장된 길 이름
-  
 
   return (
     <div className="MainWrap">
@@ -36,26 +34,28 @@ function MainPage() {
       <TopMenu setLogin={setLogin} />
       {/* Body */}
       <KakaoMap
-      setDetail={setDetail}
-      naviSearchCounter={naviSearchCounter}
-      setNaviSearchCounter={setNaviSearchCounter}
-      startNaviSearch={startNaviSearch}
-      setCurrentMyWayNameObj={setCurrentMyWayNameObj}
-      setNaviDataResult={setNaviDataResult}
-      myWayUI={myWayUI}
+        setDetail={setDetail}
+        naviSearchCounter={naviSearchCounter}
+        setNaviSearchCounter={setNaviSearchCounter}
+        startNaviSearch={startNaviSearch}
+        setCurrentMyWayNameObj={setCurrentMyWayNameObj}
+        setNaviDataResult={setNaviDataResult}
+        myWayUI={myWayUI}
       />
       {/* Footer */}
       <Footer
-      detail={detail}
-      login={login}
-      myWayDataResult={myWayDataResult}
-      setNaviSearchCounter={setNaviSearchCounter}
-      startNaviSearch={startNaviSearch}
-      currentMyWayNameObj={currentMyWayNameObj}
-      setCurrentMyWayNameObj={setCurrentMyWayNameObj}
-      naviDataResult={naviDataResult}
-      myWayUI={myWayUI}
-      setMyWayUI={setMyWayUI}/>
+        setDetail={setDetail}
+        detail={detail}
+        login={login}
+        myWayDataResult={myWayDataResult}
+        setNaviSearchCounter={setNaviSearchCounter}
+        startNaviSearch={startNaviSearch}
+        currentMyWayNameObj={currentMyWayNameObj}
+        setCurrentMyWayNameObj={setCurrentMyWayNameObj}
+        naviDataResult={naviDataResult}
+        myWayUI={myWayUI}
+        setMyWayUI={setMyWayUI}
+      />
     </div>
   );
 }
