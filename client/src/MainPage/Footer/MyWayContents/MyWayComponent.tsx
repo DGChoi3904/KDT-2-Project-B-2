@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useContext } from 'react';
 import globalVar from '../../../util/Global';
+import { MapContext } from '../../../util/MapContext';
 import '../MyWayCSS.css';
 
 type MySavedWay = {
@@ -22,11 +23,14 @@ const MyWayComponent: React.FC<MyWayComponentProps> = ({
   onMyButtonClick,
   handleCurrentMyWayNameObj,
 }) => {
+  const { startPoint, setStartPoint, endPoint, setEndPoint, wayPoint, setWayPoint, isSearchingStart, setIsSearchingStart, isSearchingEnd, setIsSearchingEnd } = useContext(MapContext);
+
+
   function handleButtonClick() {
     //전역변수에 입력, 검색을 실행하려 하나, KakaoMap에서 인식하지 못함. 데이터 입력방법에 수정이 필요하다.
-    globalVar.startPoint = mySavedWay.start;
-    globalVar.endPoint = mySavedWay.end;
-    globalVar.wayPoint = mySavedWay.wayPoints;
+    setStartPoint(mySavedWay.start);
+    setEndPoint(mySavedWay.end);
+    setWayPoint(mySavedWay.wayPoints);
     handleCurrentMyWayNameObj(index, mySavedWay.WayName);
     onMyButtonClick();
   }

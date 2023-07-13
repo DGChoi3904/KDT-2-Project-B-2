@@ -1,14 +1,10 @@
-import React, { useEffect, useState, useRef, useReducer } from 'react';
+import React, { useEffect, useState, useRef, useReducer, useContext } from 'react';
 import Modal, { Styles } from 'react-modal';
 import '../Main.css';
 import globalVar from '../../util/Global';
 import SaveWayModal from '../Modal/SaveWayModal';
-
-// import { MyWayContext } from '../../util/MyWayContext';
-// import MyWayDetail from '../Footer/MyWayContents/MyWayDetail';
-// import MyWayList from '../Footer/MyWayContents/MyWayList';
-// import MyWayReqLogin from '../Footer/MyWayContents/MyWayReqLogin';
 import MarkerImgSet from './markerImgSet';
+import { MapContext } from '../../util/MapContext';
 
 interface Place {
   id: string;
@@ -77,27 +73,15 @@ const wayMarkerInitialState: WayMarkersState = {
 const KakaoMap: React.FC<KakaoMapPros> = ({
   setDetail,
   naviSearchCounter,
-  setNaviSearchCounter,
-  startNaviSearch,
   setCurrentMyWayNameObj,
   setNaviDataResult,
   myWayUI,
 }) => {
-  // const [showDetail, setShowDetail] = useState(false);
-  // const handleButtonClick = () => {
-  //   // 버튼이 클릭되었을 때, MyWayDetail을 보여주기 위해 상위 컴포넌트(MainPage)로 이벤트를 전달
-  //   setShowDetail(!showDetail);
-  // };
 
-  // useEffect(() => {
-  //   if (showDetail) {
-  //     setDetail(true);
-  //   } else {
-  //     setDetail(false);
-  //   }
-  // }, [showDetail]);
-
-  // const [loginCheck, setLoginCheck] = useState(false);
+  const { startPoint, setStartPoint, endPoint, setEndPoint, wayPoint, setWayPoint, isSearchingStart, setIsSearchingStart, isSearchingEnd, setIsSearchingEnd } = useContext(MapContext);
+  const addWayPoint = (pointY: number, pointX: number) => {
+    setWayPoint([...wayPoint, pointY, pointX])
+  }
   const [keyword, setKeyword] = useState(''); // input
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
@@ -277,31 +261,31 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     let url;
     //mapRef.current.setLevel(5); // 경로 안내 클릭시 지도 범위 변경
     //! 경유지가 없을 경우
-    if (globalVar.wayPoint.length === 0) {
-      url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C${globalVar.endPoint[0]}`;
+    if (wayPoint.length === 0) {
+      url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${startPoint[1]}%2C${startPoint[0]}&destination=${endPoint[1]}%2C${endPoint[0]}`;
       console.log('url1: ', url);
       setShowPlaces(false);
     } else {
       //! 경유지가 있을 경우
-      const waypointsString = globalVar.wayPoint
+      const waypointsString = wayPoint
         .map((point, index) => {
           if (index % 2 === 0) {
             const nextIndex = index + 1;
-            if (nextIndex < globalVar.wayPoint.length) {
-              return `${globalVar.wayPoint[nextIndex]}%2C${point}`;
+            if (nextIndex < wayPoint.length) {
+              return `${wayPoint[nextIndex]}%2C${point}`;
             }
           }
           return null;
         })
         .filter((point) => point !== null)
         .join('%7C');
-      url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${globalVar.startPoint[1]}%2C${globalVar.startPoint[0]}&destination=${globalVar.endPoint[1]}%2C${globalVar.endPoint[0]}&waypoints=${waypointsString}`;
+      url = `https://apis-navi.kakaomobility.com/v1/directions?priority=DISTANCE&car_type=7&car_fuel=GASOLINE&origin=${startPoint[1]}%2C${startPoint[0]}&destination=${endPoint[1]}%2C${endPoint[0]}&waypoints=${waypointsString}`;
       console.log('url2: ', url);
       setShowPlaces(false); //검색후 결과값, 버튼 숨김 처리
     }
 
     // MongoDB에 저장하기 위해 변환 함수 실행
-    transferMongo(globalVar.startPoint, globalVar.wayPoint, globalVar.endPoint);
+    transferMongo(startPoint, wayPoint, endPoint);
 
     const headers = {
       Authorization: 'KakaoAK 0ce7da7c92dd2a150bc0111177dfc283',
@@ -317,9 +301,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
         console.log('응답 : ', jsonData);
         setNaviDataResult(jsonData);
         setMapBounds();
-        globalVar.startPoint = [0, 0];
-        globalVar.endPoint = [0, 0];
-        globalVar.wayPoint = [];
         wayMarkerDispatch({ type: 'RESET_WAY_COUNT' });
 
         // 응답 데이터에서 roads 데이터만 추출
@@ -415,9 +396,9 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
         setWaySaveBtn(true);
         setDetail(true);
 
-        globalVar.endPoint = [0, 0];
-        globalVar.startPoint = [0, 0];
-        globalVar.wayPoint = [];
+        setEndPoint([0, 0]);
+        setStartPoint([0, 0]);
+        setWayPoint([]);
         wayMarkerDispatch({ type: 'RESET_WAY_COUNT' });
       })
       .catch((error) => {
@@ -460,7 +441,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     mapRef.current.setCenter(SelectPosition);
     console.log('미리보는 중!');
     console.log(
-      `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
+      `출발지 좌표 : ${startPoint}, 경유지 좌표 ${wayPoint}, 목적지 좌표 ${endPoint}`,
     );
   };
 
@@ -486,10 +467,11 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
 
     mapRef.current.setCenter(markerPosition); //해당하는 좌표를 가지고 지도 중심으로 이동시킴
     setSelectedPlace(place);
-    globalVar.startPoint = [Number(place.y), Number(place.x)];
-    globalVar.isSearchingStart = false;
+    setStartPoint([Number(place.y), Number(place.x)]);
+    setIsSearchingStart(false);
+    // globalVar.isSearchingStart = false;
     console.log(
-      `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
+      `출발지 좌표 : ${startPoint}, 경유지 좌표 ${wayPoint}, 목적지 좌표 ${endPoint}`,
     );
      //출발지 인포윈도우 (장소명)
     const content = `<div style="padding: 1px;">${place.name}</div>`;
@@ -512,10 +494,11 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
 
     mapRef.current.setCenter(markerPosition); //해당하는 좌표를 가지고 지도 중심으로 이동시킴
     setSelectedPlace(place);
-    globalVar.endPoint = [Number(place.y), Number(place.x)];
-    globalVar.isSearchingEnd = false;
+    setEndPoint([Number(place.y), Number(place.x)]);
+    setIsSearchingEnd(false);
+    // globalVar.isSearchingEnd = false;
     console.log(
-      `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
+      `출발지 좌표 : ${startPoint}, 경유지 좌표 ${wayPoint}, 목적지 좌표 ${endPoint}`,
     );
     //인포윈도우
     const content = `<div style="padding: 1px;">${place.name}</div>`;
@@ -536,13 +519,12 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     if (wayMarkerState.wayCount < 5) {
       wayMarkerDispatch({ type: 'ADD_WAY_MARKER', payload: place });
       setSelectedPlace(place);
-      globalVar.wayPoint.push(Number(place.y));
-      globalVar.wayPoint.push(Number(place.x));
+      addWayPoint(Number(place.y), Number(place.x))
     } else {
       alert('경유지는 5개까지만 설정 가능합니다.');
     }
     console.log(
-      `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
+      `출발지 좌표 : ${startPoint}, 경유지 좌표 ${wayPoint}, 목적지 좌표 ${endPoint}`,
     );
   };
 
@@ -575,33 +557,33 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     }
     //마커가 그려져있지 않으면 지도에 마커 그리기
     //출발지 마커
-    if (globalVar.startPoint[0] !== 0 && globalVar.startPoint[1] !== 0) {
+    if (startPoint[0] !== 0 && startPoint[1] !== 0) {
       startMarker.marker.setPosition(
         new window.kakao.maps.LatLng(
-          globalVar.startPoint[0],
-          globalVar.startPoint[1],
+          startPoint[0],
+          startPoint[1],
         ),
       );
       startMarker.marker.setMap(mapRef.current);
     }
     //도착지 마커
-    if (globalVar.endPoint[0] !== 0 && globalVar.endPoint[1] !== 0) {
+    if (endPoint[0] !== 0 && endPoint[1] !== 0) {
       endMarker.marker.setPosition(
         new window.kakao.maps.LatLng(
-          globalVar.endPoint[0],
-          globalVar.endPoint[1],
+          endPoint[0],
+          endPoint[1],
         ),
       );
       endMarker.marker.setMap(mapRef.current);
     }
     //경유지 마커
-    if (globalVar.wayPoint.length > 0) {
-      for (let i = 0; i < globalVar.wayPoint.length; i += 2) {
+    if (wayPoint.length > 0) {
+      for (let i = 0; i < wayPoint.length; i += 2) {
         wayMarkerDispatch({
           type: 'ADD_WAY_MARKER',
           payload: {
-            x: globalVar.wayPoint[i + 1],
-            y: globalVar.wayPoint[i],
+            x: wayPoint[i + 1],
+            y: wayPoint[i],
             place_name: `경유지 #${i / 2 + 1}`,
           },
         });
@@ -611,12 +593,12 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
 
   function isStartorEndMarkerDrawn(point: string) {
     if (point === 'start' && startMarker.marker.getMap()) {
-      if (globalVar.endPoint[0] === 0 && globalVar.endPoint[1] === 0) {
+      if (endPoint[0] === 0 && endPoint[1] === 0) {
         startMarker.marker.setMap(null);
       }
     }
     if (point === 'end' && endMarker.marker.getMap()) {
-      if (globalVar.endPoint[0] === 0 && globalVar.endPoint[1] === 0) {
+      if (endPoint[0] === 0 && endPoint[1] === 0) {
         endMarker.marker.setMap(null);
       }
     }
@@ -626,25 +608,25 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     //출발지, 목적지 입력을 안했을 경우 안내창
     if (
       //출발지 좌표가 0,0이고 목적지 좌표가 0이 아닐 경우
-      globalVar.startPoint[0] === 0 &&
-      globalVar.startPoint[1] === 0 &&
-      globalVar.endPoint[0] !== 0
+      startPoint[0] === 0 &&
+      startPoint[1] === 0 &&
+      endPoint[0] !== 0
     ) {
       alert('출발지를 입력해야합니다.');
       return;
     } else if (
       //목적지 좌표가 0,0 이고 출발지 좌표가 0이 아닐 경우
-      globalVar.endPoint[0] === 0 &&
-      globalVar.endPoint[1] === 0 &&
-      globalVar.startPoint[0] !== 0
+      endPoint[0] === 0 &&
+      endPoint[1] === 0 &&
+      startPoint[0] !== 0
     ) {
       alert('목적지를 입력해야합니다.');
       return;
     } else if (
-      globalVar.startPoint[0] === 0 &&
-      globalVar.startPoint[1] === 0 &&
-      globalVar.endPoint[0] === 0 &&
-      globalVar.endPoint[1] === 0
+      startPoint[0] === 0 &&
+      startPoint[1] === 0 &&
+      endPoint[0] === 0 &&
+      endPoint[1] === 0
     ) {
       alert('출발지와 목적지를 입력해야합니다.');
       return;
@@ -658,28 +640,28 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     //경로 안내버튼 클릭하면 모든 마커가 보이게 지도 설정
     const bounds = new window.kakao.maps.LatLngBounds(); //LatLngBounds 객체 생성
     // 출발지 마커 bounds에 추가
-    if (globalVar.startPoint.length === 2) {
+    if (startPoint.length === 2) {
       const startLatLng = new window.kakao.maps.LatLng(
-        globalVar.startPoint[0], //위도, 경도 이므로 2개
-        globalVar.startPoint[1],
+        startPoint[0], //위도, 경도 이므로 2개
+        startPoint[1],
       );
       bounds.extend(startLatLng);
     }
     // 경유지 마커 bounds에 추가 (경유지가 있는 경우)
-    if (globalVar.wayPoint.length > 0) {
-      for (let i = 0; i < globalVar.wayPoint.length; i += 2) {
+    if (wayPoint.length > 0) {
+      for (let i = 0; i < wayPoint.length; i += 2) {
         const wayLatLng = new window.kakao.maps.LatLng(
-          globalVar.wayPoint[i], //경유지가 n개 이므로(위도, 경도가 n개)
-          globalVar.wayPoint[i + 1],
+          wayPoint[i], //경유지가 n개 이므로(위도, 경도가 n개)
+          wayPoint[i + 1],
         );
         bounds.extend(wayLatLng);
       }
     }
     // 목적지 마커 위치 bounds에 추가
-    if (globalVar.endPoint.length === 2) {
+    if (endPoint.length === 2) {
       const endLatLng = new window.kakao.maps.LatLng(
-        globalVar.endPoint[0], //위도, 경도 이므로 2개
-        globalVar.endPoint[1],
+        endPoint[0], //위도, 경도 이므로 2개
+        endPoint[1],
       );
       bounds.extend(endLatLng);
     }
@@ -724,11 +706,11 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
 
   function isNewSearch() {
     if (
-      globalVar.startPoint[0] === 0 &&
-      globalVar.startPoint[1] === 0 &&
-      globalVar.endPoint[0] === 0 &&
-      globalVar.endPoint[1] === 0 &&
-      globalVar.wayPoint.length === 0
+      startPoint[0] === 0 &&
+      startPoint[1] === 0 &&
+      endPoint[0] === 0 &&
+      endPoint[1] === 0 &&
+      wayPoint.length === 0
     ) {
       isPolyLineDrawn(); //polyline이 그려져있는지 확인
       isStartorEndMarkerDrawn('start'); //시작 마커가 그려져있는지 확인
