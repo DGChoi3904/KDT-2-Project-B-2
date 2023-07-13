@@ -19,7 +19,7 @@ const MyWayBox: React.FC<MyWayBoxProps> = ({
   naviDataResult,
 }) => {
   const { loginCheck } = useContext(LoginContext);
-  const { detail, currentMyWayNameObj, setCurrentMyWayNameObj } = useContext(MyWayContext);
+  const { detail } = useContext(MyWayContext);
   const [loginState, setLoginState] = useState(false);
   useEffect(() => {
     const nickname = getCookie('nickname');
