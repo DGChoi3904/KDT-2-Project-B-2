@@ -491,6 +491,13 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     console.log(
       `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
     );
+     //출발지 인포윈도우 (장소명)
+    const content = `<div style="padding: 1px;">${place.name}</div>`;
+    const infowindow = new window.kakao.maps.InfoWindow({
+      content: content,
+      zIndex: 1,
+    });
+    infowindow.open(mapRef.current, startMarker.marker);
   }
   //도착지 마커
   const handleSelectPlaceEnd = (place: Place) => {
@@ -510,8 +517,15 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     console.log(
       `출발지 좌표 : ${globalVar.startPoint}, 경유지 좌표 ${globalVar.wayPoint}, 목적지 좌표 ${globalVar.endPoint}`,
     );
+    //인포윈도우
+    const content = `<div style="padding: 1px;">${place.name}</div>`;
+    const infowindow = new window.kakao.maps.InfoWindow({
+      content: content,
+      zIndex: 1,
+    });
+    infowindow.open(mapRef.current, endMarker.marker);
   };
-  //경유지 마커
+  //경유지 마커 
   const handleSelectPlaceWay = (place: Place) => {
     isPolyLineDrawn(); //polyline이 그려져있는지 확인
     //경유지 5개로 설정
@@ -609,17 +623,35 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
   }
 
   function handleDefaultSearch() {
+    //출발지, 목적지 입력을 안했을 경우 안내창
     if (
-      globalVar.startPoint[0] !== 0 &&
-      globalVar.startPoint[1] !== 0 &&
-      globalVar.endPoint[0] !== 0 &&
-      globalVar.endPoint[1] !== 0
+      //출발지 좌표가 0,0이고 목적지 좌표가 0이 아닐 경우
+      globalVar.startPoint[0] === 0 &&
+      globalVar.startPoint[1] === 0 &&
+      globalVar.endPoint[0] !== 0
     ) {
+      alert('출발지를 입력해야합니다.');
+      return;
+    } else if (
+      //목적지 좌표가 0,0 이고 출발지 좌표가 0이 아닐 경우
+      globalVar.endPoint[0] === 0 &&
+      globalVar.endPoint[1] === 0 &&
+      globalVar.startPoint[0] !== 0
+    ) {
+      alert('목적지를 입력해야합니다.');
+      return;
+    } else if (
+      globalVar.startPoint[0] === 0 &&
+      globalVar.startPoint[1] === 0 &&
+      globalVar.endPoint[0] === 0 &&
+      globalVar.endPoint[1] === 0
+    ) {
+      alert('출발지와 목적지를 입력해야합니다.');
+      return;
+    } else {
       //경로저장 버튼 클릭시 실행 할 메소드
       setCurrentMyWayNameObj({ index: 0, name: '' });
       handleNavi();
-    } else {
-      console.log('출발지와 도착지 미설정');
     }
   }
   function setMapBounds() {
@@ -724,10 +756,12 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
             position: 'absolute',
             top: '10px',
             zIndex: '1',
-            width: '100%',
+            width: '70%',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'flex-end',
+            justifyContent: 'flex-end',
+            marginLeft: '30%',
           }}
         >
           <div
@@ -743,7 +777,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
               type="text"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              style={{ width: '40%' }}
+              style={{ width: '60%' }}
               onKeyDown={(e) => {
                 //Enter로 검색 가능
                 if (e.key === 'Enter') {
@@ -756,7 +790,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
           {showPlaces && (
             <div
               style={{
-                width: '75%',
+                width: '100%',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'stretch',
@@ -769,7 +803,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'space-between',
+                    justifyContent: 'space-between', 
                   }}
                 >
                   <div style={{ flex: '1' }}>
@@ -855,7 +889,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
           {waySaveBtn ? (
             <button onClick={openModal} style={{ padding: '5px' }}>
               경로 저장
-            </button>
+            </button> 
           ) : (
             <div></div>
           )}
@@ -887,10 +921,10 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
         </div>
       ) : (
         <div style={{ display: 'none' }}></div>
-      )}
+      )} 
       <div id="result"></div>
     </div>
-  );
+  ); 
 };
 
 export default KakaoMap;
