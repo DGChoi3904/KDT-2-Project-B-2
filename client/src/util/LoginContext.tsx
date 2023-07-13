@@ -12,11 +12,13 @@ interface childrenProps {
 interface MyWayProps {
   myWayUI: boolean;
   setMyWayUI: (value: boolean) => void;
+  detail: boolean,
+  setDetail: (value: boolean) => void,
 }
 
 export const LoginContext = createContext<LoginContextProps>({
   loginCheck: false,
-  setLoginCheck: () => {}
+  setLoginCheck: () => {},
 });
 
 export const LoginContextProvider: React.FC<childrenProps> = ({ children }) => {
@@ -55,5 +57,7 @@ export const LoginContextProvider: React.FC<childrenProps> = ({ children }) => {
 
 export const MyWayContext = createContext<MyWayProps>({
   myWayUI: true,
-  setMyWayUI: () => {}
+  setMyWayUI: () => {},
+  detail: false,
+  setDetail: () => {},
 })

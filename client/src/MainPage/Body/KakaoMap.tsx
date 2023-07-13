@@ -1,7 +1,6 @@
 import React, { useEffect, useState, useRef, useReducer, useContext } from 'react';
 import Modal, { Styles } from 'react-modal';
 import '../Main.css';
-import globalVar from '../../util/Global';
 import SaveWayModal from '../Modal/SaveWayModal';
 import MarkerImgSet from './markerImgSet';
 import { MapContext } from '../../util/MapContext';
@@ -39,7 +38,6 @@ const modalStyles: Styles = {
 };
 
 type KakaoMapPros = {
-  setDetail: React.Dispatch<React.SetStateAction<boolean>>;
   naviSearchCounter: number;
   setNaviSearchCounter: React.Dispatch<React.SetStateAction<number>>;
   startNaviSearch: () => void;
@@ -71,7 +69,6 @@ const wayMarkerInitialState: WayMarkersState = {
 };
 
 const KakaoMap: React.FC<KakaoMapPros> = ({
-  setDetail,
   naviSearchCounter,
   setCurrentMyWayNameObj,
   setNaviDataResult,
@@ -82,7 +79,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     setWayPoint([...wayPoint, pointY, pointX])
   }
 
-  const { myWayUI } = useContext(MyWayContext)
+  const { myWayUI, setDetail } = useContext(MyWayContext)
 
   const [keyword, setKeyword] = useState(''); // input
   const [places, setPlaces] = useState<Place[]>([]);

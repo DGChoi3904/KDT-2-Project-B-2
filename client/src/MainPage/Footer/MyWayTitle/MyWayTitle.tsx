@@ -3,24 +3,16 @@ import { MyWayContext } from '../../../util/LoginContext';
 import '../MyWayCSS.css';
 
 type MyWayTitleProps = {
-  // myWayUI: boolean;
-  // setMyWayUI: React.Dispatch<React.SetStateAction<boolean>>;
   currentMyWayNameObj: {
     index: number;
     name: string;
   };
-  detail: boolean;
-  setDetail: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
 const MyWayTitle: React.FC<MyWayTitleProps> = ({
-  // myWayUI,
-  // setMyWayUI,
   currentMyWayNameObj,
-  detail,
-  setDetail,
 }) => {
-  const { myWayUI, setMyWayUI } = useContext(MyWayContext)
+  const { myWayUI, setMyWayUI, detail, setDetail } = useContext(MyWayContext)
 
   const handleUIHidden = () => {
     console.log(myWayUI)

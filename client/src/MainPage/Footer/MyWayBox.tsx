@@ -6,9 +6,9 @@ import MyWayList from './MyWayContents/MyWayList';
 import MyWayReqLogin from './MyWayContents/MyWayReqLogin';
 import { getCookie } from '../../util/cookies';
 import { LoginContext } from '../../util/LoginContext';
+import { MyWayContext } from '../../util/LoginContext';
 
 type MyWayBoxProps = {
-  detail: boolean;
   myWayDataResult: any;
   setNaviSearchCounter: React.Dispatch<React.SetStateAction<number>>;
   startNaviSearch: () => void;
@@ -21,19 +21,17 @@ type MyWayBoxProps = {
     name: string;
   }) => void;
   naviDataResult: any;
-  setDetail: React.Dispatch<React.SetStateAction<boolean>>; //? 현재 저장된 길 이름
 };
 
 const MyWayBox: React.FC<MyWayBoxProps> = ({
-  detail,
   myWayDataResult,
   startNaviSearch,
   currentMyWayNameObj,
   setCurrentMyWayNameObj,
   naviDataResult,
-  setDetail,
 }) => {
-  const { loginCheck } = useContext(LoginContext)
+  const { loginCheck } = useContext(LoginContext);
+  const { detail } = useContext(MyWayContext);
   const [loginState, setLoginState] = useState(false);
   useEffect(() => {
     const nickname = getCookie('nickname');
@@ -41,17 +39,15 @@ const MyWayBox: React.FC<MyWayBoxProps> = ({
       setLoginState(true);
     }
     console.log('loginState: ', loginState);
+    console.log('detail값: ', detail);
   }, [loginState]);
   console.log('loginState2: ', loginState);
   console.log('login: ', loginCheck);
+  console.log('detail2 값: ', detail);
   return (
     <div>
       <MyWayTitle
-        // myWayUI={myWayUI}
         currentMyWayNameObj={currentMyWayNameObj}
-        // setMyWayUI={setMyWayUI}
-        detail={detail}
-        setDetail={setDetail}
       />
       {loginCheck || loginState ? (
         detail ? (

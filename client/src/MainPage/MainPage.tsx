@@ -12,12 +12,9 @@ interface MyWayNameObj {
 }
 
 function MainPage() {
-  const [login, setLogin] = useState<boolean>(false);
-  const [detail, setDetail] = useState<boolean>(false);
   const [myWayDataResult, setMyWayDataResult] = useState<Object>({});
   const [naviSearchCounter, setNaviSearchCounter] = useState<number>(0);
   const [naviDataResult, setNaviDataResult] = useState<Object>({});
-  const [myWayUI, setMyWayUI] = useState<boolean>(true);
 
   const startNaviSearch = () => {
     setNaviSearchCounter(naviSearchCounter + 1);
@@ -34,7 +31,6 @@ function MainPage() {
       <TopMenu />
       {/* Body */}
       <KakaoMap
-        setDetail={setDetail}
         naviSearchCounter={naviSearchCounter}
         setNaviSearchCounter={setNaviSearchCounter}
         startNaviSearch={startNaviSearch}
@@ -43,8 +39,6 @@ function MainPage() {
       />
       {/* Footer */}
       <Footer
-        setDetail={setDetail}
-        detail={detail}
         myWayDataResult={myWayDataResult}
         setNaviSearchCounter={setNaviSearchCounter}
         startNaviSearch={startNaviSearch}

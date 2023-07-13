@@ -22,6 +22,7 @@ function App() {
   });
 
   const [myWayUI, setMyWayUI] = useState<boolean>(true);
+  const [detail, setDetail] = useState<boolean>(false);
 
   useEffect(() => {
     console.log('로그인 상태 체크: ', loginCheck)
@@ -37,7 +38,7 @@ function App() {
     <div>
       <MapContext.Provider value={{ startPoint, setStartPoint, endPoint, setEndPoint, wayPoint, setWayPoint, isSearchingStart, setIsSearchingStart, isSearchingEnd, setIsSearchingEnd }}>
         <LoginContextProvider>
-          <MyWayContext.Provider value={{myWayUI, setMyWayUI}}>
+          <MyWayContext.Provider value={{myWayUI, setMyWayUI, detail, setDetail}}>
           <Routes>
             <Route path="/" element={<Loading />} />
             <Route path="/main" element={<MainPage />} />
