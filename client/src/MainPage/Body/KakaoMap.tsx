@@ -773,11 +773,23 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
               transform: 'translateX(-5%)',
             }}
           >
+            <button style={{ background: 'none', border: 'none' }}>
+              <img
+                src={process.env.PUBLIC_URL + '/resource/naverBtn.png'}
+                alt="Naver"
+              />
+            </button>
+            <button style={{ background: 'none', border: 'none' }}> 
+              <img
+                src={process.env.PUBLIC_URL + '/resource/kakaoBtn.png'}
+                alt="Kakao"
+              />
+            </button>
             <input
               type="text"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              style={{ width: '60%' }}
+              style={{ width: '60%' , height: '100%'}}
               onKeyDown={(e) => {
                 //Enter로 검색 가능
                 if (e.key === 'Enter') {
@@ -785,7 +797,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
                 }
               }}
             />
-            <button onClick={handleSearch}>🔍</button>
+            <button style={{ height: '100%' }} onClick={handleSearch}>🔍</button>
           </div>
           {showPlaces && (
             <div
@@ -856,7 +868,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
                 {Array.from({ length: totalList }, (_, index) => index + 1).map(
                   (pageNumber) => (
                     <button
-                      key={pageNumber}
+                      key={pageNumber} 
                       onClick={() => numberList(pageNumber)}
                       style={{
                         marginRight: '5px',
