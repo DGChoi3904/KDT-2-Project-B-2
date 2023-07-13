@@ -22,10 +22,7 @@ interface MyWayData {
   _id: string;
 }
 
-type myWayDataResult = any;
-
 type myWayDataResultandEventProps = {
-  myWayDataResult: myWayDataResult;
   onMyButtonClick: () => void;
   setCurrentMyWayNameObj: (myWayNameObj: {
     index: number;
@@ -34,7 +31,6 @@ type myWayDataResultandEventProps = {
 };
 
 const MyWayList: React.FC<myWayDataResultandEventProps> = ({
-  myWayDataResult,
   onMyButtonClick,
   setCurrentMyWayNameObj,
 }) => {

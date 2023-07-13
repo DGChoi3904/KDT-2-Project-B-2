@@ -60,4 +60,4 @@ export const MyWayContext = createContext<MyWayProps>({
   setMyWayUI: () => {},
   detail: false,
   setDetail: () => {},
-})
+});

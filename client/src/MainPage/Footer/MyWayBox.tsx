@@ -9,7 +9,6 @@ import { LoginContext } from '../../util/LoginContext';
 import { MyWayContext } from '../../util/LoginContext';
 
 type MyWayBoxProps = {
-  myWayDataResult: any;
   setNaviSearchCounter: React.Dispatch<React.SetStateAction<number>>;
   startNaviSearch: () => void;
   currentMyWayNameObj: {
@@ -24,7 +23,6 @@ type MyWayBoxProps = {
 };
 
 const MyWayBox: React.FC<MyWayBoxProps> = ({
-  myWayDataResult,
   startNaviSearch,
   currentMyWayNameObj,
   setCurrentMyWayNameObj,
@@ -57,7 +55,6 @@ const MyWayBox: React.FC<MyWayBoxProps> = ({
           />
         ) : (
           <MyWayList
-            myWayDataResult={myWayDataResult}
             onMyButtonClick={startNaviSearch}
             setCurrentMyWayNameObj={setCurrentMyWayNameObj}
           />

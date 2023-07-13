@@ -12,7 +12,6 @@ interface MyWayNameObj {
 }
 
 function MainPage() {
-  const [myWayDataResult, setMyWayDataResult] = useState<Object>({});
   const [naviSearchCounter, setNaviSearchCounter] = useState<number>(0);
   const [naviDataResult, setNaviDataResult] = useState<Object>({});
 
@@ -39,7 +38,6 @@ function MainPage() {
       />
       {/* Footer */}
       <Footer
-        myWayDataResult={myWayDataResult}
         setNaviSearchCounter={setNaviSearchCounter}
         startNaviSearch={startNaviSearch}
         currentMyWayNameObj={currentMyWayNameObj}
