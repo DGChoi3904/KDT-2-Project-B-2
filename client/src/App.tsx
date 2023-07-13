@@ -6,7 +6,7 @@ import Loading from './LoadingPage/LoadingPage';
 import SignUp from './SignupPage/SignUp';
 
 import { MapContext } from "./util/MapContext";
-import { LoginContext } from "./util/LoginContext";
+import { LoginContextProvider } from "./util/LoginContext";
 
 function App() {
   const [startPoint, setStartPoint] = useState<[number, number]>([0, 0]);
@@ -22,6 +22,11 @@ function App() {
   });
 
   useEffect(() => {
+    console.log('로그인 상태 체크: ', loginCheck)
+    console.log('로그인 상태 체크22: ', localStorage.getItem('loginCheck'))
+  }, [])
+
+  useEffect(() => {
     localStorage.setItem('loginCheck', JSON.stringify(loginCheck));
     console.log('login체커: ', loginCheck);
   }, [loginCheck]);
@@ -29,13 +34,13 @@ function App() {
   return (
     <div>
       <MapContext.Provider value={{ startPoint, setStartPoint, endPoint, setEndPoint, wayPoint, setWayPoint, isSearchingStart, setIsSearchingStart, isSearchingEnd, setIsSearchingEnd }}>
-        <LoginContext.Provider value ={{loginCheck, setLoginCheck}}>
+        <LoginContextProvider>
           <Routes>
             <Route path="/" element={<Loading />} />
             <Route path="/main" element={<MainPage />} />
             <Route path="/signup" element={<SignUp />} />
           </Routes>
-        </LoginContext.Provider>
+        </LoginContextProvider>
       </MapContext.Provider>
     </div>
   )

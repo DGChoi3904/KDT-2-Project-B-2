@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 
 import MyWayTitle from './MyWayTitle/MyWayTitle';
 import MyWayDetail from './MyWayContents/MyWayDetail';
 import MyWayList from './MyWayContents/MyWayList';
 import MyWayReqLogin from './MyWayContents/MyWayReqLogin';
 import { getCookie } from '../../util/cookies';
+import { LoginContext } from '../../util/LoginContext';
 
 type MyWayBoxProps = {
   detail: boolean;
@@ -38,6 +39,7 @@ const MyWayBox: React.FC<MyWayBoxProps> = ({
   setMyWayUI,
   setDetail,
 }) => {
+  const { loginCheck } = useContext(LoginContext)
   const [loginState, setLoginState] = useState(false);
   useEffect(() => {
     const nickname = getCookie('nickname');
@@ -47,7 +49,7 @@ const MyWayBox: React.FC<MyWayBoxProps> = ({
     console.log('loginState: ', loginState);
   }, [loginState]);
   console.log('loginState2: ', loginState);
-  console.log('login: ', login);
+  console.log('login: ', loginCheck);
   return (
     <div>
       <MyWayTitle
@@ -57,7 +59,7 @@ const MyWayBox: React.FC<MyWayBoxProps> = ({
         detail={detail}
         setDetail={setDetail}
       />
-      {login || loginState ? (
+      {loginCheck || loginState ? (
         detail ? (
           <MyWayDetail
             naviDataResult={naviDataResult}

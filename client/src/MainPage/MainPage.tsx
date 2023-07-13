@@ -31,7 +31,7 @@ function MainPage() {
   return (
     <div className="MainWrap">
       {/* Header */}
-      <TopMenu setLogin={setLogin} />
+      <TopMenu />
       {/* Body */}
       <KakaoMap
         setDetail={setDetail}

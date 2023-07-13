@@ -20,6 +20,11 @@ export const LoginContextProvider: React.FC<childrenProps> = ({ children }) => {
     return storedValue ? JSON.parse(storedValue) : false;
   });
 
+  const handleLogin = () => {
+    setLoginCheck(true);
+    localStorage.setItem('loginCheck', JSON.stringify(true))
+  }
+
   const handleLogout = () => {
     setLoginCheck(false);
     localStorage.removeItem('loginCheck');
@@ -27,7 +32,13 @@ export const LoginContextProvider: React.FC<childrenProps> = ({ children }) => {
 
   const contextValue: LoginContextProps = {
     loginCheck,
-    setLoginCheck: handleLogout
+    setLoginCheck: (value: boolean) => {
+      if (value) {
+        handleLogin();
+      } else {
+        handleLogout();
+      }
+    }
   };
 
   return (

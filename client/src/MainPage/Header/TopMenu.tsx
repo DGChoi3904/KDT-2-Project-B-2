@@ -1,8 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import Modal, { Styles } from 'react-modal';
 import { setCookie, removeCookie, getCookie } from '../../util/cookies';
 import LoginModal from '../Modal/LoginModal';
 import { useNavigate } from 'react-router-dom'; // 여기 추가
+import { LoginContext } from '../../util/LoginContext';
 
 const TopMenuStyle = {
   display: 'flex',
@@ -31,11 +32,10 @@ const modalStyles: Styles = {
     padding: '0',
   },
 };
-type TopMenuProps = {
-  setLogin: React.Dispatch<React.SetStateAction<boolean>>;
-};
 
-const TopMenu: React.FC<TopMenuProps> = ({ setLogin }) => {
+const TopMenu: React.FC = () => {
+  const { setLoginCheck } = useContext(LoginContext)
+
   const [signUpStatus, setSignUpStatus] = useState(false);
   const [nickname, setNickname] = useState('');
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -49,7 +49,7 @@ const TopMenu: React.FC<TopMenuProps> = ({ setLogin }) => {
   };
   const logOut = () => {
     setSignUpStatus(false);
-    setLogin(false);
+    setLoginCheck(false);
     removeCookie('nickname'); // removeCookie 함수를 사용하여 쿠키를 삭제합니다.
     removeCookie('userId'); // removeCookie 함수를 사용하여 쿠키를 삭제합니다.
     navigate('/'); // 메인 페이지로 이동합니다.
@@ -94,7 +94,6 @@ const TopMenu: React.FC<TopMenuProps> = ({ setLogin }) => {
             setSignUpStatus={setSignUpStatus}
             setNickname={setNickname}
             closeModal={closeModal} // closeModal 함수 전달
-            setLogin={setLogin}
           />
         </Modal>
       </div>
