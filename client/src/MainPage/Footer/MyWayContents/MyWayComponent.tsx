@@ -1,5 +1,4 @@
 import React, { useContext } from 'react';
-import globalVar from '../../../util/Global';
 import { MapContext } from '../../../util/MapContext';
 import '../MyWayCSS.css';
 
@@ -23,7 +22,7 @@ const MyWayComponent: React.FC<MyWayComponentProps> = ({
   onMyButtonClick,
   handleCurrentMyWayNameObj,
 }) => {
-  const { startPoint, setStartPoint, endPoint, setEndPoint, wayPoint, setWayPoint, isSearchingStart, setIsSearchingStart, isSearchingEnd, setIsSearchingEnd } = useContext(MapContext);
+  const { setStartPoint, setEndPoint, setWayPoint } = useContext(MapContext);
 
 
   function handleButtonClick() {

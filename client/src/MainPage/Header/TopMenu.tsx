@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useContext } from 'react';
 import Modal, { Styles } from 'react-modal';
-import { setCookie, removeCookie, getCookie } from '../../util/cookies';
+import { removeCookie, getCookie } from '../../util/cookies';
 import LoginModal from '../Modal/LoginModal';
 import { useNavigate } from 'react-router-dom'; // 여기 추가
 import { LoginContext } from '../../util/LoginContext';

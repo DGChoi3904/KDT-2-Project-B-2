@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import '../MyWayCSS.css';
 
 // 페이지 작업용 검색 결과 json 값 추가.
@@ -18,7 +18,6 @@ type naviDataResultProps = {
 const MyWayDetail: React.FC<naviDataResultProps> = ({
   naviDataResult,
 }) => {
-  const [showSaveButton, setShowSaveButton] = useState<boolean>(false);
   // 길찾기 API 응답 결과값을 저장하는 상수. Props로 상속할시, WayResult에 추가할 것.
   const wayResult: any = naviDataResult; // 샘플 값을 적용한 상수.
   // fetch로 받아온 길찾기 API 결과값에서 모든 roads의 값을 꺼내 저장할 배열. 데이터 타입이 string, number, number[]가 복합적으로 들어가기에 any[]타입으로 명시.
@@ -29,11 +28,6 @@ const MyWayDetail: React.FC<naviDataResultProps> = ({
       mergeRoads.push(...section.roads);
     });
   });
-  // MyWayList에 표시된 저장된 MyWay일 경우, 보기를 누를 시 길찾기 API 기능을 사용, 결과값과 MyWay 이름과 인덱스를 해당 컴포넌트에서 상속받아 저장할 객체.
-  // const MyWayName = {
-  //   index: 1,
-  //   name: '저장된 MyWay 경로 명',
-  // };
 
   // 만약 fetch로 요청 결과 JSON을 상속받았을 경우, wayResult에 할당하여 적용하면 된다.
   const wayInfo: any[] = mergeRoads.map((wayNames) => {
@@ -104,9 +98,6 @@ const MyWayDetail: React.FC<naviDataResultProps> = ({
       duration: roadDuration,
     };
   });
-  // function changeMyWayDetailTitleType() {
-  //   setShowSaveButton(!showSaveButton);
-  // }
 
   return (
     <div>

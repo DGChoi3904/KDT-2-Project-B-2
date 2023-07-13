@@ -6,11 +6,6 @@ import Footer from './Footer/MyWayBox';
 
 import './Main.css';
 
-interface MyWayNameObj {
-  index: number;
-  name: string;
-}
-
 function MainPage() {
   const [naviSearchCounter, setNaviSearchCounter] = useState<number>(0);
   const [naviDataResult, setNaviDataResult] = useState<Object>({});
@@ -19,10 +14,6 @@ function MainPage() {
     setNaviSearchCounter(naviSearchCounter + 1);
     console.log(naviSearchCounter);
   };
-  const [currentMyWayNameObj, setCurrentMyWayNameObj] = useState<MyWayNameObj>({
-    index: 0,
-    name: '',
-  }); //? 현재 저장된 길 이름
 
   return (
     <div className="MainWrap">

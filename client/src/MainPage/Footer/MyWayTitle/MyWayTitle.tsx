@@ -1,4 +1,4 @@
-import React, { useEffect, useState, useContext } from 'react';
+import React, { useEffect, useContext } from 'react';
 import { MyWayContext } from '../../../util/LoginContext';
 import '../MyWayCSS.css';
 
@@ -17,13 +17,6 @@ const MyWayTitle: React.FC = () => {
   const handleDetail = () => {
     setDetail(false);
   };
-
-  useEffect(() => {
-    console.log(currentMyWayNameObj);
-  }, [currentMyWayNameObj.index]);
-  useEffect(() => {
-    console.log(`${detail} 은 Detail의 값입니다.`);
-  }, [detail]);
 
   return (
     <div className="MyWayListTitle">

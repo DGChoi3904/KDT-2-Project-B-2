@@ -66,11 +66,10 @@ const wayMarkerInitialState: WayMarkersState = {
 
 const KakaoMap: React.FC<KakaoMapPros> = ({
   naviSearchCounter,
-  // setCurrentMyWayNameObj,
   setNaviDataResult,
 }) => {
 
-  const { startPoint, setStartPoint, endPoint, setEndPoint, wayPoint, setWayPoint, isSearchingStart, setIsSearchingStart, isSearchingEnd, setIsSearchingEnd } = useContext(MapContext);
+  const { startPoint, setStartPoint, endPoint, setEndPoint, wayPoint, setWayPoint, setIsSearchingStart, setIsSearchingEnd } = useContext(MapContext);
   const addWayPoint = (pointY: number, pointX: number) => {
     setWayPoint([...wayPoint, pointY, pointX])
   }
@@ -81,14 +80,8 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);
 
-  // const [startPath, setStartPath] = useState<string[]>([]);
-  // const [endPath, setEndPath] = useState<string[]>([]);
-  // const [wayPath, setWayPath] = useState<string[]>([]); //? 경유지
-  // const [roadPath, setRoadPath] = useState<number[]>([]);
   const [showPlaces, setShowPlaces] = useState(true); //? 길 리스트 숨김 처리
   const [waySaveBtn, setWaySaveBtn] = useState<boolean>(false); //? 길 저장 버튼 활성화/비활성화
-  // const [naviDataResult, setNaviDataResult] = useState<Object>({});
-  // const [myWayDataResult] = useState<Object>({});
 
   const [time, setTime] = useState<number[]>([]);
   const [hour, setHour] = useState<number>(0);
@@ -100,11 +93,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
   const mapRef = useRef<any>(null);
 
   const [isModalOpen, setIsModalOpen] = useState(false); //? 모달 상태 제어
-  // const [naviSearchCounter, setNaviSearchCounter] = useState<number>(0); //? 길찾기 횟수 카운터
-  // const [currentMyWayNameObj, setCurrentMyWayNameObj] = useState<Object>({
-  //   index: 0,
-  //   name: '',
-  // }); //? 현재 저장된 길 이름
 
   const [mongoStart, setMongoStart] = useState<string>(''); //몽고 DB에 저장할 데이터들
   const [mongoWay, setMongoWay] = useState<string[] | null>(null);
@@ -464,7 +452,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     setSelectedPlace(place);
     setStartPoint([Number(place.y), Number(place.x)]);
     setIsSearchingStart(false);
-    // globalVar.isSearchingStart = false;
     console.log(
       `출발지 좌표 : ${startPoint}, 경유지 좌표 ${wayPoint}, 목적지 좌표 ${endPoint}`,
     );
@@ -491,7 +478,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     setSelectedPlace(place);
     setEndPoint([Number(place.y), Number(place.x)]);
     setIsSearchingEnd(false);
-    // globalVar.isSearchingEnd = false;
     console.log(
       `출발지 좌표 : ${startPoint}, 경유지 좌표 ${wayPoint}, 목적지 좌표 ${endPoint}`,
     );

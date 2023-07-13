@@ -27,7 +27,6 @@ const MyWayBox: React.FC<MyWayBoxProps> = ({
       setLoginState(true);
     }
     console.log('loginState: ', loginState);
-    console.log('detail값: ', detail);
   }, [loginState]);
   console.log('loginState2: ', loginState);
   console.log('login: ', loginCheck);
