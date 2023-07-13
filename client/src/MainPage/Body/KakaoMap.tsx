@@ -316,12 +316,14 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
         // 요청에 대한 처리
         console.log('응답 : ', jsonData);
         setNaviDataResult(jsonData);
-        setMapBounds();
+        setMapBounds(); // 경로 안내 클릭시 지도 범위 변경
+        // 전역 변수 초기화
         globalVar.startPoint = [0, 0];
         globalVar.endPoint = [0, 0];
         globalVar.wayPoint = [];
         wayMarkerDispatch({ type: 'RESET_WAY_COUNT' });
-
+        // 폴리라인 저장용 배열
+        let polyLineArr: any[] = [];
         // 응답 데이터에서 roads 데이터만 추출
         const roadData = jsonData['routes'][0]['sections'][0]['roads'];
         const timeData: number[] = [];
@@ -405,7 +407,10 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
               ) {
                 polyline.setMap(null);
                 polyline.setMap(mapRef.current);
-                polyLines.push(polyline);
+                // 저장용 배열에 폴리라인 추가
+                polyLineArr.push(polyline);
+                // 저장용 배열이 갱신될때마다 PolyLines 상태값 변경
+                setPolyLines(polyLineArr);
               }
             }
           }
