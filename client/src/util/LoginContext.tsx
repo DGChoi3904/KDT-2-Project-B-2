@@ -14,6 +14,11 @@ interface MyWayProps {
   setMyWayUI: (value: boolean) => void;
   detail: boolean,
   setDetail: (value: boolean) => void,
+  currentMyWayNameObj: {
+    index: number;
+    name: string;
+  },
+  setCurrentMyWayNameObj: (value: {index: number, name: string}) => void;
 }
 
 export const LoginContext = createContext<LoginContextProps>({
@@ -60,4 +65,9 @@ export const MyWayContext = createContext<MyWayProps>({
   setMyWayUI: () => {},
   detail: false,
   setDetail: () => {},
+  currentMyWayNameObj: {
+    index: 0,
+    name: '',
+  },
+  setCurrentMyWayNameObj: () => {},
 });

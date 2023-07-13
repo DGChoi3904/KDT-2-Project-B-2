@@ -11,25 +11,15 @@ import { MyWayContext } from '../../util/LoginContext';
 type MyWayBoxProps = {
   setNaviSearchCounter: React.Dispatch<React.SetStateAction<number>>;
   startNaviSearch: () => void;
-  currentMyWayNameObj: {
-    index: number;
-    name: string;
-  };
-  setCurrentMyWayNameObj: (myWayNameObj: {
-    index: number;
-    name: string;
-  }) => void;
   naviDataResult: any;
 };
 
 const MyWayBox: React.FC<MyWayBoxProps> = ({
   startNaviSearch,
-  currentMyWayNameObj,
-  setCurrentMyWayNameObj,
   naviDataResult,
 }) => {
   const { loginCheck } = useContext(LoginContext);
-  const { detail } = useContext(MyWayContext);
+  const { detail, currentMyWayNameObj, setCurrentMyWayNameObj } = useContext(MyWayContext);
   const [loginState, setLoginState] = useState(false);
   useEffect(() => {
     const nickname = getCookie('nickname');
@@ -44,19 +34,15 @@ const MyWayBox: React.FC<MyWayBoxProps> = ({
   console.log('detail2 값: ', detail);
   return (
     <div>
-      <MyWayTitle
-        currentMyWayNameObj={currentMyWayNameObj}
-      />
+      <MyWayTitle/>
       {loginCheck || loginState ? (
         detail ? (
           <MyWayDetail
             naviDataResult={naviDataResult}
-            currentMyWayNameObj={currentMyWayNameObj}
           />
         ) : (
           <MyWayList
             onMyButtonClick={startNaviSearch}
-            setCurrentMyWayNameObj={setCurrentMyWayNameObj}
           />
         )
       ) : (

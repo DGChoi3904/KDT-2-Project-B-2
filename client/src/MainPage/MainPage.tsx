@@ -33,15 +33,12 @@ function MainPage() {
         naviSearchCounter={naviSearchCounter}
         setNaviSearchCounter={setNaviSearchCounter}
         startNaviSearch={startNaviSearch}
-        setCurrentMyWayNameObj={setCurrentMyWayNameObj}
         setNaviDataResult={setNaviDataResult}
       />
       {/* Footer */}
       <Footer
         setNaviSearchCounter={setNaviSearchCounter}
         startNaviSearch={startNaviSearch}
-        currentMyWayNameObj={currentMyWayNameObj}
-        setCurrentMyWayNameObj={setCurrentMyWayNameObj}
         naviDataResult={naviDataResult}
       />
     </div>

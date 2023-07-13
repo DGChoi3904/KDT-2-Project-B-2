@@ -1,7 +1,8 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import MyWayComponent from './MyWayComponent';
 import { getCookie } from '../../../util/cookies';
 import { loadWayPoint } from '../../../util/loadWayObj';
+import { MyWayContext } from '../../../util/LoginContext';
 
 import '../MyWayCSS.css';
 
@@ -24,16 +25,15 @@ interface MyWayData {
 
 type myWayDataResultandEventProps = {
   onMyButtonClick: () => void;
-  setCurrentMyWayNameObj: (myWayNameObj: {
-    index: number;
-    name: string;
-  }) => void;
 };
 
 const MyWayList: React.FC<myWayDataResultandEventProps> = ({
   onMyButtonClick,
-  setCurrentMyWayNameObj,
+  // setCurrentMyWayNameObj,
 }) => {
+
+  const { setCurrentMyWayNameObj } = useContext(MyWayContext)
+
   const [userData, setUserData] = useState<MyWayData[]>([]);
   const [wayData, setWayData] = useState<boolean>(false);
 

@@ -8,6 +8,11 @@ import SignUp from './SignupPage/SignUp';
 import { MapContext } from "./util/MapContext";
 import { LoginContextProvider, MyWayContext } from "./util/LoginContext";
 
+interface MyWayNameObj {
+  index: number;
+  name: string;
+}
+
 function App() {
   const [startPoint, setStartPoint] = useState<[number, number]>([0, 0]);
   const [endPoint, setEndPoint] = useState<[number, number]>([0, 0]);
@@ -23,6 +28,10 @@ function App() {
 
   const [myWayUI, setMyWayUI] = useState<boolean>(true);
   const [detail, setDetail] = useState<boolean>(false);
+  const [currentMyWayNameObj, setCurrentMyWayNameObj] = useState<MyWayNameObj>({
+    index: 0,
+    name: '',
+  })
 
   useEffect(() => {
     console.log('로그인 상태 체크: ', loginCheck)
@@ -38,7 +47,7 @@ function App() {
     <div>
       <MapContext.Provider value={{ startPoint, setStartPoint, endPoint, setEndPoint, wayPoint, setWayPoint, isSearchingStart, setIsSearchingStart, isSearchingEnd, setIsSearchingEnd }}>
         <LoginContextProvider>
-          <MyWayContext.Provider value={{myWayUI, setMyWayUI, detail, setDetail}}>
+          <MyWayContext.Provider value={{myWayUI, setMyWayUI, detail, setDetail, currentMyWayNameObj, setCurrentMyWayNameObj}}>
           <Routes>
             <Route path="/" element={<Loading />} />
             <Route path="/main" element={<MainPage />} />

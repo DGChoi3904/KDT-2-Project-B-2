@@ -41,10 +41,6 @@ type KakaoMapPros = {
   naviSearchCounter: number;
   setNaviSearchCounter: React.Dispatch<React.SetStateAction<number>>;
   startNaviSearch: () => void;
-  setCurrentMyWayNameObj: (myWayNameObj: {
-    index: number;
-    name: string;
-  }) => void;
   setNaviDataResult: any;
 };
 
@@ -70,7 +66,7 @@ const wayMarkerInitialState: WayMarkersState = {
 
 const KakaoMap: React.FC<KakaoMapPros> = ({
   naviSearchCounter,
-  setCurrentMyWayNameObj,
+  // setCurrentMyWayNameObj,
   setNaviDataResult,
 }) => {
 
@@ -79,7 +75,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     setWayPoint([...wayPoint, pointY, pointX])
   }
 
-  const { myWayUI, setDetail } = useContext(MyWayContext)
+  const { myWayUI, setDetail, setCurrentMyWayNameObj } = useContext(MyWayContext)
 
   const [keyword, setKeyword] = useState(''); // input
   const [places, setPlaces] = useState<Place[]>([]);
