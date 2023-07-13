@@ -1,9 +1,10 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useContext } from 'react';
+import { MyWayContext } from '../../../util/LoginContext';
 import '../MyWayCSS.css';
 
 type MyWayTitleProps = {
-  myWayUI: boolean;
-  setMyWayUI: React.Dispatch<React.SetStateAction<boolean>>;
+  // myWayUI: boolean;
+  // setMyWayUI: React.Dispatch<React.SetStateAction<boolean>>;
   currentMyWayNameObj: {
     index: number;
     name: string;
@@ -13,17 +14,21 @@ type MyWayTitleProps = {
 };
 
 const MyWayTitle: React.FC<MyWayTitleProps> = ({
-  myWayUI,
-  setMyWayUI,
+  // myWayUI,
+  // setMyWayUI,
   currentMyWayNameObj,
   detail,
   setDetail,
 }) => {
+  const { myWayUI, setMyWayUI } = useContext(MyWayContext)
+
   const handleUIHidden = () => {
+    console.log(myWayUI)
     setMyWayUI(false);
   };
 
   const handleUIShow = () => {
+    console.log(myWayUI)
     setMyWayUI(true);
   };
   const handleDetail = () => {

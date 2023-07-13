@@ -40,21 +40,17 @@ function MainPage() {
         startNaviSearch={startNaviSearch}
         setCurrentMyWayNameObj={setCurrentMyWayNameObj}
         setNaviDataResult={setNaviDataResult}
-        myWayUI={myWayUI}
       />
       {/* Footer */}
       <Footer
         setDetail={setDetail}
         detail={detail}
-        login={login}
         myWayDataResult={myWayDataResult}
         setNaviSearchCounter={setNaviSearchCounter}
         startNaviSearch={startNaviSearch}
         currentMyWayNameObj={currentMyWayNameObj}
         setCurrentMyWayNameObj={setCurrentMyWayNameObj}
         naviDataResult={naviDataResult}
-        myWayUI={myWayUI}
-        setMyWayUI={setMyWayUI}
       />
     </div>
   );

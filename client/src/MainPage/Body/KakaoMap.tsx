@@ -5,6 +5,7 @@ import globalVar from '../../util/Global';
 import SaveWayModal from '../Modal/SaveWayModal';
 import MarkerImgSet from './markerImgSet';
 import { MapContext } from '../../util/MapContext';
+import { MyWayContext } from '../../util/LoginContext';
 
 interface Place {
   id: string;
@@ -47,7 +48,6 @@ type KakaoMapPros = {
     name: string;
   }) => void;
   setNaviDataResult: any;
-  myWayUI: boolean;
 };
 
 type WayMarkerObj = {
@@ -75,13 +75,15 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
   naviSearchCounter,
   setCurrentMyWayNameObj,
   setNaviDataResult,
-  myWayUI,
 }) => {
 
   const { startPoint, setStartPoint, endPoint, setEndPoint, wayPoint, setWayPoint, isSearchingStart, setIsSearchingStart, isSearchingEnd, setIsSearchingEnd } = useContext(MapContext);
   const addWayPoint = (pointY: number, pointX: number) => {
     setWayPoint([...wayPoint, pointY, pointX])
   }
+
+  const { myWayUI } = useContext(MyWayContext)
+
   const [keyword, setKeyword] = useState(''); // input
   const [places, setPlaces] = useState<Place[]>([]);
   const [selectedPlace, setSelectedPlace] = useState<Place | null>(null);

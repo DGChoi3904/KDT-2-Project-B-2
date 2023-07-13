@@ -9,7 +9,6 @@ import { LoginContext } from '../../util/LoginContext';
 
 type MyWayBoxProps = {
   detail: boolean;
-  login: boolean;
   myWayDataResult: any;
   setNaviSearchCounter: React.Dispatch<React.SetStateAction<number>>;
   startNaviSearch: () => void;
@@ -22,21 +21,16 @@ type MyWayBoxProps = {
     name: string;
   }) => void;
   naviDataResult: any;
-  myWayUI: boolean;
-  setMyWayUI: React.Dispatch<React.SetStateAction<boolean>>;
   setDetail: React.Dispatch<React.SetStateAction<boolean>>; //? 현재 저장된 길 이름
 };
 
 const MyWayBox: React.FC<MyWayBoxProps> = ({
   detail,
-  login,
   myWayDataResult,
   startNaviSearch,
   currentMyWayNameObj,
   setCurrentMyWayNameObj,
   naviDataResult,
-  myWayUI,
-  setMyWayUI,
   setDetail,
 }) => {
   const { loginCheck } = useContext(LoginContext)
@@ -53,9 +47,9 @@ const MyWayBox: React.FC<MyWayBoxProps> = ({
   return (
     <div>
       <MyWayTitle
-        myWayUI={myWayUI}
+        // myWayUI={myWayUI}
         currentMyWayNameObj={currentMyWayNameObj}
-        setMyWayUI={setMyWayUI}
+        // setMyWayUI={setMyWayUI}
         detail={detail}
         setDetail={setDetail}
       />

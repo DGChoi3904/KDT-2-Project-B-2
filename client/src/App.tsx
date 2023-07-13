@@ -6,7 +6,7 @@ import Loading from './LoadingPage/LoadingPage';
 import SignUp from './SignupPage/SignUp';
 
 import { MapContext } from "./util/MapContext";
-import { LoginContextProvider } from "./util/LoginContext";
+import { LoginContextProvider, MyWayContext } from "./util/LoginContext";
 
 function App() {
   const [startPoint, setStartPoint] = useState<[number, number]>([0, 0]);
@@ -20,6 +20,8 @@ function App() {
     const storedValue = localStorage.getItem('loginCheck');
     return storedValue ? JSON.parse(storedValue) : false;
   });
+
+  const [myWayUI, setMyWayUI] = useState<boolean>(true);
 
   useEffect(() => {
     console.log('로그인 상태 체크: ', loginCheck)
@@ -35,11 +37,13 @@ function App() {
     <div>
       <MapContext.Provider value={{ startPoint, setStartPoint, endPoint, setEndPoint, wayPoint, setWayPoint, isSearchingStart, setIsSearchingStart, isSearchingEnd, setIsSearchingEnd }}>
         <LoginContextProvider>
+          <MyWayContext.Provider value={{myWayUI, setMyWayUI}}>
           <Routes>
             <Route path="/" element={<Loading />} />
             <Route path="/main" element={<MainPage />} />
             <Route path="/signup" element={<SignUp />} />
           </Routes>
+          </MyWayContext.Provider>
         </LoginContextProvider>
       </MapContext.Provider>
     </div>
