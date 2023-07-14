@@ -13,11 +13,9 @@ function MainPage() {
       {/* Header */}
       <TopMenu />
       {/* Body */}
-      <KakaoMap
-      />
+      <KakaoMap />
       {/* Footer */}
-      <Footer
-      />
+      <Footer />
     </div>
   );
 }
