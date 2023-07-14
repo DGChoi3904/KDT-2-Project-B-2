@@ -474,13 +474,13 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     console.log(
       `출발지 좌표 : ${startPoint}, 경유지 좌표 ${wayPoint}, 목적지 좌표 ${endPoint}`,
     );
-    /*    //출발지 인포윈도우 (장소명)
+    //출발지 인포윈도우 (장소명)
     const content = `<div style="padding: 1px;">${place.name}</div>`;
     const infowindow = new window.kakao.maps.InfoWindow({
       content: content,
       zIndex: 1,
     });
-    infowindow.open(mapRef.current, startMarker.marker); */
+    infowindow.open(mapRef.current, startMarker.marker);
   }
   //도착지 마커
   const handleSelectPlaceEnd = (place: Place) => {
@@ -500,13 +500,13 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     console.log(
       `출발지 좌표 : ${startPoint}, 경유지 좌표 ${wayPoint}, 목적지 좌표 ${endPoint}`,
     );
-    /* //인포윈도우
+    //인포윈도우
     const content = `<div style="padding: 1px;">${place.name}</div>`;
     const infowindow = new window.kakao.maps.InfoWindow({
       content: content,
       zIndex: 1,
     });
-    infowindow.open(mapRef.current, endMarker.marker); */
+    infowindow.open(mapRef.current, endMarker.marker);
   };
   //경유지 마커
   const handleSelectPlaceWay = (place: Place) => {
@@ -732,12 +732,12 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
             position: 'absolute',
             top: '10px',
             zIndex: '1',
-            width: '70%',
+            width: '100%',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'flex-end',
             justifyContent: 'flex-end',
-            marginLeft: '30%',
+            // marginLeft: '30%',
           }}
         >
           <div
@@ -749,23 +749,27 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
               transform: 'translateX(-5%)',
             }}
           >
-            <button style={{ background: 'none', border: 'none' }}>
-              <img
-                src={process.env.PUBLIC_URL + '/resource/naverBtn.png'}
-                alt="Naver"
-              />
-            </button>
-            <button style={{ background: 'none', border: 'none' }}>
-              <img
-                src={process.env.PUBLIC_URL + '/resource/kakaoBtn.png'}
-                alt="Kakao"
-              />
-            </button>
+            <div
+              style={{ display: 'flex', width: '30%', flexDirection: 'row' }}
+            >
+              <button style={{ background: 'none', border: 'none' }}>
+                <img
+                  src={process.env.PUBLIC_URL + '/resource/naverBtn.png'}
+                  alt="Naver"
+                />
+              </button>
+              <button style={{ background: 'none', border: 'none' }}>
+                <img
+                  src={process.env.PUBLIC_URL + '/resource/kakaoBtn.png'}
+                  alt="Kakao"
+                />
+              </button>
+            </div>
             <input
               type="text"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              style={{ width: '60%', height: '100%' }}
+              style={{ height: '100%', marginLeft: '20%' }}
               onKeyDown={(e) => {
                 //Enter로 검색 가능
                 if (e.key === 'Enter') {
@@ -780,7 +784,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
           {showPlaces && (
             <div
               style={{
-                width: '100%',
+                width: '70%',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'stretch',
