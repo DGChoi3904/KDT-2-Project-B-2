@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useRef, useReducer, useContext } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useReducer,
+  useContext,
+} from 'react';
 import Modal, { Styles } from 'react-modal';
 import '../Main.css';
 import SaveWayModal from '../Modal/SaveWayModal';
@@ -6,6 +12,9 @@ import MarkerImgSet from './markerImgSet';
 import { MapContext } from '../../util/MapContext';
 import { MyWayContext } from '../../util/LoginContext';
 
+import Timer from './Timer';
+import PathButtonBlock from './PathButtonBlock';
+import PaginatedPlaces from './PaginatedPlaces';
 interface Place {
   id: string;
   name: string;
@@ -68,13 +77,22 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
   naviSearchCounter,
   setNaviDataResult,
 }) => {
-
-  const { startPoint, setStartPoint, endPoint, setEndPoint, wayPoint, setWayPoint, setIsSearchingStart, setIsSearchingEnd } = useContext(MapContext);
+  const {
+    startPoint,
+    setStartPoint,
+    endPoint,
+    setEndPoint,
+    wayPoint,
+    setWayPoint,
+    setIsSearchingStart,
+    setIsSearchingEnd,
+  } = useContext(MapContext);
   const addWayPoint = (pointY: number, pointX: number) => {
-    setWayPoint([...wayPoint, pointY, pointX])
-  }
+    setWayPoint([...wayPoint, pointY, pointX]);
+  };
 
-  const { myWayUI, setDetail, setCurrentMyWayNameObj } = useContext(MyWayContext)
+  const { myWayUI, setDetail, setCurrentMyWayNameObj } =
+    useContext(MyWayContext);
 
   const [keyword, setKeyword] = useState(''); // input
   const [places, setPlaces] = useState<Place[]>([]);
@@ -459,7 +477,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     console.log(
       `출발지 좌표 : ${startPoint}, 경유지 좌표 ${wayPoint}, 목적지 좌표 ${endPoint}`,
     );
-     //출발지 인포윈도우 (장소명)
+    //출발지 인포윈도우 (장소명)
     const content = `<div style="padding: 1px;">${place.name}</div>`;
     const infowindow = new window.kakao.maps.InfoWindow({
       content: content,
@@ -493,7 +511,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     });
     infowindow.open(mapRef.current, endMarker.marker);
   };
-  //경유지 마커 
+  //경유지 마커
   const handleSelectPlaceWay = (place: Place) => {
     isPolyLineDrawn(); //polyline이 그려져있는지 확인
     //경유지 5개로 설정
@@ -504,7 +522,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     if (wayMarkerState.wayCount < 5) {
       wayMarkerDispatch({ type: 'ADD_WAY_MARKER', payload: place });
       setSelectedPlace(place);
-      addWayPoint(Number(place.y), Number(place.x))
+      addWayPoint(Number(place.y), Number(place.x));
     } else {
       alert('경유지는 5개까지만 설정 가능합니다.');
     }
@@ -544,20 +562,14 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     //출발지 마커
     if (startPoint[0] !== 0 && startPoint[1] !== 0) {
       startMarker.marker.setPosition(
-        new window.kakao.maps.LatLng(
-          startPoint[0],
-          startPoint[1],
-        ),
+        new window.kakao.maps.LatLng(startPoint[0], startPoint[1]),
       );
       startMarker.marker.setMap(mapRef.current);
     }
     //도착지 마커
     if (endPoint[0] !== 0 && endPoint[1] !== 0) {
       endMarker.marker.setPosition(
-        new window.kakao.maps.LatLng(
-          endPoint[0],
-          endPoint[1],
-        ),
+        new window.kakao.maps.LatLng(endPoint[0], endPoint[1]),
       );
       endMarker.marker.setMap(mapRef.current);
     }
@@ -690,6 +702,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
   };
 
   function isNewSearch() {
+    setTime([0]);
     if (
       startPoint[0] === 0 &&
       startPoint[1] === 0 &&
@@ -701,9 +714,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
       isStartorEndMarkerDrawn('start'); //시작 마커가 그려져있는지 확인
       isStartorEndMarkerDrawn('end'); //도착 마커가 그려져있는지 확인
       wayMarkerDispatch({ type: 'RESET_WAY_MARKERS' }); //경유지 마커가 그려져있는지 확인
-      setHour(0); //시간 초기화
-      setMinute(0); //분 초기화
-      setSecond(0); //초 초기화
 
       setMongoStart(''); //DB에 저장될 출발지 좌표 초기화
       setMongoWay([]); //DB에 저장될 경유지 좌표 초기화
@@ -746,7 +756,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
                 alt="Naver"
               />
             </button>
-            <button style={{ background: 'none', border: 'none' }}> 
+            <button style={{ background: 'none', border: 'none' }}>
               <img
                 src={process.env.PUBLIC_URL + '/resource/kakaoBtn.png'}
                 alt="Kakao"
@@ -756,7 +766,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
               type="text"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              style={{ width: '60%' , height: '100%'}}
+              style={{ width: '60%', height: '100%' }}
               onKeyDown={(e) => {
                 //Enter로 검색 가능
                 if (e.key === 'Enter') {
@@ -764,121 +774,28 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
                 }
               }}
             />
-            <button style={{ height: '100%' }} onClick={handleSearch}>🔍</button>
+            <button style={{ height: '100%' }} onClick={handleSearch}>
+              🔍
+            </button>
           </div>
           {showPlaces && (
-            <div
-              style={{
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'stretch',
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-              }}
-            >
-              {getPaginatedPlaces().map((place, index) => (
-                <div
-                  key={place.id}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between', 
-                  }}
-                >
-                  <div style={{ flex: '1' }}>
-                    <div style={{ textAlign: 'left' }}>{place.name}</div>
-                  </div>
-                  <div style={{ display: 'flex' }}>
-                    <button
-                      onClick={() => handleSelectPlacePre(place)}
-                      style={{ color: 'black' }}
-                    >
-                      미리보기
-                    </button>
-                    <button
-                      onClick={() => {
-                        handleSelectPlace(place); //출발지의 장소
-                        setKeyword(place.name); //클릭한 장소의 이름이 input으로 전송
-                      }}
-                      style={{ color: 'blue' }}
-                    >
-                      출발지
-                    </button>
-                    <button
-                      onClick={() => {
-                        handleSelectPlaceEnd(place);
-                        setKeyword(place.name);
-                      }}
-                      style={{ color: 'red' }}
-                    >
-                      목적지
-                    </button>
-                    <button
-                      onClick={() => {
-                        handleSelectPlaceWay(place);
-                        setKeyword(place.name);
-                      }}
-                      style={{ color: 'rgb(255, 164, 27)' }}
-                    >
-                      경유지
-                    </button>
-                  </div>
-                </div>
-              ))}
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  marginTop: '10px',
-                }}
-              >
-                {Array.from({ length: totalList }, (_, index) => index + 1).map(
-                  (pageNumber) => (
-                    <button
-                      key={pageNumber} 
-                      onClick={() => numberList(pageNumber)}
-                      style={{
-                        marginRight: '5px',
-                        backgroundColor: '#FFA41B',
-                        borderStyle: 'thin',
-                        borderRadius: '5px',
-                        margin: '0 2px',
-                        width: '20px',
-                      }}
-                    >
-                      {pageNumber}
-                    </button>
-                  ),
-                )}
-              </div>
-            </div>
+            <PaginatedPlaces
+              PaginatedPlacesArr={getPaginatedPlaces()}
+              handleSelectPlace={handleSelectPlace}
+              handleSelectPlaceEnd={handleSelectPlaceEnd}
+              handleSelectPlacePre={handleSelectPlacePre}
+              handleSelectPlaceWay={handleSelectPlaceWay}
+              setKeyword={setKeyword}
+              totalList={totalList}
+              numberList={numberList}
+            />
           )}
         </div>
-        <div
-          style={{
-            position: 'absolute',
-            display: 'flex',
-            flexDirection: 'row',
-            justifyContent: 'space-between',
-            bottom: '10px',
-            right: '10px',
-            zIndex: '2',
-          }}
-        >
-          {waySaveBtn ? (
-            <button onClick={openModal} style={{ padding: '5px' }}>
-              경로 저장
-            </button> 
-          ) : (
-            <div></div>
-          )}
-          <button
-            onClick={handleDefaultSearch}
-            style={{ padding: '5px', marginLeft: '5px' }}
-          >
-            경로 안내
-          </button>
-        </div>
+        <PathButtonBlock
+          waySaveBtn={waySaveBtn}
+          openModal={openModal}
+          handleDefaultSearch={handleDefaultSearch}
+        />
       </div>
       <Modal
         isOpen={isModalOpen}
@@ -889,21 +806,13 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
         <SaveWayModal addWayPointDB={addWayPointDB} onClose={closeModal} />
       </Modal>
       {minute !== 0 && second !== 0 ? (
-        <div className="timer" style={{ zIndex: '2', marginTop: '10px' }}>
-          <img
-            src={process.env.PUBLIC_URL + '/resource/timer.png'}
-            className="timerImg"
-            alt="timerImg"
-          />{' '}
-          {hour !== 0 ? hour + '시간' : ''}
-          {minute}분 {second}초
-        </div>
+        <Timer hour={hour} minute={minute} second={second} />
       ) : (
         <div style={{ display: 'none' }}></div>
-      )} 
+      )}
       <div id="result"></div>
     </div>
-  ); 
+  );
 };
 
 export default KakaoMap;
