@@ -1,4 +1,5 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { NaviContext } from '../../../util/MapContext';
 import '../MyWayCSS.css';
 
 // 페이지 작업용 검색 결과 json 값 추가.
@@ -9,15 +10,10 @@ interface wayInfo {
   stateText: string;
   duration: string;
 }
-type naviDataResult = any;
 
-type naviDataResultProps = {
-  naviDataResult: naviDataResult;
-};
-
-const MyWayDetail: React.FC<naviDataResultProps> = ({
-  naviDataResult,
+const MyWayDetail: React.FC = ({
 }) => {
+  const {naviDataResult} = useContext(NaviContext)
   // 길찾기 API 응답 결과값을 저장하는 상수. Props로 상속할시, WayResult에 추가할 것.
   const wayResult: any = naviDataResult; // 샘플 값을 적용한 상수.
   // fetch로 받아온 길찾기 API 결과값에서 모든 roads의 값을 꺼내 저장할 배열. 데이터 타입이 string, number, number[]가 복합적으로 들어가기에 any[]타입으로 명시.
@@ -141,9 +137,6 @@ const MyWayDetail: React.FC<naviDataResultProps> = ({
           </div>
         ))}
       </div>
-      {/* <button type="button" onClick={changeMyWayDetailTitleType}>
-        뷰 변경 스위치
-      </button> */}
     </div>
   );
 };

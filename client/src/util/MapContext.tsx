@@ -1,4 +1,4 @@
-import { createContext } from 'react';
+import React, { createContext, ReactNode, useState } from 'react';
 
 interface MapContextProps {
   isSearchingStart: boolean,
@@ -13,6 +13,19 @@ interface MapContextProps {
   setWayPoint: (point: number[]) => void;
 }
 
+interface NaviCounterProps {
+  naviSearchCounter: number;
+  setNaviSearchCounter: (counter: number) => void;
+  startNaviSearch: (counter: number) => void;
+  naviDataResult: object;
+  setNaviDataResult: (value: object) => void;
+}
+
+interface childrenProps {
+  children: ReactNode;
+}
+
+
 export const MapContext = createContext<MapContextProps>({ 
   isSearchingStart: false,
   setIsSearchingStart: () => {},
@@ -25,3 +38,35 @@ export const MapContext = createContext<MapContextProps>({
   wayPoint: [],
   setWayPoint: () => {},
 });
+
+export const NaviContext = createContext<NaviCounterProps>({
+  naviSearchCounter: 0,
+  setNaviSearchCounter: () => {},
+  startNaviSearch: () => {},
+  naviDataResult: {},
+  setNaviDataResult: () => {},
+});
+
+export const NaviProvider: React.FC<childrenProps> = ({ children }) => {
+  const [naviSearchCounter, setNaviSearchCounter] = useState<number>(0);
+  const [naviDataResult, setNaviDataResult] = useState<Object>({});
+
+  const startNaviSearch = () => {
+    setNaviSearchCounter(prevCounter => prevCounter + 1);
+    console.log('counter 값: ', naviSearchCounter);
+  };
+
+  return (
+    <NaviContext.Provider
+      value={{
+        naviSearchCounter,
+        setNaviSearchCounter,
+        startNaviSearch,
+        naviDataResult,
+        setNaviDataResult
+      }}
+    >
+      {children}
+    </NaviContext.Provider>
+  );
+};

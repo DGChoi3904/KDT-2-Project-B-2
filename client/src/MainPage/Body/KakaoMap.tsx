@@ -3,7 +3,7 @@ import Modal, { Styles } from 'react-modal';
 import '../Main.css';
 import SaveWayModal from '../Modal/SaveWayModal';
 import MarkerImgSet from './markerImgSet';
-import { MapContext } from '../../util/MapContext';
+import { MapContext, NaviContext } from '../../util/MapContext';
 import { MyWayContext } from '../../util/LoginContext';
 
 interface Place {
@@ -37,13 +37,6 @@ const modalStyles: Styles = {
   },
 };
 
-type KakaoMapPros = {
-  naviSearchCounter: number;
-  setNaviSearchCounter: React.Dispatch<React.SetStateAction<number>>;
-  startNaviSearch: () => void;
-  setNaviDataResult: any;
-};
-
 type WayMarkerObj = {
   name: string;
   marker: any;
@@ -64,10 +57,8 @@ const wayMarkerInitialState: WayMarkersState = {
   wayMarkers: [],
 };
 
-const KakaoMap: React.FC<KakaoMapPros> = ({
-  naviSearchCounter,
-  setNaviDataResult,
-}) => {
+const KakaoMap: React.FC = () => {
+  const { naviSearchCounter, setNaviDataResult } = useContext(NaviContext)
 
   const { startPoint, setStartPoint, endPoint, setEndPoint, wayPoint, setWayPoint, setIsSearchingStart, setIsSearchingEnd } = useContext(MapContext);
   const addWayPoint = (pointY: number, pointX: number) => {
@@ -359,9 +350,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
                 strokeOpacity: 1,
                 strokeStyle: 'solid',
               });
-              // console.log('폴리라인');
-              // console.dir(polyline);
-              // console.log(traffic);
               if (
                 j ===
                 jsonData['routes'][0]['sections'][a]['roads'][i]['vertexes']
@@ -513,17 +501,11 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
     );
   };
 
-  // const startNaviSearch = () => {
-  //   setNaviSearchCounter(naviSearchCounter + 1);
-  //   console.log(naviSearchCounter);
-  // };
-
-  // startNaviSearch();
-
   useEffect(() => {
     if (naviSearchCounter > 0) {
       loadMyWayMarkers();
       handleNavi();
+      console.log('아마도 경유지?: ', naviSearchCounter);
     }
   }, [naviSearchCounter]);
 

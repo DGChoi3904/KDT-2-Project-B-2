@@ -5,7 +5,7 @@ import MainPage from './MainPage/MainPage';
 import Loading from './LoadingPage/LoadingPage';
 import SignUp from './SignupPage/SignUp';
 
-import { MapContext } from "./util/MapContext";
+import { MapContext, NaviProvider } from "./util/MapContext";
 import { LoginContextProvider, MyWayContext } from "./util/LoginContext";
 
 interface MyWayNameObj {
@@ -47,13 +47,15 @@ function App() {
     <div>
       <MapContext.Provider value={{ startPoint, setStartPoint, endPoint, setEndPoint, wayPoint, setWayPoint, isSearchingStart, setIsSearchingStart, isSearchingEnd, setIsSearchingEnd }}>
         <LoginContextProvider>
+          <NaviProvider>
           <MyWayContext.Provider value={{myWayUI, setMyWayUI, detail, setDetail, currentMyWayNameObj, setCurrentMyWayNameObj}}>
-          <Routes>
-            <Route path="/" element={<Loading />} />
-            <Route path="/main" element={<MainPage />} />
-            <Route path="/signup" element={<SignUp />} />
-          </Routes>
+            <Routes>
+              <Route path="/" element={<Loading />} />
+              <Route path="/main" element={<MainPage />} />
+              <Route path="/signup" element={<SignUp />} />
+            </Routes>
           </MyWayContext.Provider>
+          </NaviProvider>
         </LoginContextProvider>
       </MapContext.Provider>
     </div>

@@ -1,4 +1,4 @@
-import React, { createContext, useState } from 'react';
+import React, { createContext, ReactNode, useState } from 'react';
 
 interface LoginContextProps {
   loginCheck: boolean;
@@ -6,7 +6,7 @@ interface LoginContextProps {
 }
 
 interface childrenProps {
-  children: any;
+  children: ReactNode;
 }
 
 interface MyWayProps {
