@@ -22,6 +22,7 @@ interface Place {
 declare global {
   interface Window {
     kakao: any;
+    naver: any;
   }
 }
 
@@ -719,6 +720,25 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
       setMongoEnd(''); //DB에 저장될 목적지 좌표 초기화
     }
   }
+  //네이버지도
+  const naverMap = () => {
+    const Containertwo = document.getElementById('test');
+    if (Containertwo) {
+      Containertwo.style.display = 'block';
+    }
+
+    const mapOptions = {
+      center: new window.naver.maps.LatLng(36.35, 127.385),
+      zoom: 18, // 확대, 축소
+    };
+    const map = new window.naver.maps.Map(Containertwo, mapOptions);
+    const kakaoMapContainer = document.getElementById('map');
+    if (kakaoMapContainer) {
+      kakaoMapContainer.style.display = 'none';
+    }
+
+    console.log('naverTest');
+  };
 
   return (
     <div>
@@ -726,6 +746,15 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
         <div
           id="map"
           className={myWayUI ? 'MapNormalSize' : 'MapLongSize'}
+        ></div>
+        <div
+          id="test"
+          style={{
+            zIndex: '5555555',
+            width: '430px',
+            height: '600px',
+            display: 'none',
+          }}
         ></div>
         <div
           style={{
@@ -756,7 +785,11 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
                 marginRight: '30px',
               }}
             >
-              <button style={{ background: 'none', border: 'none' }}>
+              <button
+                id="naver"
+                style={{ background: 'none', border: 'none' }}
+                onClick={naverMap}
+              >
                 <img
                   src={process.env.PUBLIC_URL + '/resource/naverBtn.png'}
                   alt="Naver"
