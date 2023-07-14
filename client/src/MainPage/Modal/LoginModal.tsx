@@ -1,21 +1,22 @@
-import React, { FormEventHandler, useState } from 'react';
+import React, { FormEventHandler, useState, useContext } from 'react';
 import { Link } from 'react-router-dom';
 import { setCookie } from '../../util/cookies';
+import { LoginContext } from '../../util/LoginContext';
 import './ModalCSS.css';
 
 interface LoginModalProps {
   setSignUpStatus: React.Dispatch<React.SetStateAction<boolean>>;
   setNickname: React.Dispatch<React.SetStateAction<string>>;
   closeModal: () => void; // closeModal 함수 타입 추가
-  setLogin: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({
   setSignUpStatus,
   setNickname,
   closeModal,
-  setLogin,
 }: any) => {
+  const { setLoginCheck } = useContext(LoginContext);
+
   const [inputIdValue, setInputIdValue] = useState('');
   const [inputPwValue, setInputPwValue] = useState('');
   // 커서가 버튼위에 Hover되었는지 확인하는 구문.
@@ -62,7 +63,7 @@ const LoginModal: React.FC<LoginModalProps> = ({
         if (result.success) {
           console.log('로그인 성공');
           console.log(result);
-          setLogin(true);
+          setLoginCheck(true);
           setCookie('nickname', result.nickname); // 로그인 성공 시, 쿠키에 user 정보 저장
           setCookie('userId', result.userId); // 로그인 성공 시, 쿠키에 user 정보 저장
           setSignUpStatus(true); // 로그인 상태 변경

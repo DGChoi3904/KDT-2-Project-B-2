@@ -1,41 +1,22 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useContext } from 'react';
+import { MyWayContext } from '../../../util/LoginContext';
 import '../MyWayCSS.css';
 
-type MyWayTitleProps = {
-  myWayUI: boolean;
-  setMyWayUI: React.Dispatch<React.SetStateAction<boolean>>;
-  currentMyWayNameObj: {
-    index: number;
-    name: string;
-  };
-  detail: boolean;
-  setDetail: React.Dispatch<React.SetStateAction<boolean>>;
-};
+const MyWayTitle: React.FC = () => {
+  const { myWayUI, setMyWayUI, detail, setDetail, currentMyWayNameObj } = useContext(MyWayContext)
 
-const MyWayTitle: React.FC<MyWayTitleProps> = ({
-  myWayUI,
-  setMyWayUI,
-  currentMyWayNameObj,
-  detail,
-  setDetail,
-}) => {
   const handleUIHidden = () => {
+    console.log(myWayUI)
     setMyWayUI(false);
   };
 
   const handleUIShow = () => {
+    console.log(myWayUI)
     setMyWayUI(true);
   };
   const handleDetail = () => {
     setDetail(false);
   };
-
-  useEffect(() => {
-    console.log(currentMyWayNameObj);
-  }, [currentMyWayNameObj.index]);
-  useEffect(() => {
-    console.log(`${detail} 은 Detail의 값입니다.`);
-  }, [detail]);
 
   return (
     <div className="MyWayListTitle">

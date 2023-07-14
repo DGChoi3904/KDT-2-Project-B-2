@@ -1,16 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import MyWayComponent from './MyWayComponent';
 import { getCookie } from '../../../util/cookies';
 import { loadWayPoint } from '../../../util/loadWayObj';
+import { MyWayContext } from '../../../util/LoginContext';
 
 import '../MyWayCSS.css';
-
-interface MyWay {
-  WayName: string;
-  start: string;
-  wayPoints: string[];
-  end: string;
-}
 
 interface MyWayData {
   end: string;
@@ -22,24 +16,17 @@ interface MyWayData {
   _id: string;
 }
 
-type myWayDataResult = any;
-
 type myWayDataResultandEventProps = {
-  myWayDataResult: myWayDataResult;
   onMyButtonClick: () => void;
-  setCurrentMyWayNameObj: (myWayNameObj: {
-    index: number;
-    name: string;
-  }) => void;
 };
 
 const MyWayList: React.FC<myWayDataResultandEventProps> = ({
-  myWayDataResult,
   onMyButtonClick,
-  setCurrentMyWayNameObj,
 }) => {
+
+  const { setCurrentMyWayNameObj } = useContext(MyWayContext)
+
   const [userData, setUserData] = useState<MyWayData[]>([]);
-  const [wayData, setWayData] = useState<boolean>(false);
 
   // 쿠키에서 로그인 중인 userId를 가져옴
   const cookieUserId = getCookie('userId');
@@ -64,8 +51,6 @@ const MyWayList: React.FC<myWayDataResultandEventProps> = ({
   useEffect(() => {
     console.log('userData값: ', userData);
   }, [userData]);
-
-  // const userDbSample: MyWayData[] = userData;
 
   function parseYXFromXYString(xyString: string): [number, number] {
     const xyStringArr = xyString.split(', ');
@@ -100,9 +85,6 @@ const MyWayList: React.FC<myWayDataResultandEventProps> = ({
     };
   });
 
-  // if (userData !== null) {
-  // }
-
   return (
     <div>
       <div className="myway-contentsbox">
@@ -119,15 +101,6 @@ const MyWayList: React.FC<myWayDataResultandEventProps> = ({
             />
           ))
         )}
-        {/* {ways.map((mySavedWay, index) => (
-          <MyWayComponent
-            key={index}
-            index={index + 1}
-            mySavedWay={mySavedWay}
-            onMyButtonClick={onMyButtonClick}
-            handleCurrentMyWayNameObj={handleCurrentMyWayNameObj}
-          />
-        ))} */}
       </div>
     </div>
   );
