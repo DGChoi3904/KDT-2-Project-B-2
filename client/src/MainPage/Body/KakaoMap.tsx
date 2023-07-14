@@ -10,7 +10,7 @@ import '../Main.css';
 import SaveWayModal from '../Modal/SaveWayModal';
 import MarkerImgSet from './markerImgSet';
 import { MapContext, NaviContext } from '../../util/MapContext';
-import { MyWayContext } from '../../util/LoginContext';
+import { MyWayContext, LoginContext } from '../../util/LoginContext';
 
 interface Place {
   id: string;
@@ -66,6 +66,7 @@ const wayMarkerInitialState: WayMarkersState = {
 
 const KakaoMap: React.FC = () => {
   const { naviSearchCounter, setNaviDataResult } = useContext(NaviContext);
+  const { loginCheck } = useContext(LoginContext);
 
   const {
     startPoint,
@@ -973,7 +974,7 @@ const KakaoMap: React.FC = () => {
               zIndex: '2',
             }}
           >
-            {waySaveBtn ? (
+            {waySaveBtn && loginCheck ? (
               <button onClick={openModal} style={{ padding: '5px' }}>
                 경로 저장
               </button>
