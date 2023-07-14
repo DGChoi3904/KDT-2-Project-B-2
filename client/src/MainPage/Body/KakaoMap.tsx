@@ -722,22 +722,37 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
   }
   //네이버지도
   const naverMap = () => {
-    const Containertwo = document.getElementById('test');
-    if (Containertwo) {
-      Containertwo.style.display = 'block';
+    const naverView = document.getElementById('naverMap');
+    if (naverView) {
+      naverView.style.display = 'block';
     }
 
     const mapOptions = {
       center: new window.naver.maps.LatLng(36.35, 127.385),
-      zoom: 18, // 확대, 축소
+      zoom: 17, // 확대, 축소
     };
-    const map = new window.naver.maps.Map(Containertwo, mapOptions);
+    const map = new window.naver.maps.Map(naverView, mapOptions);
     const kakaoMapContainer = document.getElementById('map');
     if (kakaoMapContainer) {
       kakaoMapContainer.style.display = 'none';
     }
-
+    const naverButton = document.getElementById('naverButton');
+    if (naverButton) {
+      naverButton.style.display = 'block';
+    }
     console.log('naverTest');
+  };
+  //카카오지도
+  const KakaoMapView = () => {
+    const naverView = document.getElementById('naverMap');
+    if (naverView) {
+      naverView.style.display = 'none';
+    }
+    const kakaoMapContainer = document.getElementById('map');
+    if (kakaoMapContainer) {
+      kakaoMapContainer.style.display = 'block';
+    }
+    console.log('kakaoTest');
   };
 
   return (
@@ -748,14 +763,53 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
           className={myWayUI ? 'MapNormalSize' : 'MapLongSize'}
         ></div>
         <div
-          id="test"
+          id="naverMap"
           style={{
-            zIndex: '5555555',
+            zIndex: '3',
             width: '430px',
             height: '600px',
             display: 'none',
           }}
-        ></div>
+        >
+          {' '}
+          <button
+            id="naverButton"
+            style={{
+              background: 'none',
+              border: 'none',
+              display: 'block',
+              height: '50px',
+              width: '50px',
+              position: 'absolute',
+              zIndex: '4',
+              marginLeft: '1%',
+            }}
+            onClick={naverMap}
+          >
+            <img
+              src={process.env.PUBLIC_URL + '/resource/naverBtn.png'}
+              alt="Naver"
+            />
+          </button>
+          <button
+            style={{
+              background: 'none',
+              border: 'none',
+              display: 'block',
+              height: '50px',
+              width: '50px',
+              position: 'absolute',
+              zIndex: '4',
+              marginLeft: '10%',
+            }}
+            onClick={KakaoMapView}
+          >
+            <img
+              src={process.env.PUBLIC_URL + '/resource/kakaoBtn.png'}
+              alt="Kakao"
+            />
+          </button>
+        </div>
         <div
           style={{
             position: 'absolute',
@@ -786,7 +840,6 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
               }}
             >
               <button
-                id="naver"
                 style={{ background: 'none', border: 'none' }}
                 onClick={naverMap}
               >
