@@ -750,7 +750,11 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
             }}
           >
             <div
-              style={{ display: 'flex', width: '30%', flexDirection: 'row' }}
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                marginRight: '30px',
+              }}
             >
               <button style={{ background: 'none', border: 'none' }}>
                 <img
@@ -769,7 +773,7 @@ const KakaoMap: React.FC<KakaoMapPros> = ({
               type="text"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              style={{ height: '100%', marginLeft: '20%' }}
+              style={{ height: '100%', marginLeft: '25%' }}
               onKeyDown={(e) => {
                 //Enter로 검색 가능
                 if (e.key === 'Enter') {
