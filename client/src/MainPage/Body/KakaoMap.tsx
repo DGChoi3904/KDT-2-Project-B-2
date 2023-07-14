@@ -10,8 +10,11 @@ import '../Main.css';
 import SaveWayModal from '../Modal/SaveWayModal';
 import MarkerImgSet from './markerImgSet';
 import { MapContext, NaviContext } from '../../util/MapContext';
-import { MyWayContext } from '../../util/LoginContext';
+import { MyWayContext, LoginContext } from '../../util/LoginContext';
 
+import Timer from './Timer';
+import PathButtonBlock from './PathButtonBlock';
+import PaginatedPlaces from './PaginatedPlaces';
 interface Place {
   id: string;
   name: string;
@@ -22,6 +25,7 @@ interface Place {
 declare global {
   interface Window {
     kakao: any;
+    naver: any;
   }
 }
 
@@ -68,6 +72,7 @@ let infoEnd: any;
 
 const KakaoMap: React.FC = () => {
   const { naviSearchCounter, setNaviDataResult } = useContext(NaviContext);
+  const { loginCheck } = useContext(LoginContext);
 
   const {
     startPoint,
@@ -695,6 +700,7 @@ const KakaoMap: React.FC = () => {
   };
 
   function isNewSearch() {
+    setTime([0]);
     if (
       startPoint[0] === 0 &&
       startPoint[1] === 0 &&
@@ -706,15 +712,46 @@ const KakaoMap: React.FC = () => {
       isStartorEndMarkerDrawn('start'); //시작 마커가 그려져있는지 확인
       isStartorEndMarkerDrawn('end'); //도착 마커가 그려져있는지 확인
       wayMarkerDispatch({ type: 'RESET_WAY_MARKERS' }); //경유지 마커가 그려져있는지 확인
-      setHour(0); //시간 초기화
-      setMinute(0); //분 초기화
-      setSecond(0); //초 초기화
 
       setMongoStart(''); //DB에 저장될 출발지 좌표 초기화
       setMongoWay([]); //DB에 저장될 경유지 좌표 초기화
       setMongoEnd(''); //DB에 저장될 목적지 좌표 초기화
     }
   }
+  //네이버지도
+  const naverMap = () => {
+    const naverView = document.getElementById('naverMap');
+    if (naverView) {
+      naverView.style.display = 'block';
+    }
+
+    const mapOptions = {
+      center: new window.naver.maps.LatLng(36.35, 127.385),
+      zoom: 17, // 확대, 축소
+    };
+    const map = new window.naver.maps.Map(naverView, mapOptions);
+    const kakaoMapContainer = document.getElementById('map');
+    if (kakaoMapContainer) {
+      kakaoMapContainer.style.display = 'none';
+    }
+    const naverButton = document.getElementById('naverButton');
+    if (naverButton) {
+      naverButton.style.display = 'block';
+    }
+    console.log('naverTest');
+  };
+  //카카오지도
+  const KakaoMapView = () => {
+    const naverView = document.getElementById('naverMap');
+    if (naverView) {
+      naverView.style.display = 'none';
+    }
+    const kakaoMapContainer = document.getElementById('map');
+    if (kakaoMapContainer) {
+      kakaoMapContainer.style.display = 'block';
+    }
+    console.log('kakaoTest');
+  };
 
   return (
     <div>
@@ -724,16 +761,64 @@ const KakaoMap: React.FC = () => {
           className={myWayUI ? 'MapNormalSize' : 'MapLongSize'}
         ></div>
         <div
+          id="naverMap"
+          style={{
+            zIndex: '3',
+            width: '430px',
+            height: '600px',
+            display: 'none',
+          }}
+        >
+          {' '}
+          <button
+            id="naverButton"
+            style={{
+              background: 'none',
+              border: 'none',
+              display: 'block',
+              height: '50px',
+              width: '50px',
+              position: 'absolute',
+              zIndex: '4',
+              marginLeft: '1%',
+            }}
+            onClick={naverMap}
+          >
+            <img
+              src={process.env.PUBLIC_URL + '/resource/naverBtn.png'}
+              alt="Naver"
+            />
+          </button>
+          <button
+            style={{
+              background: 'none',
+              border: 'none',
+              display: 'block',
+              height: '50px',
+              width: '50px',
+              position: 'absolute',
+              zIndex: '4',
+              marginLeft: '10%',
+            }}
+            onClick={KakaoMapView}
+          >
+            <img
+              src={process.env.PUBLIC_URL + '/resource/kakaoBtn.png'}
+              alt="Kakao"
+            />
+          </button>
+        </div>
+        <div
           style={{
             position: 'absolute',
             top: '10px',
             zIndex: '1',
-            width: '70%',
+            width: '100%',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'flex-end',
             justifyContent: 'flex-end',
-            marginLeft: '30%',
+            // marginLeft: '30%',
           }}
         >
           <div
@@ -745,23 +830,34 @@ const KakaoMap: React.FC = () => {
               transform: 'translateX(-5%)',
             }}
           >
-            <button style={{ background: 'none', border: 'none' }}>
-              <img
-                src={process.env.PUBLIC_URL + '/resource/naverBtn.png'}
-                alt="Naver"
-              />
-            </button>
-            <button style={{ background: 'none', border: 'none' }}>
-              <img
-                src={process.env.PUBLIC_URL + '/resource/kakaoBtn.png'}
-                alt="Kakao"
-              />
-            </button>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                marginRight: '30px',
+              }}
+            >
+              <button
+                style={{ background: 'none', border: 'none' }}
+                onClick={naverMap}
+              >
+                <img
+                  src={process.env.PUBLIC_URL + '/resource/naverBtn.png'}
+                  alt="Naver"
+                />
+              </button>
+              <button style={{ background: 'none', border: 'none' }}>
+                <img
+                  src={process.env.PUBLIC_URL + '/resource/kakaoBtn.png'}
+                  alt="Kakao"
+                />
+              </button>
+            </div>
             <input
               type="text"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              style={{ width: '60%', height: '100%' }}
+              style={{ height: '100%', marginLeft: '25%' }}
               onKeyDown={(e) => {
                 //Enter로 검색 가능
                 if (e.key === 'Enter') {
@@ -774,140 +870,46 @@ const KakaoMap: React.FC = () => {
             </button>
           </div>
           {showPlaces && (
-            <div
-              style={{
-                width: '100%',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'stretch',
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-              }}
-            >
-              {getPaginatedPlaces().map((place, index) => (
-                <div
-                  key={place.id}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <div style={{ flex: '1' }}>
-                    <div style={{ textAlign: 'left' }}>{place.name}</div>
-                  </div>
-                  <div style={{ display: 'flex' }}>
-                    <button
-                      onClick={() => handleSelectPlacePre(place)}
-                      style={{ color: 'black' }}
-                    >
-                      미리보기
-                    </button>
-                    <button
-                      onClick={() => {
-                        handleSelectPlace(place); //출발지의 장소
-                        setKeyword(place.name); //클릭한 장소의 이름이 input으로 전송
-                      }}
-                      style={{ color: 'blue' }}
-                    >
-                      출발지
-                    </button>
-                    <button
-                      onClick={() => {
-                        handleSelectPlaceEnd(place);
-                        setKeyword(place.name);
-                      }}
-                      style={{ color: 'red' }}
-                    >
-                      목적지
-                    </button>
-                    <button
-                      onClick={() => {
-                        handleSelectPlaceWay(place);
-                        setKeyword(place.name);
-                      }}
-                      style={{ color: 'rgb(255, 164, 27)' }}
-                    >
-                      경유지
-                    </button>
-                  </div>
-                </div>
-              ))}
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  marginTop: '10px',
-                }}
-              >
-                {Array.from({ length: totalList }, (_, index) => index + 1).map(
-                  (pageNumber) => (
-                    <button
-                      key={pageNumber}
-                      onClick={() => numberList(pageNumber)}
-                      style={{
-                        marginRight: '5px',
-                        backgroundColor: '#FFA41B',
-                        borderStyle: 'thin',
-                        borderRadius: '5px',
-                        margin: '0 2px',
-                        width: '20px',
-                      }}
-                    >
-                      {pageNumber}
-                    </button>
-                  ),
-                )}
-              </div>
-            </div>
+            <PaginatedPlaces
+              PaginatedPlacesArr={getPaginatedPlaces()}
+              handleSelectPlace={handleSelectPlace}
+              handleSelectPlaceEnd={handleSelectPlaceEnd}
+              handleSelectPlacePre={handleSelectPlacePre}
+              handleSelectPlaceWay={handleSelectPlaceWay}
+              setKeyword={setKeyword}
+              totalList={totalList}
+              numberList={numberList}
+            />
           )}
         </div>
         <div
           style={{
-            position: 'absolute',
             display: 'flex',
             flexDirection: 'row',
-            justifyContent: 'space-between',
-            bottom: '10px',
-            right: '10px',
-            zIndex: '2',
           }}
         >
-          {waySaveBtn ? (
-            <button onClick={openModal} style={{ padding: '5px' }}>
-              경로 저장
-            </button>
+          {minute !== 0 && second !== 0 ? (
+            <Timer hour={hour} minute={minute} second={second} />
           ) : (
-            <div></div>
+            <div style={{ display: 'none' }}></div>
           )}
-          <button
-            onClick={handleDefaultSearch}
-            style={{ padding: '5px', marginLeft: '5px' }}
-          >
-            경로 안내
-          </button>
+
+          <PathButtonBlock
+            waySaveBtn={waySaveBtn}
+            openModal={openModal}
+            handleDefaultSearch={handleDefaultSearch}
+            loginCheck={loginCheck}
+          />
         </div>
+        <Modal
+          isOpen={isModalOpen}
+          onRequestClose={closeModal}
+          style={modalStyles}
+          contentLabel="Login Modal"
+        >
+          <SaveWayModal addWayPointDB={addWayPointDB} onClose={closeModal} />
+        </Modal>
       </div>
-      <Modal
-        isOpen={isModalOpen}
-        onRequestClose={closeModal}
-        style={modalStyles}
-        contentLabel="Login Modal"
-      >
-        <SaveWayModal addWayPointDB={addWayPointDB} onClose={closeModal} />
-      </Modal>
-      {minute !== 0 && second !== 0 ? (
-        <div className="timer" style={{ zIndex: '2', marginTop: '10px' }}>
-          <img
-            src={process.env.PUBLIC_URL + '/resource/timer.png'}
-            className="timerImg"
-            alt="timerImg"
-          />{' '}
-          {hour !== 0 ? hour + '시간' : ''}
-          {minute}분 {second}초
-        </div>
-      ) : (
-        <div style={{ display: 'none' }}></div>
-      )}
       <div id="result"></div>
     </div>
   );
