@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useRef, useReducer, useContext } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useReducer,
+  useContext,
+} from 'react';
 import Modal, { Styles } from 'react-modal';
 import '../Main.css';
 import SaveWayModal from '../Modal/SaveWayModal';
@@ -16,6 +22,7 @@ interface Place {
 declare global {
   interface Window {
     kakao: any;
+    naver: any;
   }
 }
 
@@ -58,14 +65,24 @@ const wayMarkerInitialState: WayMarkersState = {
 };
 
 const KakaoMap: React.FC = () => {
-  const { naviSearchCounter, setNaviDataResult } = useContext(NaviContext)
+  const { naviSearchCounter, setNaviDataResult } = useContext(NaviContext);
 
-  const { startPoint, setStartPoint, endPoint, setEndPoint, wayPoint, setWayPoint, setIsSearchingStart, setIsSearchingEnd } = useContext(MapContext);
+  const {
+    startPoint,
+    setStartPoint,
+    endPoint,
+    setEndPoint,
+    wayPoint,
+    setWayPoint,
+    setIsSearchingStart,
+    setIsSearchingEnd,
+  } = useContext(MapContext);
   const addWayPoint = (pointY: number, pointX: number) => {
-    setWayPoint([...wayPoint, pointY, pointX])
-  }
+    setWayPoint([...wayPoint, pointY, pointX]);
+  };
 
-  const { myWayUI, setDetail, setCurrentMyWayNameObj } = useContext(MyWayContext)
+  const { myWayUI, setDetail, setCurrentMyWayNameObj } =
+    useContext(MyWayContext);
 
   const [keyword, setKeyword] = useState(''); // input
   const [places, setPlaces] = useState<Place[]>([]);
@@ -447,7 +464,7 @@ const KakaoMap: React.FC = () => {
     console.log(
       `출발지 좌표 : ${startPoint}, 경유지 좌표 ${wayPoint}, 목적지 좌표 ${endPoint}`,
     );
-     //출발지 인포윈도우 (장소명)
+    //출발지 인포윈도우 (장소명)
     const content = `<div style="padding: 1px;">${place.name}</div>`;
     const infowindow = new window.kakao.maps.InfoWindow({
       content: content,
@@ -481,7 +498,7 @@ const KakaoMap: React.FC = () => {
     });
     infowindow.open(mapRef.current, endMarker.marker);
   };
-  //경유지 마커 
+  //경유지 마커
   const handleSelectPlaceWay = (place: Place) => {
     isPolyLineDrawn(); //polyline이 그려져있는지 확인
     //경유지 5개로 설정
@@ -492,7 +509,7 @@ const KakaoMap: React.FC = () => {
     if (wayMarkerState.wayCount < 5) {
       wayMarkerDispatch({ type: 'ADD_WAY_MARKER', payload: place });
       setSelectedPlace(place);
-      addWayPoint(Number(place.y), Number(place.x))
+      addWayPoint(Number(place.y), Number(place.x));
     } else {
       alert('경유지는 5개까지만 설정 가능합니다.');
     }
@@ -526,20 +543,14 @@ const KakaoMap: React.FC = () => {
     //출발지 마커
     if (startPoint[0] !== 0 && startPoint[1] !== 0) {
       startMarker.marker.setPosition(
-        new window.kakao.maps.LatLng(
-          startPoint[0],
-          startPoint[1],
-        ),
+        new window.kakao.maps.LatLng(startPoint[0], startPoint[1]),
       );
       startMarker.marker.setMap(mapRef.current);
     }
     //도착지 마커
     if (endPoint[0] !== 0 && endPoint[1] !== 0) {
       endMarker.marker.setPosition(
-        new window.kakao.maps.LatLng(
-          endPoint[0],
-          endPoint[1],
-        ),
+        new window.kakao.maps.LatLng(endPoint[0], endPoint[1]),
       );
       endMarker.marker.setMap(mapRef.current);
     }
@@ -692,6 +703,40 @@ const KakaoMap: React.FC = () => {
       setMongoEnd(''); //DB에 저장될 목적지 좌표 초기화
     }
   }
+  //네이버지도
+  const naverMap = () => {
+    const naverView = document.getElementById('naverMap');
+    if (naverView) {
+      naverView.style.display = 'block';
+    }
+
+    const mapOptions = {
+      center: new window.naver.maps.LatLng(36.35, 127.385),
+      zoom: 17, // 확대, 축소
+    };
+    const map = new window.naver.maps.Map(naverView, mapOptions);
+    const kakaoMapContainer = document.getElementById('map');
+    if (kakaoMapContainer) {
+      kakaoMapContainer.style.display = 'none';
+    }
+    const naverButton = document.getElementById('naverButton');
+    if (naverButton) {
+      naverButton.style.display = 'block';
+    }
+    console.log('naverTest');
+  };
+  //카카오지도
+  const KakaoMapView = () => {
+    const naverView = document.getElementById('naverMap');
+    if (naverView) {
+      naverView.style.display = 'none';
+    }
+    const kakaoMapContainer = document.getElementById('map');
+    if (kakaoMapContainer) {
+      kakaoMapContainer.style.display = 'block';
+    }
+    console.log('kakaoTest');
+  };
 
   return (
     <div>
@@ -701,16 +746,64 @@ const KakaoMap: React.FC = () => {
           className={myWayUI ? 'MapNormalSize' : 'MapLongSize'}
         ></div>
         <div
+          id="naverMap"
+          style={{
+            zIndex: '3',
+            width: '430px',
+            height: '600px',
+            display: 'none',
+          }}
+        >
+          {' '}
+          <button
+            id="naverButton"
+            style={{
+              background: 'none',
+              border: 'none',
+              display: 'block',
+              height: '50px',
+              width: '50px',
+              position: 'absolute',
+              zIndex: '4',
+              marginLeft: '1%',
+            }}
+            onClick={naverMap}
+          >
+            <img
+              src={process.env.PUBLIC_URL + '/resource/naverBtn.png'}
+              alt="Naver"
+            />
+          </button>
+          <button
+            style={{
+              background: 'none',
+              border: 'none',
+              display: 'block',
+              height: '50px',
+              width: '50px',
+              position: 'absolute',
+              zIndex: '4',
+              marginLeft: '10%',
+            }}
+            onClick={KakaoMapView}
+          >
+            <img
+              src={process.env.PUBLIC_URL + '/resource/kakaoBtn.png'}
+              alt="Kakao"
+            />
+          </button>
+        </div>
+        <div
           style={{
             position: 'absolute',
             top: '10px',
             zIndex: '1',
-            width: '70%',
+            width: '100%',
             display: 'flex',
             flexDirection: 'column',
             alignItems: 'flex-end',
             justifyContent: 'flex-end',
-            marginLeft: '30%',
+            // marginLeft: '30%',
           }}
         >
           <div
@@ -722,23 +815,34 @@ const KakaoMap: React.FC = () => {
               transform: 'translateX(-5%)',
             }}
           >
-            <button style={{ background: 'none', border: 'none' }}>
-              <img
-                src={process.env.PUBLIC_URL + '/resource/naverBtn.png'}
-                alt="Naver"
-              />
-            </button>
-            <button style={{ background: 'none', border: 'none' }}> 
-              <img
-                src={process.env.PUBLIC_URL + '/resource/kakaoBtn.png'}
-                alt="Kakao"
-              />
-            </button>
+            <div
+              style={{
+                display: 'flex',
+                flexDirection: 'row',
+                marginRight: '30px',
+              }}
+            >
+              <button
+                style={{ background: 'none', border: 'none' }}
+                onClick={naverMap}
+              >
+                <img
+                  src={process.env.PUBLIC_URL + '/resource/naverBtn.png'}
+                  alt="Naver"
+                />
+              </button>
+              <button style={{ background: 'none', border: 'none' }}>
+                <img
+                  src={process.env.PUBLIC_URL + '/resource/kakaoBtn.png'}
+                  alt="Kakao"
+                />
+              </button>
+            </div>
             <input
               type="text"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              style={{ width: '60%' , height: '100%'}}
+              style={{ height: '100%', marginLeft: '25%' }}
               onKeyDown={(e) => {
                 //Enter로 검색 가능
                 if (e.key === 'Enter') {
@@ -746,12 +850,14 @@ const KakaoMap: React.FC = () => {
                 }
               }}
             />
-            <button style={{ height: '100%' }} onClick={handleSearch}>🔍</button>
+            <button style={{ height: '100%' }} onClick={handleSearch}>
+              🔍
+            </button>
           </div>
           {showPlaces && (
             <div
               style={{
-                width: '100%',
+                width: '70%',
                 display: 'flex',
                 flexDirection: 'column',
                 alignItems: 'stretch',
@@ -764,7 +870,7 @@ const KakaoMap: React.FC = () => {
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'space-between', 
+                    justifyContent: 'space-between',
                   }}
                 >
                   <div style={{ flex: '1' }}>
@@ -817,7 +923,7 @@ const KakaoMap: React.FC = () => {
                 {Array.from({ length: totalList }, (_, index) => index + 1).map(
                   (pageNumber) => (
                     <button
-                      key={pageNumber} 
+                      key={pageNumber}
                       onClick={() => numberList(pageNumber)}
                       style={{
                         marginRight: '5px',
@@ -838,54 +944,62 @@ const KakaoMap: React.FC = () => {
         </div>
         <div
           style={{
-            position: 'absolute',
             display: 'flex',
             flexDirection: 'row',
-            justifyContent: 'space-between',
-            bottom: '10px',
-            right: '10px',
-            zIndex: '2',
           }}
         >
-          {waySaveBtn ? (
-            <button onClick={openModal} style={{ padding: '5px' }}>
-              경로 저장
-            </button> 
+          {minute !== 0 && second !== 0 ? (
+            <div className="timer">
+              <img
+                src={process.env.PUBLIC_URL + '/resource/timer.png'}
+                className="timerImg"
+                alt="timerImg"
+              />{' '}
+              {hour !== 0 ? hour + '시간' : ''}
+              {minute}분 {second}초
+            </div>
           ) : (
-            <div></div>
+            <div style={{ display: 'none' }}></div>
           )}
-          <button
-            onClick={handleDefaultSearch}
-            style={{ padding: '5px', marginLeft: '5px' }}
+
+          <div
+            style={{
+              position: 'absolute',
+              display: 'flex',
+              flexDirection: 'row',
+              justifyContent: 'space-between',
+              bottom: '10px',
+              right: '10px',
+              zIndex: '2',
+            }}
           >
-            경로 안내
-          </button>
+            {waySaveBtn ? (
+              <button onClick={openModal} style={{ padding: '5px' }}>
+                경로 저장
+              </button>
+            ) : (
+              <div></div>
+            )}
+            <button
+              onClick={handleDefaultSearch}
+              style={{ padding: '5px', marginLeft: '5px' }}
+            >
+              경로 안내
+            </button>
+          </div>
         </div>
+        <Modal
+          isOpen={isModalOpen}
+          onRequestClose={closeModal}
+          style={modalStyles}
+          contentLabel="Login Modal"
+        >
+          <SaveWayModal addWayPointDB={addWayPointDB} onClose={closeModal} />
+        </Modal>
       </div>
-      <Modal
-        isOpen={isModalOpen}
-        onRequestClose={closeModal}
-        style={modalStyles}
-        contentLabel="Login Modal"
-      >
-        <SaveWayModal addWayPointDB={addWayPointDB} onClose={closeModal} />
-      </Modal>
-      {minute !== 0 && second !== 0 ? (
-        <div className="timer" style={{ zIndex: '2', marginTop: '10px' }}>
-          <img
-            src={process.env.PUBLIC_URL + '/resource/timer.png'}
-            className="timerImg"
-            alt="timerImg"
-          />{' '}
-          {hour !== 0 ? hour + '시간' : ''}
-          {minute}분 {second}초
-        </div>
-      ) : (
-        <div style={{ display: 'none' }}></div>
-      )} 
       <div id="result"></div>
     </div>
-  ); 
+  );
 };
 
 export default KakaoMap;
