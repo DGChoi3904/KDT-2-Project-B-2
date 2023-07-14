@@ -12,6 +12,9 @@ import MarkerImgSet from './markerImgSet';
 import { MapContext, NaviContext } from '../../util/MapContext';
 import { MyWayContext, LoginContext } from '../../util/LoginContext';
 
+import Timer from './Timer';
+import PathButtonBlock from './PathButtonBlock';
+import PaginatedPlaces from './PaginatedPlaces';
 interface Place {
   id: string;
   name: string;
@@ -684,6 +687,7 @@ const KakaoMap: React.FC = () => {
   };
 
   function isNewSearch() {
+    setTime([0]);
     if (
       startPoint[0] === 0 &&
       startPoint[1] === 0 &&
@@ -695,9 +699,6 @@ const KakaoMap: React.FC = () => {
       isStartorEndMarkerDrawn('start'); //시작 마커가 그려져있는지 확인
       isStartorEndMarkerDrawn('end'); //도착 마커가 그려져있는지 확인
       wayMarkerDispatch({ type: 'RESET_WAY_MARKERS' }); //경유지 마커가 그려져있는지 확인
-      setHour(0); //시간 초기화
-      setMinute(0); //분 초기화
-      setSecond(0); //초 초기화
 
       setMongoStart(''); //DB에 저장될 출발지 좌표 초기화
       setMongoWay([]); //DB에 저장될 경유지 좌표 초기화
@@ -856,91 +857,16 @@ const KakaoMap: React.FC = () => {
             </button>
           </div>
           {showPlaces && (
-            <div
-              style={{
-                width: '70%',
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'stretch',
-                backgroundColor: 'rgba(255, 255, 255, 0.2)',
-              }}
-            >
-              {getPaginatedPlaces().map((place, index) => (
-                <div
-                  key={place.id}
-                  style={{
-                    display: 'flex',
-                    alignItems: 'center',
-                    justifyContent: 'space-between',
-                  }}
-                >
-                  <div style={{ flex: '1' }}>
-                    <div style={{ textAlign: 'left' }}>{place.name}</div>
-                  </div>
-                  <div style={{ display: 'flex' }}>
-                    <button
-                      onClick={() => handleSelectPlacePre(place)}
-                      style={{ color: 'black' }}
-                    >
-                      미리보기
-                    </button>
-                    <button
-                      onClick={() => {
-                        handleSelectPlace(place); //출발지의 장소
-                        setKeyword(place.name); //클릭한 장소의 이름이 input으로 전송
-                      }}
-                      style={{ color: 'blue' }}
-                    >
-                      출발지
-                    </button>
-                    <button
-                      onClick={() => {
-                        handleSelectPlaceEnd(place);
-                        setKeyword(place.name);
-                      }}
-                      style={{ color: 'red' }}
-                    >
-                      목적지
-                    </button>
-                    <button
-                      onClick={() => {
-                        handleSelectPlaceWay(place);
-                        setKeyword(place.name);
-                      }}
-                      style={{ color: 'rgb(255, 164, 27)' }}
-                    >
-                      경유지
-                    </button>
-                  </div>
-                </div>
-              ))}
-              <div
-                style={{
-                  display: 'flex',
-                  justifyContent: 'center',
-                  marginTop: '10px',
-                }}
-              >
-                {Array.from({ length: totalList }, (_, index) => index + 1).map(
-                  (pageNumber) => (
-                    <button
-                      key={pageNumber}
-                      onClick={() => numberList(pageNumber)}
-                      style={{
-                        marginRight: '5px',
-                        backgroundColor: '#FFA41B',
-                        borderStyle: 'thin',
-                        borderRadius: '5px',
-                        margin: '0 2px',
-                        width: '20px',
-                      }}
-                    >
-                      {pageNumber}
-                    </button>
-                  ),
-                )}
-              </div>
-            </div>
+            <PaginatedPlaces
+              PaginatedPlacesArr={getPaginatedPlaces()}
+              handleSelectPlace={handleSelectPlace}
+              handleSelectPlaceEnd={handleSelectPlaceEnd}
+              handleSelectPlacePre={handleSelectPlacePre}
+              handleSelectPlaceWay={handleSelectPlaceWay}
+              setKeyword={setKeyword}
+              totalList={totalList}
+              numberList={numberList}
+            />
           )}
         </div>
         <div
@@ -950,44 +876,17 @@ const KakaoMap: React.FC = () => {
           }}
         >
           {minute !== 0 && second !== 0 ? (
-            <div className="timer">
-              <img
-                src={process.env.PUBLIC_URL + '/resource/timer.png'}
-                className="timerImg"
-                alt="timerImg"
-              />{' '}
-              {hour !== 0 ? hour + '시간' : ''}
-              {minute}분 {second}초
-            </div>
+            <Timer hour={hour} minute={minute} second={second} />
           ) : (
             <div style={{ display: 'none' }}></div>
           )}
 
-          <div
-            style={{
-              position: 'absolute',
-              display: 'flex',
-              flexDirection: 'row',
-              justifyContent: 'space-between',
-              bottom: '10px',
-              right: '10px',
-              zIndex: '2',
-            }}
-          >
-            {waySaveBtn && loginCheck ? (
-              <button onClick={openModal} style={{ padding: '5px' }}>
-                경로 저장
-              </button>
-            ) : (
-              <div></div>
-            )}
-            <button
-              onClick={handleDefaultSearch}
-              style={{ padding: '5px', marginLeft: '5px' }}
-            >
-              경로 안내
-            </button>
-          </div>
+          <PathButtonBlock
+            waySaveBtn={waySaveBtn}
+            openModal={openModal}
+            handleDefaultSearch={handleDefaultSearch}
+            loginCheck={loginCheck}
+          />
         </div>
         <Modal
           isOpen={isModalOpen}
