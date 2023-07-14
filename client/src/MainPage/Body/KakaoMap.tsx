@@ -12,6 +12,9 @@ import MarkerImgSet from './markerImgSet';
 import { MapContext, NaviContext } from '../../util/MapContext';
 import { MyWayContext } from '../../util/LoginContext';
 
+import Timer from './Timer';
+import PathButtonBlock from './PathButtonBlock';
+import PaginatedPlaces from './PaginatedPlaces';
 interface Place {
   id: string;
   name: string;
@@ -683,6 +686,7 @@ const KakaoMap: React.FC = () => {
   };
 
   function isNewSearch() {
+    setTime([0]);
     if (
       startPoint[0] === 0 &&
       startPoint[1] === 0 &&
@@ -694,9 +698,6 @@ const KakaoMap: React.FC = () => {
       isStartorEndMarkerDrawn('start'); //시작 마커가 그려져있는지 확인
       isStartorEndMarkerDrawn('end'); //도착 마커가 그려져있는지 확인
       wayMarkerDispatch({ type: 'RESET_WAY_MARKERS' }); //경유지 마커가 그려져있는지 확인
-      setHour(0); //시간 초기화
-      setMinute(0); //분 초기화
-      setSecond(0); //초 초기화
 
       setMongoStart(''); //DB에 저장될 출발지 좌표 초기화
       setMongoWay([]); //DB에 저장될 경유지 좌표 초기화
