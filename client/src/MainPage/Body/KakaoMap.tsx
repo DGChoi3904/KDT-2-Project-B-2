@@ -1,4 +1,10 @@
-import React, { useEffect, useState, useRef, useReducer, useContext } from 'react';
+import React, {
+  useEffect,
+  useState,
+  useRef,
+  useReducer,
+  useContext,
+} from 'react';
 import Modal, { Styles } from 'react-modal';
 import '../Main.css';
 import SaveWayModal from '../Modal/SaveWayModal';
@@ -57,15 +63,28 @@ const wayMarkerInitialState: WayMarkersState = {
   wayMarkers: [],
 };
 
+let infoStart: any;
+let infoEnd: any;
+
 const KakaoMap: React.FC = () => {
-  const { naviSearchCounter, setNaviDataResult } = useContext(NaviContext)
+  const { naviSearchCounter, setNaviDataResult } = useContext(NaviContext);
 
-  const { startPoint, setStartPoint, endPoint, setEndPoint, wayPoint, setWayPoint, setIsSearchingStart, setIsSearchingEnd } = useContext(MapContext);
+  const {
+    startPoint,
+    setStartPoint,
+    endPoint,
+    setEndPoint,
+    wayPoint,
+    setWayPoint,
+    setIsSearchingStart,
+    setIsSearchingEnd,
+  } = useContext(MapContext);
   const addWayPoint = (pointY: number, pointX: number) => {
-    setWayPoint([...wayPoint, pointY, pointX])
-  }
+    setWayPoint([...wayPoint, pointY, pointX]);
+  };
 
-  const { myWayUI, setDetail, setCurrentMyWayNameObj } = useContext(MyWayContext)
+  const { myWayUI, setDetail, setCurrentMyWayNameObj } =
+    useContext(MyWayContext);
 
   const [keyword, setKeyword] = useState(''); // input
   const [places, setPlaces] = useState<Place[]>([]);
@@ -447,13 +466,18 @@ const KakaoMap: React.FC = () => {
     console.log(
       `출발지 좌표 : ${startPoint}, 경유지 좌표 ${wayPoint}, 목적지 좌표 ${endPoint}`,
     );
-     //출발지 인포윈도우 (장소명)
+
+    if (infoStart) {
+      infoStart.close();
+    }
+
+    //출발지 인포윈도우 (장소명)
     const content = `<div style="padding: 1px;">${place.name}</div>`;
-    const infowindow = new window.kakao.maps.InfoWindow({
+    infoStart = new window.kakao.maps.InfoWindow({
       content: content,
       zIndex: 1,
     });
-    infowindow.open(mapRef.current, startMarker.marker);
+    infoStart.open(mapRef.current, startMarker.marker);
   }
   //도착지 마커
   const handleSelectPlaceEnd = (place: Place) => {
@@ -473,15 +497,20 @@ const KakaoMap: React.FC = () => {
     console.log(
       `출발지 좌표 : ${startPoint}, 경유지 좌표 ${wayPoint}, 목적지 좌표 ${endPoint}`,
     );
+
+    if (infoEnd) {
+      infoEnd.close();
+    }
+
     //인포윈도우
     const content = `<div style="padding: 1px;">${place.name}</div>`;
-    const infowindow = new window.kakao.maps.InfoWindow({
+    infoEnd = new window.kakao.maps.InfoWindow({
       content: content,
       zIndex: 1,
     });
-    infowindow.open(mapRef.current, endMarker.marker);
+    infoEnd.open(mapRef.current, endMarker.marker);
   };
-  //경유지 마커 
+  //경유지 마커
   const handleSelectPlaceWay = (place: Place) => {
     isPolyLineDrawn(); //polyline이 그려져있는지 확인
     //경유지 5개로 설정
@@ -492,7 +521,7 @@ const KakaoMap: React.FC = () => {
     if (wayMarkerState.wayCount < 5) {
       wayMarkerDispatch({ type: 'ADD_WAY_MARKER', payload: place });
       setSelectedPlace(place);
-      addWayPoint(Number(place.y), Number(place.x))
+      addWayPoint(Number(place.y), Number(place.x));
     } else {
       alert('경유지는 5개까지만 설정 가능합니다.');
     }
@@ -526,20 +555,14 @@ const KakaoMap: React.FC = () => {
     //출발지 마커
     if (startPoint[0] !== 0 && startPoint[1] !== 0) {
       startMarker.marker.setPosition(
-        new window.kakao.maps.LatLng(
-          startPoint[0],
-          startPoint[1],
-        ),
+        new window.kakao.maps.LatLng(startPoint[0], startPoint[1]),
       );
       startMarker.marker.setMap(mapRef.current);
     }
     //도착지 마커
     if (endPoint[0] !== 0 && endPoint[1] !== 0) {
       endMarker.marker.setPosition(
-        new window.kakao.maps.LatLng(
-          endPoint[0],
-          endPoint[1],
-        ),
+        new window.kakao.maps.LatLng(endPoint[0], endPoint[1]),
       );
       endMarker.marker.setMap(mapRef.current);
     }
@@ -728,7 +751,7 @@ const KakaoMap: React.FC = () => {
                 alt="Naver"
               />
             </button>
-            <button style={{ background: 'none', border: 'none' }}> 
+            <button style={{ background: 'none', border: 'none' }}>
               <img
                 src={process.env.PUBLIC_URL + '/resource/kakaoBtn.png'}
                 alt="Kakao"
@@ -738,7 +761,7 @@ const KakaoMap: React.FC = () => {
               type="text"
               value={keyword}
               onChange={(e) => setKeyword(e.target.value)}
-              style={{ width: '60%' , height: '100%'}}
+              style={{ width: '60%', height: '100%' }}
               onKeyDown={(e) => {
                 //Enter로 검색 가능
                 if (e.key === 'Enter') {
@@ -746,7 +769,9 @@ const KakaoMap: React.FC = () => {
                 }
               }}
             />
-            <button style={{ height: '100%' }} onClick={handleSearch}>🔍</button>
+            <button style={{ height: '100%' }} onClick={handleSearch}>
+              🔍
+            </button>
           </div>
           {showPlaces && (
             <div
@@ -764,7 +789,7 @@ const KakaoMap: React.FC = () => {
                   style={{
                     display: 'flex',
                     alignItems: 'center',
-                    justifyContent: 'space-between', 
+                    justifyContent: 'space-between',
                   }}
                 >
                   <div style={{ flex: '1' }}>
@@ -817,7 +842,7 @@ const KakaoMap: React.FC = () => {
                 {Array.from({ length: totalList }, (_, index) => index + 1).map(
                   (pageNumber) => (
                     <button
-                      key={pageNumber} 
+                      key={pageNumber}
                       onClick={() => numberList(pageNumber)}
                       style={{
                         marginRight: '5px',
@@ -850,7 +875,7 @@ const KakaoMap: React.FC = () => {
           {waySaveBtn ? (
             <button onClick={openModal} style={{ padding: '5px' }}>
               경로 저장
-            </button> 
+            </button>
           ) : (
             <div></div>
           )}
@@ -882,10 +907,10 @@ const KakaoMap: React.FC = () => {
         </div>
       ) : (
         <div style={{ display: 'none' }}></div>
-      )} 
+      )}
       <div id="result"></div>
     </div>
-  ); 
+  );
 };
 
 export default KakaoMap;
